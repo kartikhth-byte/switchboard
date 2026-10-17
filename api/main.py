@@ -3,11 +3,14 @@
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, Literal
+from uuid import UUID
 
 import psycopg
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, HTTPException, Response, status
+from pydantic import BaseModel
 
+from core.approvals import ApprovalError, ApprovalRequest, ApprovalStore
 from core.config.settings import get_settings
 from core.db import migrate
 from core.logs import setup_logging
@@ -57,3 +60,28 @@ def health(response: Response) -> dict[str, Any]:
         "integrations": settings.demo_integrations,
         "outbound_mode": settings.outbound_mode,
     }
+
+
+# ---- Approvals (SHR-008): the queue behind the demo's approve/reject buttons ----
+
+
+class DecisionIn(BaseModel):
+    decision: Literal["approved", "rejected"]
+    decided_by: str = "demo-operator"  # no auth in Wave 1 (out of scope)
+
+
+def _approvals() -> ApprovalStore:
+    return ApprovalStore(get_settings().database_url)
+
+
+@app.get("/approvals")
+def list_approvals(agent: str | None = None) -> list[ApprovalRequest]:
+    return _approvals().pending(agent)
+
+
+@app.post("/approvals/{approval_id}/decision")
+def decide_approval(approval_id: UUID, body: DecisionIn) -> ApprovalRequest:
+    try:
+        return _approvals().decide(approval_id, body.decision, body.decided_by)
+    except ApprovalError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc

@@ -14,11 +14,13 @@ import logging
 import time
 from collections.abc import Iterator
 from contextlib import AbstractContextManager, contextmanager, nullcontext
+from datetime import timedelta
 from typing import Any
 from uuid import UUID, uuid4
 
 from langfuse import Langfuse
 
+from core.approvals import DEFAULT_TTL, ApprovalRequest, ApprovalStore
 from core.jobs.retry import RetryPolicy
 from core.logs import current_agent, current_run_id
 from core.models import Message, ModelClient, ModelResponse
@@ -142,6 +144,48 @@ class RunHandle:
     def set_status(self, status: RunStatus) -> None:
         """End the run early with a non-default status (waiting_approval, budget_exceeded)."""
         self.status = status
+
+    def request_approval(
+        self,
+        result: ToolResult,
+        approvals: ApprovalStore,
+        ttl: timedelta = DEFAULT_TTL,
+    ) -> ApprovalRequest:
+        """Turn an `approval_required` tool result into a saved request; pause the run (SHR-008).
+
+        The caller should stop its loop and tell the user the action is awaiting approval.
+        """
+        if result.error != "approval_required" or not result.payload:
+            raise ValueError("result is not an approval_required tool result")
+        req = approvals.create(
+            self.run_id, self.agent, result.payload["tool"], result.payload["arguments"], ttl
+        )
+        self.status = "waiting_approval"
+        log.info("approval requested", extra={"event": "approval_requested", "tool": req.action})
+        return req
+
+    def resume_approved(
+        self,
+        registry: ToolRegistry,
+        approvals: ApprovalStore,
+        approval_id: UUID,
+    ) -> ToolResult:
+        """Next turn after a decision: run the approved call once, or report the rejection."""
+        req = approvals.get(approval_id)
+        if req is None or req.agent != self.agent:
+            return ToolResult(ok=False, error="approval_not_found")
+        if req.decision == "pending":
+            return ToolResult(ok=False, error="approval_pending")
+        if req.decision != "approved":
+            return ToolResult(ok=False, error=f"approval_{req.decision}")
+        # Keyed on the approval id: resuming twice can never send twice.
+        return self.tool(
+            registry,
+            req.action,
+            req.payload,
+            approved=True,
+            idempotency_key=f"approval:{req.id}",
+        )
 
 
 @contextmanager
