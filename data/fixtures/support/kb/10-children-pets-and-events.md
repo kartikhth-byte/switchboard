@@ -21,6 +21,7 @@ updated: 2026-10-01
   ended without refund.
 - Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.
 - Cats and other animals aren't accepted, because the villas aren't secure for them.
+- Assistance dogs are welcome at every villa with no cleaning fee (see "Accessibility").
 
 ## Events and parties
 - Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need
