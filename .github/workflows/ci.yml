@@ -1,0 +1,36 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: uv sync --frozen
+      - run: cd web && npm ci
+      - run: make lint typecheck test
+
+  compose:
+    # PORT-002 acceptance: fresh `docker compose up` healthy in <= 2 min (mocks only).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: compose up (timed)
+        run: |
+          start=$(date +%s)
+          docker compose up -d --build --wait --wait-timeout 300
+          echo "up in $(( $(date +%s) - start ))s (includes image build)"
+      - run: make health
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12" }
+      - run: uv sync --frozen && make test-integration
+      - if: failure()
+        run: docker compose logs
