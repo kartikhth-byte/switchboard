@@ -18,6 +18,7 @@ from typing import Any, Literal, Protocol
 from pydantic import BaseModel, Field
 
 from agents.concierge.refunds import RefundPolicy, quote
+from core.memory import MemoryState
 from core.retrieval import Hit
 from core.tools import ToolContext, ToolRegistry, ToolResult, ToolSpec
 from integrations.crm import CRM
@@ -38,15 +39,31 @@ class KBSearch(Protocol):
 
 @dataclass
 class ConversationState:
-    """Per-conversation state. Persisted with memory (SHR-013) in the next step."""
+    """Per-conversation state, persisted between turns (SHR-013)."""
 
     conversation_id: str
-    transcript: list[dict[str, str]] = field(default_factory=list)
+    transcript: list[dict[str, str]] = field(default_factory=list)  # full chat, for handoffs
+    memory: MemoryState = field(default_factory=MemoryState)  # what the model sees
     verified: dict[str, str] | None = None  # {"booking_ref", "email"} after lookup_booking
     failed_lookups: int = 0
     pending_approval_id: str | None = None
     handoff: dict[str, Any] | None = None
     retrieved: set[str] = field(default_factory=set)  # chunk ids seen this turn
+
+    PERSISTED = ("transcript", "verified", "failed_lookups", "pending_approval_id")
+
+    def to_json(self) -> dict[str, Any]:
+        out: dict[str, Any] = {k: getattr(self, k) for k in self.PERSISTED}
+        out["memory"] = self.memory.to_json()
+        return out
+
+    @classmethod
+    def from_json(cls, conversation_id: str, data: dict[str, Any]) -> ConversationState:
+        st = cls(conversation_id=conversation_id, memory=MemoryState.model_validate(data["memory"]))
+        for k in cls.PERSISTED:
+            if k in data:
+                setattr(st, k, data[k])
+        return st
 
 
 @dataclass

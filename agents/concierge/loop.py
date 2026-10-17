@@ -15,6 +15,7 @@ Stop conditions, all explicit:
 from __future__ import annotations
 
 import json
+import logging
 from collections import Counter
 from dataclasses import dataclass, field
 from uuid import UUID
@@ -25,10 +26,13 @@ from agents.concierge.tools import AGENT, ConversationState, ToolDeps, build_reg
 from core.approvals import ApprovalStore
 from core.config.agent import AgentConfig
 from core.config.settings import get_settings
-from core.models import Message, ModelClient
+from core.guardrails import BudgetExceeded
+from core.memory import make_fact_extractor, make_summarizer
+from core.models import Message, ModelClient, ModelResponse
 from core.runs import RunHandle, RunStore, start_run
 from core.tools import ToolRegistry, ToolResult
 
+log = logging.getLogger(__name__)
 OBSERVATION_MAX_CHARS = 2_000
 HANDOFF_ANSWER = (
     "I've passed this to a member of our team, who will reply here shortly "
@@ -48,6 +52,7 @@ class Deps:
     run_store: RunStore
     approvals: ApprovalStore | None = None
     langfuse: Langfuse | None = None
+    memory_client: ModelClient | None = None  # overrides cfg.memory.model (tests)
 
 
 @dataclass
@@ -67,6 +72,7 @@ class TurnResult:
 def respond(deps: Deps, user_message: str) -> TurnResult:
     state = deps.tools.state
     state.transcript.append({"role": "user", "content": user_message})
+    state.memory.add("user", user_message)
     state.retrieved = set()
     state.handoff = None  # per turn: a new turn may need its own handoff
     settings = get_settings()
@@ -80,19 +86,38 @@ def respond(deps: Deps, user_message: str) -> TurnResult:
         budget=deps.cfg.budget(settings.daily_usd_cap),
     ) as run:
         result = _loop(run, deps)
+        state.memory.add("assistant", result.answer)
+        _maintain_memory(run, deps)
     if run.status == "budget_exceeded":
         result = TurnResult(
             answer=run.user_message or "", status="budget_exceeded", stop_reason="budget"
         )
+        state.memory.add("assistant", result.answer)
     result.run_id, result.trace_id, result.cost_usd = str(run.run_id), run.trace_id, run.cost_usd
     state.transcript.append({"role": "assistant", "content": result.answer})
     return result
 
 
+def _maintain_memory(run: RunHandle, deps: Deps) -> None:
+    """Facts + compaction after the reply (SHR-013). Never costs the guest their answer."""
+    mem_cfg = deps.cfg.memory
+    client = deps.memory_client or ModelClient(mem_cfg.model_spec(deps.cfg.model))
+
+    def complete(msgs: list[Message]) -> ModelResponse:
+        return run.model(client, msgs, name="memory")
+
+    mem = deps.tools.state.memory
+    try:
+        mem.extract_facts(make_fact_extractor(complete, mem_cfg.facts))
+        mem.compact(make_summarizer(complete), mem_cfg.window_turns, mem_cfg.summarize_over_tokens)
+    except BudgetExceeded:
+        log.warning("memory maintenance skipped: budget reached")
+
+
 def _messages(deps: Deps) -> list[Message]:
     today = deps.tools.today().strftime("%A %d %B %Y")
     msgs: list[Message] = [{"role": "system", "content": deps.cfg.prompt("system", today=today)}]
-    msgs += [{"role": t["role"], "content": t["content"]} for t in deps.tools.state.transcript]
+    msgs += deps.tools.state.memory.render()  # facts + summary + verbatim window
     return msgs
 
 

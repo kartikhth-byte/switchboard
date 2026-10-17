@@ -49,7 +49,7 @@ ingest:           ## (re)index the support KB; ARGS="--embedder hash" works with
 search:           ## make search Q="check-out time"
 	PYTHONPATH=. uv run python -m core.retrieval search -q "$(Q)" $(ARGS)
 
-chat:             ## talk to the Concierge (needs make up, make ingest, keys in .env)
-	PYTHONPATH=. uv run python -m agents.concierge
+chat:             ## talk to the Concierge; ID=<conversation> resumes one
+	PYTHONPATH=. uv run python -m agents.concierge $(ID)
 
 ci: lint typecheck test

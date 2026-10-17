@@ -1,7 +1,8 @@
 """Chat with the Concierge in the terminal (real model, KB, Postgres, Langfuse).
 
-    make chat            # needs `make up`, `make ingest` and keys in .env
-Type /quit to exit, /state to see verified identity and pending approval.
+    make chat                 # new conversation; needs `make up`, `make ingest`, keys in .env
+    make chat ID=cli-1a2b3c   # resume one: memory, verified identity, pending approval
+Type /quit to exit, /state to see verified identity, facts and pending approval.
 """
 
 import sys
@@ -9,12 +10,13 @@ from pathlib import Path
 from uuid import uuid4
 
 from agents.concierge.loop import Deps, new_state, respond
-from agents.concierge.tools import ToolDeps, load_bookings
+from agents.concierge.tools import ConversationState, ToolDeps, load_bookings
 from core.approvals import ApprovalStore
 from core.config.agent import load_agent_config
 from core.config.settings import get_settings
 from core.db import migrate
 from core.logs import setup_logging
+from core.memory import ConversationStore
 from core.models import ModelClient
 from core.retrieval import KnowledgeBase, make_embedder
 from core.runs import PgRunStore
@@ -31,7 +33,10 @@ def main() -> int:
     migrate(s.database_url)
     cfg = load_agent_config(ROOT / "agents/concierge")
     lf = make_langfuse(s)
-    state = new_state(f"cli-{uuid4().hex[:8]}")
+    convs = ConversationStore(s.database_url, "concierge")
+    conv_id = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] else f"cli-{uuid4().hex[:6]}"
+    saved = convs.load(conv_id)
+    state = ConversationState.from_json(conv_id, saved) if saved else new_state(conv_id)
     slack = MockSlack()
     deps = Deps(
         cfg=cfg,
@@ -48,7 +53,10 @@ def main() -> int:
         approvals=ApprovalStore(s.database_url),
         langfuse=lf,
     )
-    print(f"Concierge ({cfg.model.model_id}). Try booking PG-1002 / rohan.fernandes@example.com.")
+    print(
+        f"Concierge ({cfg.model.model_id}) — conversation {conv_id}"
+        f"{' (resumed)' if saved else ''}. Try PG-1002 / rohan.fernandes@example.com."
+    )
     while True:
         try:
             msg = input("\nyou> ").strip()
@@ -57,11 +65,17 @@ def main() -> int:
         if msg in ("/quit", "/q"):
             break
         if msg == "/state":
+            facts = {k: f.value for k, f in state.memory.facts.items()}
             print(f"verified={state.verified} pending_approval={state.pending_approval_id}")
+            print(
+                f"facts={facts} window={len(state.memory.window)} turns, "
+                f"summary covers turns {state.memory.summary_source_turns or '-'}"
+            )
             continue
         if not msg:
             continue
         r = respond(deps, msg)
+        convs.save(conv_id, state.to_json())
         print(f"\nconcierge> {r.answer}")
         meta = f"[{r.status} · {r.stop_reason} · tools: {', '.join(r.tool_calls) or '-'}"
         meta += f" · cites: {', '.join(r.citations) or '-'} · ${r.cost_usd:.4f}]"

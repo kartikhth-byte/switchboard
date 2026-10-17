@@ -5,7 +5,7 @@ model: {provider: anthropic, name: claude-sonnet-4-5, fallback: openai/gpt-4o-mi
 business: config/business.md
 kb_path: data/fixtures/support/kb/
 limits: {max_steps: 8, run_token_budget: 30000}
-memory: {window_turns: 8, summarize_over_tokens: 6000}
+memory: {window_turns: 8, summarize_over_tokens: 6000, model: openai/gpt-4o-mini}
 escalation:
   on_explicit_request: true
   on_frustration: true

@@ -72,6 +72,22 @@ class Scripted(ModelClient):
         )
 
 
+class FakeMemoryModel(ModelClient):
+    """Stands in for the cheap memory model: canned facts JSON or summary text."""
+
+    def __init__(self, facts: dict[str, str] | None = None) -> None:
+        super().__init__(ModelSpec(provider="openai", name="gpt-4o-mini"))
+        self.facts = facts or {}
+        self.calls: list[str] = []
+
+    def complete(self, messages: Any, tools: Any = None, **_: Any) -> ModelResponse:
+        prompt = messages[-1]["content"]
+        kind = "facts" if prompt.startswith("Extract facts") else "summary"
+        self.calls.append(kind)
+        content = json.dumps(self.facts) if kind == "facts" else "Guest asked about their stay."
+        return ModelResponse(content=content, model=self.spec.model_id, tokens_in=20, tokens_out=5)
+
+
 def make(
     steps: list[list[ToolCall] | str], **cfg_rules: Any
 ) -> tuple[Deps, MockCRM, MockSlack, FakeApprovals]:
@@ -87,7 +103,12 @@ def make(
         rules=cfg.rules,
     )
     deps = Deps(
-        cfg=cfg, client=Scripted(steps), tools=tools, run_store=FakeStore(), approvals=approvals
+        memory_client=FakeMemoryModel(),
+        cfg=cfg,
+        client=Scripted(steps),
+        tools=tools,
+        run_store=FakeStore(),
+        approvals=approvals,
     )
     return deps, crm, slack, approvals
 
@@ -104,7 +125,7 @@ def test_kb_answer_with_valid_citations() -> None:
     assert r.answer == "Check-out is by 11:00 am." and r.tool_calls == ["search_kb", "final_answer"]
     assert deps.tools.state.transcript[-1] == {"role": "assistant", "content": r.answer}
     rec = deps.run_store.runs[next(iter(deps.run_store.runs))]  # type: ignore[attr-defined]
-    assert rec.status == "done" and rec.tokens_in == 100  # 2 steps x 50
+    assert rec.status == "done" and rec.tokens_in == 120  # 2 steps x 50 + 20 fact extraction
 
 
 def test_invented_citation_rejected_then_corrected() -> None:
@@ -360,3 +381,25 @@ def test_injection_cannot_write_without_identity(text: str) -> None:
     )
     respond(deps, text)
     assert crm.writes == []
+
+
+def test_facts_from_earlier_turns_are_shown_so_guest_is_not_asked_again() -> None:
+    """SUPP-016: turn 2 sees booking ref + email from turn 1 in the memory note."""
+    deps, *_ = make(
+        [
+            [final("Thanks Rohan, noted.", [])],
+            [call("lookup_booking", booking_ref="PG-1002", email="rohan.fernandes@example.com")],
+            [final("Your stay starts on 14 November.", [])],
+        ]
+    )
+    deps.memory_client = FakeMemoryModel(facts={"name": "Rohan"})
+    respond(deps, "Hi, I'm Rohan — booking PG-1002, rohan.fernandes@example.com")
+    respond(deps, "When does my stay start?")
+    turn2_first_call = deps.client.seen[1]  # type: ignore[attr-defined]
+    note = next(m["content"] for m in turn2_first_call if m["content"].startswith("Known facts"))
+    assert "booking_ref: PG-1002" in note and "rohan.fernandes@example.com" in note
+    assert "name: Rohan" in note
+    assert deps.tools.state.verified == {
+        "booking_ref": "PG-1002",
+        "email": "rohan.fernandes@example.com",
+    }
