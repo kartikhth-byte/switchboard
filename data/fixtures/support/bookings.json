@@ -1,0 +1,149 @@
+{
+  "_note": "Synthetic bookings for the fictional Palmgrove Stays. Names are invented; emails use the reserved example.com domain.",
+  "bookings": [
+    {
+      "booking_ref": "PG-1001",
+      "guest_name": "Asha Rao",
+      "email": "asha.rao@example.com",
+      "villa": "Villa Sol",
+      "check_in": "2026-11-06",
+      "check_out": "2026-11-10",
+      "guests": 6,
+      "channel": "platform",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 44800
+    },
+    {
+      "booking_ref": "PG-1002",
+      "guest_name": "Rohan Fernandes",
+      "email": "rohan.fernandes@example.com",
+      "villa": "Casa Kokum",
+      "check_in": "2026-11-14",
+      "check_out": "2026-11-21",
+      "guests": 4,
+      "channel": "direct",
+      "payment_status": "paid_in_full",
+      "balance_due_inr": 0
+    },
+    {
+      "booking_ref": "PG-1003",
+      "guest_name": "Meera Kapoor",
+      "email": "meera.kapoor@example.com",
+      "villa": "The Cashew House",
+      "check_in": "2026-12-03",
+      "check_out": "2026-12-07",
+      "guests": 2,
+      "channel": "direct",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 33600
+    },
+    {
+      "booking_ref": "PG-1004",
+      "guest_name": "Daniel Müller",
+      "email": "daniel.muller@example.com",
+      "villa": "Monsoon Cottage",
+      "check_in": "2026-12-26",
+      "check_out": "2026-12-31",
+      "guests": 1,
+      "channel": "platform",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 44800
+    },
+    {
+      "booking_ref": "PG-1005",
+      "guest_name": "Sofia Silva",
+      "email": "sofia.silva@example.com",
+      "villa": "Villa Sol",
+      "check_in": "2027-01-09",
+      "check_out": "2027-01-13",
+      "guests": 6,
+      "channel": "direct",
+      "payment_status": "paid_in_full",
+      "balance_due_inr": 0
+    },
+    {
+      "booking_ref": "PG-1006",
+      "guest_name": "Kabir Mehta",
+      "email": "kabir.mehta@example.com",
+      "villa": "Casa Kokum",
+      "check_in": "2027-02-14",
+      "check_out": "2027-02-18",
+      "guests": 4,
+      "channel": "direct",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 33600
+    },
+    {
+      "booking_ref": "PG-1007",
+      "guest_name": "Leah Cohen",
+      "email": "leah.cohen@example.com",
+      "villa": "The Cashew House",
+      "check_in": "2027-03-05",
+      "check_out": "2027-03-08",
+      "guests": 2,
+      "channel": "platform",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 44800
+    },
+    {
+      "booking_ref": "PG-1008",
+      "guest_name": "Arjun Nair",
+      "email": "arjun.nair@example.com",
+      "villa": "Monsoon Cottage",
+      "check_in": "2027-06-12",
+      "check_out": "2027-07-12",
+      "guests": 1,
+      "channel": "direct",
+      "payment_status": "paid_in_full",
+      "balance_due_inr": 0
+    },
+    {
+      "booking_ref": "PG-1009",
+      "guest_name": "Nisha Iyer",
+      "email": "nisha.iyer@example.com",
+      "villa": "Villa Sol",
+      "check_in": "2026-10-24",
+      "check_out": "2026-10-27",
+      "guests": 6,
+      "channel": "direct",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 33600
+    },
+    {
+      "booking_ref": "PG-1010",
+      "guest_name": "Tom Baker",
+      "email": "tom.baker@example.com",
+      "villa": "Casa Kokum",
+      "check_in": "2026-11-28",
+      "check_out": "2026-12-02",
+      "guests": 4,
+      "channel": "platform",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 44800
+    },
+    {
+      "booking_ref": "PG-1011",
+      "guest_name": "Priya Shah",
+      "email": "priya.shah@example.com",
+      "villa": "The Cashew House",
+      "check_in": "2027-01-20",
+      "check_out": "2027-01-27",
+      "guests": 2,
+      "channel": "direct",
+      "payment_status": "paid_in_full",
+      "balance_due_inr": 0
+    },
+    {
+      "booking_ref": "PG-1012",
+      "guest_name": "Hugo Laurent",
+      "email": "hugo.laurent@example.com",
+      "villa": "Monsoon Cottage",
+      "check_in": "2027-04-02",
+      "check_out": "2027-04-06",
+      "guests": 1,
+      "channel": "direct",
+      "payment_status": "deposit_paid",
+      "balance_due_inr": 33600
+    }
+  ]
+}
