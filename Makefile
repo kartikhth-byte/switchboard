@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval ingest search ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -48,5 +48,8 @@ ingest:           ## (re)index the support KB; ARGS="--embedder hash" works with
 
 search:           ## make search Q="check-out time"
 	PYTHONPATH=. uv run python -m core.retrieval search -q "$(Q)" $(ARGS)
+
+chat:             ## talk to the Concierge (needs make up, make ingest, keys in .env)
+	PYTHONPATH=. uv run python -m agents.concierge
 
 ci: lint typecheck test

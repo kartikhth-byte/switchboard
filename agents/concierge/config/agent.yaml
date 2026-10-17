@@ -11,3 +11,9 @@ escalation:
   on_frustration: true
   on_missing_answer: true
   channel: slack            # mock in CI
+rules:
+  min_confidence: 0.5          # below this, final answers are escalated (SUPP-014)
+  max_identity_attempts: 3     # failed lookup_booking attempts before a person takes over
+  approval_required:           # conditional workflow (SUPP-003): these need a manager first
+    create_ticket:
+      category: [refund_request]
