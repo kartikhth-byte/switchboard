@@ -161,6 +161,26 @@ def test_identity_required_for_writes_and_verified_write_works() -> None:
     assert "identity_not_verified" in first_obs["content"]
 
 
+def test_lookup_returns_days_until_check_in_computed_in_code() -> None:
+    """Regression: the model said '>30 days' for a check-in 28 days away (live run, 17 Oct)."""
+    from datetime import date
+
+    deps, *_ = make(
+        [
+            [call("lookup_booking", booking_ref=GUEST["booking_ref"], email=GUEST["email"])],
+            [final("Your check-in is 28 days away, so the 50% tier applies.", [])],
+        ]
+    )
+    deps.tools.today = lambda: date(2026, 10, 17)
+    respond(deps, "Can I get a refund?")
+    shown = deps.client.seen[-1]  # type: ignore[attr-defined]
+    obs = next(m for m in shown if m.get("role") == "tool")
+    assert (
+        '"days_until_check_in": 28' in obs["content"] and '"today": "2026-10-17"' in obs["content"]
+    )
+    assert "Saturday 17 October 2026" in shown[0]["content"]
+
+
 def test_wrong_email_does_not_verify_or_leak_booking() -> None:
     deps, crm, *_ = make(
         [

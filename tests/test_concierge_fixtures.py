@@ -10,7 +10,7 @@ KB = ROOT / "data/fixtures/support/kb"
 def test_concierge_config_loads_and_prompt_renders() -> None:
     cfg = load_agent_config(ROOT / "agents/concierge")
     assert cfg.agent == "concierge" and cfg.limits.max_steps == 8
-    system = cfg.prompt("system")
+    system = cfg.prompt("system", today="Saturday 17 October 2026")
     assert "Palmgrove Stays" in system and "Fictional business" in system
     assert (ROOT / cfg.kb_path).is_dir() if cfg.kb_path else False
 

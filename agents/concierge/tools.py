@@ -9,7 +9,9 @@ Authorization lives here, in code — never in the prompt:
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal, Protocol
 
@@ -21,6 +23,12 @@ from integrations.crm import CRM
 from integrations.slack import Slack
 
 AGENT = "concierge"
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
+def today_ist() -> date:
+    """The business runs on India time; date arithmetic is done in code, not by the model."""
+    return datetime.now(IST).date()
 
 
 class KBSearch(Protocol):
@@ -49,6 +57,7 @@ class ToolDeps:
     state: ConversationState
     rules: dict[str, Any] = field(default_factory=dict)
     handoff_channel: str = "#guest-support"
+    today: Callable[[], date] = today_ist  # injectable for tests
 
 
 def load_bookings(path: Path) -> dict[str, dict[str, Any]]:
@@ -157,6 +166,9 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
                 "balance_due_inr",
             )
         }
+        # Computed here so the model never does date arithmetic (refund tiers depend on it).
+        public["today"] = d.today().isoformat()
+        public["days_until_check_in"] = (date.fromisoformat(b["check_in"]) - d.today()).days
         return ToolResult(ok=True, payload={"booking": public})
 
     def create_ticket(inp: CreateTicketIn, ctx: ToolContext) -> ToolResult:

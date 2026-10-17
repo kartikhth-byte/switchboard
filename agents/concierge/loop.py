@@ -90,7 +90,8 @@ def respond(deps: Deps, user_message: str) -> TurnResult:
 
 
 def _messages(deps: Deps) -> list[Message]:
-    msgs: list[Message] = [{"role": "system", "content": deps.cfg.prompt("system")}]
+    today = deps.tools.today().strftime("%A %d %B %Y")
+    msgs: list[Message] = [{"role": "system", "content": deps.cfg.prompt("system", today=today)}]
     msgs += [{"role": t["role"], "content": t["content"]} for t in deps.tools.state.transcript]
     return msgs
 
