@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke eval ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke eval ingest search ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -39,5 +39,11 @@ trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
 
 eval:             ## make eval AGENT=<name> [ARGS="--smoke --repeat 3 --max-usd 5"]
 	PYTHONPATH=. uv run python -m core.evals $(AGENT) $(ARGS)
+
+ingest:           ## (re)index the support KB; ARGS="--embedder hash" works without a key
+	PYTHONPATH=. uv run python -m core.retrieval ingest $(ARGS)
+
+search:           ## make search Q="check-out time"
+	PYTHONPATH=. uv run python -m core.retrieval search -q "$(Q)" $(ARGS)
 
 ci: lint typecheck test

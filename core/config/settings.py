@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     demo_integrations: Literal["mock", "real"] = "mock"
     outbound_mode: Literal["off", "allowlist", "approve_first"] = "off"
     daily_usd_cap: float = 5.0
+    # Embeddings for KB retrieval (SHR-016). "hash" = offline lexical embedder for tests/CI.
+    embed_model: str = "openai/text-embedding-3-small"
     rate_limit_per_min: int = 30  # per client IP, public endpoints (SHR-018)
 
 
