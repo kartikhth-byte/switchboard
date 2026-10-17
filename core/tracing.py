@@ -8,6 +8,7 @@ from uuid import UUID
 from langfuse import Langfuse
 
 from core.config.settings import Settings
+from core.redaction import langfuse_mask
 
 
 def trace_id_for(run_id: UUID) -> str:
@@ -16,7 +17,7 @@ def trace_id_for(run_id: UUID) -> str:
 
 
 def make_langfuse(settings: Settings, **overrides: Any) -> Langfuse | None:
-    """`overrides` lets tests inject `span_exporter`; SHR-019 will pass `mask` here."""
+    """PII is masked before export (SHR-019). `overrides` lets tests inject `span_exporter`."""
     if not (settings.langfuse_public_key and settings.langfuse_secret_key):
         return None
     return Langfuse(
@@ -24,5 +25,5 @@ def make_langfuse(settings: Settings, **overrides: Any) -> Langfuse | None:
         secret_key=settings.langfuse_secret_key.get_secret_value(),
         base_url=settings.langfuse_host,
         environment=settings.app_env,
-        **overrides,
+        **{"mask": langfuse_mask, **overrides},
     )

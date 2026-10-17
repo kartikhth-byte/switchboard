@@ -7,6 +7,8 @@ import logging
 from contextvars import ContextVar
 from datetime import UTC, datetime
 
+from core.redaction import redact
+
 current_run_id: ContextVar[str | None] = ContextVar("current_run_id", default=None)
 current_agent: ContextVar[str | None] = ContextVar("current_agent", default=None)
 
@@ -24,13 +26,14 @@ class JsonFormatter(logging.Formatter):
             "ts": datetime.fromtimestamp(record.created, UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
-            "msg": record.getMessage(),
+            "msg": redact(record.getMessage()),  # SHR-019: redact at the sink
             "run_id": getattr(record, "run_id", None),
             "agent": getattr(record, "agent", None),
         }
         for key in ("event", "tool", "model", "latency_ms", "tokens_in", "tokens_out", "cost_usd"):
             if hasattr(record, key):
-                out[key] = getattr(record, key)
+                val = getattr(record, key)
+                out[key] = redact(val) if isinstance(val, str) else val
         if record.exc_info:
             out["exc_type"] = record.exc_info[0].__name__ if record.exc_info[0] else None
         return json.dumps(out, default=str)
