@@ -19,6 +19,7 @@ from uuid import UUID, uuid4
 
 from langfuse import Langfuse
 
+from core.jobs.retry import RetryPolicy
 from core.logs import current_agent, current_run_id
 from core.models import Message, ModelClient, ModelResponse
 from core.runs.models import RunStatus
@@ -116,11 +117,15 @@ class RunHandle:
         registry: ToolRegistry,
         name: str,
         arguments: dict[str, Any] | None,
+        *,
+        retry: RetryPolicy | None = None,
         **ctx_overrides: Any,
     ) -> ToolResult:
         with self._observe(name=name, as_type="tool", input=arguments) as span:
             t0 = time.perf_counter()
-            result = registry.execute(name, arguments, self.tool_context(**ctx_overrides))
+            result = registry.execute(
+                name, arguments, self.tool_context(**ctx_overrides), retry=retry
+            )
             latency_ms = round((time.perf_counter() - t0) * 1000)
             if span is not None:
                 span.update(

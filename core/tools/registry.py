@@ -13,12 +13,15 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import time
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Any, Literal, Protocol
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, ValidationError
+
+from core.jobs.retry import RetryPolicy
 
 log = logging.getLogger(__name__)
 
@@ -97,9 +100,14 @@ def idempotency_key(run_id: UUID, tool: str, args: dict[str, Any]) -> str:
 
 
 class ToolRegistry:
-    def __init__(self, idempotency: IdempotencyStore | None = None) -> None:
+    def __init__(
+        self,
+        idempotency: IdempotencyStore | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
         self._tools: dict[str, _Entry] = {}
         self._idem: IdempotencyStore = idempotency or InMemoryIdempotencyStore()
+        self._sleep = sleep
 
     def register(self, spec: ToolSpec, handler: Handler, *, agents: Iterable[str]) -> None:
         if spec.name in self._tools:
@@ -126,7 +134,26 @@ class ToolRegistry:
             for s in self.for_agent(agent)
         ]
 
-    def execute(self, name: str, arguments: dict[str, Any] | None, ctx: ToolContext) -> ToolResult:
+    def execute(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None,
+        ctx: ToolContext,
+        *,
+        retry: RetryPolicy | None = None,
+    ) -> ToolResult:
+        """Run a tool. With `retry`, retryable failures are retried with backoff (SHR-007)."""
+        result = self._execute_once(name, arguments, ctx)
+        attempt = 1
+        while retry is not None and result.retryable and attempt < retry.max_attempts:
+            self._sleep(retry.delay_s(attempt))
+            attempt += 1
+            result = self._execute_once(name, arguments, ctx)
+        return result
+
+    def _execute_once(
+        self, name: str, arguments: dict[str, Any] | None, ctx: ToolContext
+    ) -> ToolResult:
         entry = self._tools.get(name)
         if entry is None:
             return _fail(f"unknown_tool: {name}")

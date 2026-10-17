@@ -36,6 +36,19 @@ services:
       timeout: 3s
       retries: 20
 
+  worker:
+    # Polling jobs worker (SHR-007): same image as the API, different command.
+    build: { context: ., dockerfile: deploy/api.Dockerfile }
+    command: ["python", "-m", "core.jobs"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-switchboard}:${POSTGRES_PASSWORD:-switchboard}@postgres:5432/${POSTGRES_DB:-switchboard}
+    depends_on:
+      api: { condition: service_healthy }  # api runs migrations first
+    restart: unless-stopped
+
   web:
     build: { context: ./web }
     environment:
