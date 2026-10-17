@@ -16,6 +16,8 @@ import hashlib
 import importlib
 import json
 import subprocess  # noqa: S404 — git sha for the report
+import sys
+import time
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -156,13 +158,21 @@ def run_suite(
     spent, truncated = 0.0, False
     for _ in range(repeat):
         this_run: list[EvalResult] = []
-        for _name, case, s in chosen:
+        for i, (_name, case, s) in enumerate(chosen, 1):
             if max_usd is not None and spent >= max_usd:
                 truncated = True
                 break
+            t0 = time.perf_counter()
             res = run_case(suite, case, s)
             spent += res.cost_usd
             this_run.append(res)
+            mark = "pass" if res.passed else ("ERROR" if res.error else "fail")
+            print(  # progress on stderr, so the table on stdout stays clean
+                f"[{i}/{len(chosen)}] {case.id:<14} {mark:<5} ${res.cost_usd:.3f}"
+                f"  total ${spent:.2f}  {time.perf_counter() - t0:.0f}s",
+                file=sys.stderr,
+                flush=True,
+            )
         runs.append(this_run)
         if truncated:
             break
