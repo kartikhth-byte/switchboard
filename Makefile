@@ -1,4 +1,4 @@
-.PHONY: setup lint typecheck test test-integration up down health langfuse-check ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -21,6 +21,9 @@ test-integration:   ## needs `make up` first
 
 up:
 	docker compose up -d --build --wait
+
+dev: up       ## spec §11 alias: full stack up, then health
+	$(MAKE) health
 
 down:
 	docker compose down
