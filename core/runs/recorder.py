@@ -21,6 +21,8 @@ from uuid import UUID, uuid4
 from langfuse import Langfuse
 
 from core.approvals import DEFAULT_TTL, ApprovalRequest, ApprovalStore
+from core.config.settings import get_settings
+from core.guardrails import Budget, BudgetExceeded
 from core.jobs.retry import RetryPolicy
 from core.logs import current_agent, current_run_id
 from core.models import Message, ModelClient, ModelResponse
@@ -41,6 +43,7 @@ class RunHandle:
         store: RunStore,
         langfuse: Langfuse | None,
         outbound_mode: OutboundMode,
+        budget: Budget,
     ) -> None:
         self.run_id = run_id
         self.agent = agent
@@ -52,6 +55,8 @@ class RunHandle:
         self.tokens_in = 0
         self.tokens_out = 0
         self.cost_usd = 0.0
+        self.budget = budget
+        self.user_message: str | None = None  # set when a guardrail ends the run
 
     def _observe(self, **kw: Any) -> AbstractContextManager[Any]:
         if self._lf is None:
@@ -67,6 +72,9 @@ class RunHandle:
         name: str = "llm",
         **extra: Any,
     ) -> ModelResponse:
+        # SHR-018: refuse the call before spending, not after.
+        spent = self._store.spend_today() if self.budget.daily_usd is not None else None
+        self.budget.check(self.tokens_in + self.tokens_out, spent)
         with self._observe(
             name=name,
             as_type="generation",
@@ -197,8 +205,13 @@ def start_run(
     outbound_mode: OutboundMode = "off",
     run_input: Any = None,
     session_id: str | None = None,
+    budget: Budget | None = None,
 ) -> Iterator[RunHandle]:
-    run = RunHandle(uuid4(), agent, store, langfuse, outbound_mode)
+    """Guardrail stops (BudgetExceeded) end the run as `budget_exceeded` and are NOT re-raised:
+    check `run.status` / `run.user_message` after the block. Other errors re-raise."""
+    if budget is None:
+        budget = Budget(daily_usd=get_settings().daily_usd_cap)
+    run = RunHandle(uuid4(), agent, store, langfuse, outbound_mode, budget)
     store.create(run.run_id, agent, run.trace_id)
     tok_run = current_run_id.set(str(run.run_id))
     tok_agent = current_agent.set(agent)
@@ -219,6 +232,13 @@ def start_run(
             log.info("run started", extra={"event": "run_started"})
             try:
                 yield run
+            except BudgetExceeded as exc:
+                run.status = "budget_exceeded"
+                run.user_message = exc.user_message
+                error = exc.limit
+                log.warning("guardrail stop", extra={"event": "budget_exceeded"})
+                if root is not None:
+                    root.update(level="WARNING", status_message=str(exc))
             except Exception as exc:
                 run.status = "failed"
                 error = type(exc).__name__  # type only: messages can carry user data

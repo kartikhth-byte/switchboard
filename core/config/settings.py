@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     demo_integrations: Literal["mock", "real"] = "mock"
     outbound_mode: Literal["off", "allowlist", "approve_first"] = "off"
     daily_usd_cap: float = 5.0
+    rate_limit_per_min: int = 30  # per client IP, public endpoints (SHR-018)
 
 
 @lru_cache

@@ -1,9 +1,7 @@
 import json
 import logging
 from collections.abc import Iterator
-from datetime import UTC, datetime
 from typing import Any
-from uuid import UUID
 
 import pytest
 from langfuse import Langfuse
@@ -13,39 +11,10 @@ from pydantic import BaseModel
 from core.config.settings import get_settings
 from core.logs import JsonFormatter, RunContextFilter
 from core.models import ModelClient, ModelSpec
-from core.runs import AgentRun, PgRunStore, RunStatus, start_run
+from core.runs import PgRunStore, start_run
 from core.tools import ToolContext, ToolRegistry, ToolSpec
 from core.tracing import trace_id_for
-
-
-class FakeStore:
-    def __init__(self) -> None:
-        self.runs: dict[UUID, AgentRun] = {}
-
-    def create(self, run_id: UUID, agent: str, trace_id: str) -> AgentRun:
-        run = AgentRun(
-            id=run_id,
-            agent=agent,
-            status="running",
-            started_at=datetime.now(UTC),
-            trace_id=trace_id,
-        )
-        self.runs[run_id] = run
-        return run
-
-    def add_usage(self, run_id: UUID, tokens_in: int, tokens_out: int, cost_usd: float) -> None:
-        r = self.runs[run_id]
-        r.tokens_in += tokens_in
-        r.tokens_out += tokens_out
-        r.cost_usd += cost_usd
-
-    def finish(self, run_id: UUID, status: RunStatus, error: str | None = None) -> None:
-        r = self.runs[run_id]
-        r.status, r.error, r.ended_at = status, error, datetime.now(UTC)
-
-    def get(self, run_id: UUID) -> AgentRun | None:
-        return self.runs.get(run_id)
-
+from tests.fakes import FakeStore
 
 EXPORTER = InMemorySpanExporter()
 

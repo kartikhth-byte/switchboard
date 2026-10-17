@@ -16,6 +16,7 @@ class RunStore(Protocol):
     def add_usage(self, run_id: UUID, tokens_in: int, tokens_out: int, cost_usd: float) -> None: ...
     def finish(self, run_id: UUID, status: RunStatus, error: str | None = None) -> None: ...
     def get(self, run_id: UUID) -> AgentRun | None: ...
+    def spend_today(self) -> float: ...
 
 
 class PgRunStore:
@@ -51,3 +52,14 @@ class PgRunStore:
         with connect(self.dsn) as c:
             row = c.execute("SELECT * FROM runs WHERE id = %s", (run_id,)).fetchone()
         return AgentRun.model_validate(row) if row else None
+
+    def spend_today(self) -> float:
+        """Total model spend across all runs since 00:00 UTC (daily cap, SHR-018)."""
+        with connect(self.dsn) as c:
+            row = c.execute(
+                "SELECT COALESCE(SUM(cost_usd), 0)::float8 AS total FROM runs"
+                " WHERE started_at >="
+                " date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'"
+            ).fetchone()
+        total = row["total"] if row else 0.0
+        return float(total) if isinstance(total, int | float) else 0.0

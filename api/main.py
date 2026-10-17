@@ -7,12 +7,13 @@ from typing import Any, Literal
 from uuid import UUID
 
 import psycopg
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
 from pydantic import BaseModel
 
 from core.approvals import ApprovalError, ApprovalRequest, ApprovalStore
 from core.config.settings import get_settings
 from core.db import migrate
+from core.guardrails import RateLimiter
 from core.logs import setup_logging
 
 log = logging.getLogger(__name__)
@@ -31,6 +32,19 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Switchboard", version="0.1.0", lifespan=lifespan)
+_limiter = RateLimiter(get_settings().rate_limit_per_min)
+
+
+def public_rate_limit(request: Request) -> None:
+    """Per-IP limit for public endpoints (SHR-018). Attach with Depends on agent routes."""
+    ip = request.client.host if request.client else "unknown"
+    wait = _limiter.check(ip)
+    if wait is not None:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests from your address. Please wait a moment and try again.",
+            headers={"Retry-After": str(max(1, round(wait)))},
+        )
 
 
 def check_db(dsn: str) -> dict[str, Any]:
@@ -79,7 +93,7 @@ def list_approvals(agent: str | None = None) -> list[ApprovalRequest]:
     return _approvals().pending(agent)
 
 
-@app.post("/approvals/{approval_id}/decision")
+@app.post("/approvals/{approval_id}/decision", dependencies=[Depends(public_rate_limit)])
 def decide_approval(approval_id: UUID, body: DecisionIn) -> ApprovalRequest:
     try:
         return _approvals().decide(approval_id, body.decision, body.decided_by)
