@@ -16,9 +16,10 @@ jobs:
       - run: uv sync --frozen
       - run: cd web && npm ci
       - run: make lint typecheck test
+      - run: make eval AGENT=echo ARGS=--smoke  # SHR-009: CI runs smoke subsets
 
   compose:
-    # PORT-002 acceptance: fresh `docker compose up` healthy in <= 2 min (mocks only).
+    # PORT-001: fresh `docker compose up` gives a healthy stack (mocks only).
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

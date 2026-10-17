@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke eval ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -36,5 +36,8 @@ langfuse-check:
 
 trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
 	PYTHONPATH=. uv run python scripts/trace_smoke.py
+
+eval:             ## make eval AGENT=<name> [ARGS="--smoke --repeat 3 --max-usd 5"]
+	PYTHONPATH=. uv run python -m core.evals $(AGENT) $(ARGS)
 
 ci: lint typecheck test
