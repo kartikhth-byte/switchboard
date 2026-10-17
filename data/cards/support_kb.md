@@ -6,7 +6,7 @@
 | Business | **Palmgrove Stays — fictional.** Four invented villas in North Goa, India. |
 | Source | Written by hand for this project, modelled on typical North Goa holiday-rental operations. Real public facts are used only for context (Goa's two airports, India's 112 emergency number, Form C registration for foreign guests, monsoon sea-swimming bans). |
 | Personal data | None. No real guests, staff, addresses or phone numbers. |
-| Size | 25 documents (24 markdown, 1 HTML), about 8,500 words. |
+| Size | 25 documents (24 markdown, 1 HTML), about 5,800 words. |
 | Format | One file per topic; markdown files carry YAML front matter (`doc_id`, `title`, `updated`); the HTML file carries the same fields as `<meta>` tags. Heading structure is meaningful: retrieval chunks on headings. |
 | Labels | None in the KB itself. Eval questions reference documents by `doc_id`. |
 | Deliberately not covered | Specific restaurant names and opening hours, visa rules, medical advice, weather forecasts, other companies' properties, and anything about individual bookings (looked up via a tool, not the KB). Questions on these are out-of-KB and should be declined or escalated. |
