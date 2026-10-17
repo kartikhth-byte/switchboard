@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -33,5 +33,8 @@ health:
 
 langfuse-check:
 	PYTHONPATH=. uv run python scripts/check_langfuse.py
+
+trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
+	PYTHONPATH=. uv run python scripts/trace_smoke.py
 
 ci: lint typecheck test

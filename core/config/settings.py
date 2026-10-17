@@ -13,6 +13,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    app_env: str = "dev"  # Langfuse environment tag: dev | ci | demo
     database_url: str = "postgresql://switchboard:switchboard@localhost:5432/switchboard"
 
     # Langfuse Cloud by default; self-hosted via the `langfuse` compose profile.
