@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
+from langfuse import Langfuse
+
 from agents.concierge.loop import Deps, TurnResult, new_state, respond
 from agents.concierge.tools import KBSearch, ToolDeps, load_bookings
 from core.approvals import ApprovalStore
@@ -49,6 +51,7 @@ class EvalEnv:
     sim_user_client: ModelClient
     approvals: ApprovalStore | None = None
     memory_client: ModelClient | None = None
+    langfuse: Langfuse | None = None  # eval runs are traced like any other run (SHR-006/019)
     today: Callable[[], date] = field(default=lambda: EVAL_TODAY)
 
 
@@ -70,6 +73,7 @@ def _deps(env: EvalEnv, case_id: str) -> tuple[Deps, RecordingKB, MockCRM, MockS
         run_store=env.run_store,
         approvals=env.approvals,
         memory_client=env.memory_client,
+        langfuse=env.langfuse,
         daily_cap=None,  # the eval runner's --max-usd caps spend instead
     )
     return deps, kb, crm, slack

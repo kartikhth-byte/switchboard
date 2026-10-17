@@ -6,6 +6,7 @@ simulated user run on OpenAI (gpt-4o-mini) — the runner refuses same-provider 
 
 from __future__ import annotations
 
+import atexit
 from pathlib import Path
 
 from agents.concierge.evals import assertions
@@ -19,6 +20,7 @@ from core.evals.runner import EvalSuite
 from core.models import ModelClient, ModelSpec
 from core.retrieval import KnowledgeBase, make_embedder
 from core.runs import PgRunStore
+from core.tracing import make_langfuse
 
 ROOT = Path(__file__).resolve().parents[3]
 HELPER = ModelSpec(provider="openai", name="gpt-4o-mini", temperature=0.0, max_tokens=400)
@@ -34,6 +36,9 @@ def suite() -> EvalSuite:
     judge_client = ModelClient(HELPER)
     sim_client = ModelClient(HELPER.model_copy(update={"temperature": 0.7}))
     assertions.set_judge(Judge(judge_client))
+    lf = make_langfuse(s)
+    if lf is not None:
+        atexit.register(lf.flush)  # send buffered spans before the process exits
     env = EvalEnv(
         cfg=cfg,
         client=ModelClient(cfg.model),
@@ -41,6 +46,7 @@ def suite() -> EvalSuite:
         run_store=PgRunStore(s.database_url),
         sim_user_client=sim_client,
         approvals=ApprovalStore(s.database_url),
+        langfuse=lf,
     )
 
     def target(case: EvalCase):  # type: ignore[no-untyped-def]
