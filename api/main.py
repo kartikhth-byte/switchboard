@@ -1,13 +1,33 @@
 """Switchboard API. M0: health only; agent routes arrive with their milestones."""
 
+import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Any
 
 import psycopg
 from fastapi import FastAPI, Response, status
 
 from core.config.settings import get_settings
+from core.db import migrate
+from core.logs import setup_logging
 
-app = FastAPI(title="Switchboard", version="0.1.0")
+log = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    setup_logging()
+    try:
+        applied = migrate(get_settings().database_url)
+        log.info("migrations applied: %s", applied or "none pending")
+    except psycopg.Error as exc:
+        # Keep serving so /health can report the DB problem instead of a crash loop.
+        log.error("migrations failed: %s", type(exc).__name__)
+    yield
+
+
+app = FastAPI(title="Switchboard", version="0.1.0", lifespan=lifespan)
 
 
 def check_db(dsn: str) -> dict[str, Any]:
