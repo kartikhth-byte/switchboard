@@ -181,6 +181,29 @@ def test_lookup_returns_days_until_check_in_computed_in_code() -> None:
     assert "Saturday 17 October 2026" in shown[0]["content"]
 
 
+def test_refund_quote_tool_gives_the_tier() -> None:
+    from datetime import date
+
+    deps, *_ = make(
+        [
+            [call("lookup_booking", booking_ref=GUEST["booking_ref"], email=GUEST["email"])],
+            [call("quote_refund")],
+            [final("A 50% refund applies.", [])],
+        ]
+    )
+    deps.tools.today = lambda: date(2026, 10, 17)
+    respond(deps, "Can I get a refund?")
+    obs = [m for m in deps.client.seen[-1] if m.get("role") == "tool"][-1]  # type: ignore[attr-defined]
+    assert '"refund_percent": 50' in obs["content"] and "14–29 days" in obs["content"]
+
+
+def test_quote_refund_needs_verified_identity() -> None:
+    deps, *_ = make([[call("quote_refund")], [final("I need your booking details first.", [])]])
+    respond(deps, "refund?")
+    obs = [m for m in deps.client.seen[-1] if m.get("role") == "tool"][-1]  # type: ignore[attr-defined]
+    assert "identity_not_verified" in obs["content"]
+
+
 def test_wrong_email_does_not_verify_or_leak_booking() -> None:
     deps, crm, *_ = make(
         [

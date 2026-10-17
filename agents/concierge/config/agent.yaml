@@ -17,3 +17,11 @@ rules:
   approval_required:           # conditional workflow (SUPP-003): these need a manager first
     create_ticket:
       category: [refund_request]
+  refund_policy:               # direct bookings; mirrors KB doc 03 (a test checks they match)
+    standard:                  # check-in 1 Mar – 30 Nov
+      tiers: [{min_days: 30, refund_percent: 100}, {min_days: 14, refund_percent: 50}, {min_days: 0, refund_percent: 0}]
+    peak:                      # check-in 1 Dec – 28 Feb
+      tiers: [{min_days: 45, refund_percent: 100}, {min_days: 21, refund_percent: 50}, {min_days: 0, refund_percent: 0}]
+    peak_months: [12, 1, 2]
+    festive_non_refundable: ["12-24", "01-02"]
+    processing_fee_inr: 500

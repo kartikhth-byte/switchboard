@@ -17,6 +17,7 @@ from typing import Any, Literal, Protocol
 
 from pydantic import BaseModel, Field
 
+from agents.concierge.refunds import RefundPolicy, quote
 from core.retrieval import Hit
 from core.tools import ToolContext, ToolRegistry, ToolResult, ToolSpec
 from integrations.crm import CRM
@@ -96,6 +97,10 @@ class HandoffIn(BaseModel):
         "requested", "frustrated", "missing_answer", "policy_exception", "safety", "other"
     ]
     summary: str = Field(min_length=3, max_length=1000)
+
+
+class QuoteRefundIn(BaseModel):
+    """No arguments: always quotes the booking verified in this conversation."""
 
 
 class FinalAnswerIn(BaseModel):
@@ -205,6 +210,16 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
         st.handoff = {**payload, "slack_ts": ts}
         return ToolResult(ok=True, payload={"handed_off": True, "reason": inp.reason})
 
+    def quote_refund(inp: QuoteRefundIn, ctx: ToolContext) -> ToolResult:
+        if (denied := require_identity()) is not None:
+            return denied
+        if "refund_policy" not in d.rules:
+            return ToolResult(ok=False, error="requires_human: no refund policy configured")
+        assert st.verified is not None
+        booking = d.bookings[st.verified["booking_ref"].upper()]
+        q = quote(booking, RefundPolicy.model_validate(d.rules["refund_policy"]), d.today())
+        return ToolResult(ok=True, payload={"quote": q.model_dump()})
+
     def final_answer(inp: FinalAnswerIn, ctx: ToolContext) -> dict[str, Any]:
         return inp.model_dump()
 
@@ -260,6 +275,18 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
                 side_effect=True,
             ),
             handoff_to_human,
+        ),
+        (
+            ToolSpec(
+                name="quote_refund",
+                description="Work out the refund that applies if the verified guest cancels now "
+                "(tier, season, fee). Use this for every refund or cancellation question; "
+                "never work out a refund tier yourself.",
+                input_model=QuoteRefundIn,
+                permission="read",
+                side_effect=False,
+            ),
+            quote_refund,
         ),
         (
             ToolSpec(
