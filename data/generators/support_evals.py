@@ -60,6 +60,33 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", " ", s.lower()).strip()
 
 
+MAX_FACT_CHARS = 40
+TRIVIAL = {"yes", "no", "none", "true", "false"}
+
+# Generated out-of-KB questions a human review found the KB does (partly) answer. Kept as a
+# list, not deleted from the cache, so the review is visible and reproducible.
+OUT_OF_KB_REJECTED = {
+    "Are there any specific wildlife safety tips I should know?",  # snakes, beach safety
+    "What are the best local markets to visit in North Goa?",  # local guide
+    "Can you tell me about local laws regarding noise after hours?",  # house rules
+    "Can you provide information about local health services?",  # hospital list
+    "Can you recommend a good place for yoga classes in North Goa?",  # yoga at the villa
+    "Can I get a cleaning service every day during my stay?",  # housekeeping
+    "What are the best beaches in North Goa for families?",  # local guide
+    "How do I get to the nearest pharmacy from the villa?",  # health doc
+    "Is it safe to drink the tap water in Goa?",  # drinking water
+    "How can I get a taxi from the airport to the villa?",  # transfers
+    "Are there any specific Goa laws I should be aware of?",  # vague; noise/ID rules
+    "Do you provide transportation to local attractions?",  # spice tour transport
+    "Is there a local doctor or hospital nearby in case of emergencies?",  # health doc
+}
+
+
+def usable_facts(facts: list[str]) -> list[str]:
+    """Keep short, specific facts (times, prices, names); drop sentences and trivia."""
+    return [f for f in facts if len(f) <= MAX_FACT_CHARS and norm(f) not in TRIVIAL]
+
+
 def facts_in_doc(facts: list[str], doc: str) -> bool:
     d = norm(doc)
     return bool(facts) and all(norm(f) in d for f in facts)
@@ -211,7 +238,7 @@ def build_in_kb(rng: random.Random) -> list[dict[str, Any]]:
     dropped = 0
     for doc_id, text in docs.items():
         for q in _cached(f"in_kb__{doc_id}.json").get("questions", []):
-            facts = [str(f) for f in q.get("answer_facts", [])]
+            facts = usable_facts([str(f) for f in q.get("answer_facts", [])])
             if facts_in_doc(facts, text):
                 pool.append((doc_id, str(q["question"]), facts))
             else:
@@ -233,7 +260,7 @@ def build_in_kb(rng: random.Random) -> list[dict[str, Any]]:
                           {"doc_id": doc_id, "answer_facts": facts}, {"message": q}))  # fmt: skip
     print(
         f"in_kb: {len(hand)} hand-written, {len(REFUND_CASES)} refund, {len(picked)} generated"
-        f" ({dropped} generated questions dropped: facts not verbatim in doc)"
+        f" ({dropped} generated questions dropped: no short fact verbatim in the doc)"
     )
     return cases
 
@@ -247,11 +274,17 @@ def build_out_of_kb(rng: random.Random) -> list[dict[str, Any]]:
                   {"should_decline": True}, {"message": r["question"].strip()})
              for i, r in enumerate(hand, 1)]  # fmt: skip
     gen = [str(q) for q in _cached("out_of_kb.json").get("questions", [])]
+    rejected = sum(q in OUT_OF_KB_REJECTED for q in gen)
+    gen = [q for q in gen if q not in OUT_OF_KB_REJECTED]
     rng.shuffle(gen)
     for i, q in enumerate(gen[: N_OUT_OF_KB - len(cases)], 1):
         cases.append(case(f"ookb-g{i:03d}", ["edge", "generated"], OUT_OF_KB_ASSERTIONS,
                           {"should_decline": True}, {"message": q}))  # fmt: skip
-    print(f"out_of_kb: {len(hand)} hand-written, {len(cases) - len(hand)} generated")
+    print(
+        f"out_of_kb: {len(hand)} hand-written, {len(cases) - len(hand)} generated"
+        f" ({rejected} generated questions rejected in review: answered by the KB)"
+    )
+    assert len(cases) == N_OUT_OF_KB, f"out_of_kb has {len(cases)} cases, need {N_OUT_OF_KB}"
     return cases
 
 

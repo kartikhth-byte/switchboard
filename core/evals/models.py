@@ -54,3 +54,5 @@ class EvalResult(BaseModel):
     tags: list[str] = Field(default_factory=list)
     split: str = "all"
     error: str | None = None
+    answer: str | None = None  # kept for review and judge calibration
+    notes: dict[str, Any] = Field(default_factory=dict)  # e.g. judge verdicts, citations

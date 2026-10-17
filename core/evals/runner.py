@@ -100,15 +100,29 @@ def run_case(suite: EvalSuite, case: EvalCase, split: str) -> EvalResult:
             split=split,
             error=type(exc).__name__,
         )
-    metrics = {a: float(get_assertion(a)(case, out)) for a in case.assertions}
+    metrics: dict[str, float] = {}
+    errors: list[str] = []
+    for a in case.assertions:
+        try:
+            metrics[a] = float(get_assertion(a)(case, out))
+        except Exception as exc:  # noqa: BLE001 — e.g. judge API down: fail the metric, keep going
+            metrics[a] = 0.0
+            errors.append(f"{a}: {type(exc).__name__}")
+    notes: dict[str, Any] = {
+        k: out.data[k] for k in ("judge", "citations", "escalated", "status") if k in out.data
+    }
     return EvalResult(
         case_id=case.id,
         passed=all(v == 1.0 for v in metrics.values()),
         metrics=metrics,
         trace_id=out.trace_id,
-        cost_usd=out.cost_usd,
+        # Assertions may spend too (LLM judge); they record it in data["helper_cost_usd"].
+        cost_usd=out.cost_usd + float(out.data.get("helper_cost_usd", 0.0)),
         tags=case.tags,
         split=split,
+        error="; ".join(errors) or None,
+        answer=out.answer,
+        notes=notes,
     )
 
 
