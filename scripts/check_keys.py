@@ -21,6 +21,9 @@ def shape(value: str) -> str:
         issues.append("contains whitespace")
     if value.startswith(("'", '"')) or value.endswith(("'", '"')):
         issues.append("wrapped in quotes")
+    stray = sorted({c for c in value if not (c.isalnum() or c in "-_")})
+    if stray:
+        issues.append(f"unexpected characters {''.join(stray)!r}")
     return f"{prefix}… ({len(value)} chars)" + (f" — {', '.join(issues)}" if issues else "")
 
 
