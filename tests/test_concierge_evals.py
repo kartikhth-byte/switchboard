@@ -203,3 +203,16 @@ def test_suite_refuses_without_kb(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(suite_mod, "migrate", lambda dsn: [])
     with pytest.raises(SystemExit, match="make ingest"):
         suite_mod.suite()
+
+
+def test_eval_runs_ignore_demo_daily_cap(monkeypatch: pytest.MonkeyPatch) -> None:
+    from core.config.settings import get_settings
+
+    monkeypatch.setenv("DAILY_USD_CAP", "0")
+    get_settings.cache_clear()
+    try:
+        case = first("in_kb", lambda c: c.expected.get("doc_id") == "check-in-and-check-out")
+        e = env([[final("Check-out is by 11:00 am.", [])]])
+        assert run_target(e, case).data["status"] == "done"  # not budget_exceeded
+    finally:
+        get_settings.cache_clear()

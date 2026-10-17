@@ -18,6 +18,7 @@ import json
 import logging
 from collections import Counter
 from dataclasses import dataclass, field
+from typing import Literal
 from uuid import UUID
 
 from langfuse import Langfuse
@@ -53,6 +54,9 @@ class Deps:
     approvals: ApprovalStore | None = None
     langfuse: Langfuse | None = None
     memory_client: ModelClient | None = None  # overrides cfg.memory.model (tests)
+    # Daily spend cap: "settings" = DAILY_USD_CAP (demo default). Evals pass None and rely on
+    # the runner's --max-usd instead (build spec §4: eval runs use their own cap).
+    daily_cap: float | None | Literal["settings"] = "settings"
 
 
 @dataclass
@@ -83,7 +87,9 @@ def respond(deps: Deps, user_message: str) -> TurnResult:
         outbound_mode=settings.outbound_mode,
         run_input=user_message,
         session_id=state.conversation_id,
-        budget=deps.cfg.budget(settings.daily_usd_cap),
+        budget=deps.cfg.budget(
+            settings.daily_usd_cap if deps.daily_cap == "settings" else deps.daily_cap
+        ),
     ) as run:
         result = _loop(run, deps)
         state.memory.add("assistant", result.answer)

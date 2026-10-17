@@ -70,6 +70,7 @@ def _deps(env: EvalEnv, case_id: str) -> tuple[Deps, RecordingKB, MockCRM, MockS
         run_store=env.run_store,
         approvals=env.approvals,
         memory_client=env.memory_client,
+        daily_cap=None,  # the eval runner's --max-usd caps spend instead
     )
     return deps, kb, crm, slack
 
