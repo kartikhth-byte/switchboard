@@ -70,10 +70,31 @@ def cites_expected_doc(case: EvalCase, out: AgentOutput) -> float:
     return float(any(c.startswith(f"{doc}#") for c in out.data.get("citations") or []))
 
 
+STOPWORDS = frozenset(
+    "a an and the of to in on at for by or is are be it its your you we our with from as "
+    "this that per".split()
+)
+
+
+def _tokens(s: str) -> set[str]:
+    s = re.sub(r"(?<=\d),(?=\d{3})", "", s.lower().replace("*", ""))
+    return {t for t in re.findall(r"[₹$]?\d+(?:[.:]\d+)?%?|[a-z]+(?:'[a-z]+)?", s)} - STOPWORDS
+
+
+def _has_fact(fact: str, answer: str) -> bool:
+    """Exact (normalised) substring, or every content word and number of the fact present as
+    a whole token. Paraphrase ("1 June – 30 September" for "1 June and 30 September") passes;
+    a changed number ("10:00 am" for "11:00 am") does not."""
+    if _norm(fact) in _norm(answer):
+        return True
+    words = _tokens(fact)
+    return bool(words) and words <= _tokens(answer)
+
+
 @assertion("answer_has_facts")
 def answer_has_facts(case: EvalCase, out: AgentOutput) -> float:
-    ans = _norm(out.answer or "")
-    return float(all(_norm(f) in ans for f in case.expected.get("answer_facts", [])))
+    ans = out.answer or ""
+    return float(all(_has_fact(f, ans) for f in case.expected.get("answer_facts", [])))
 
 
 @assertion("grounded")
@@ -93,9 +114,10 @@ def refund_tier_correct(case: EvalCase, out: AgentOutput) -> float:
 # ---------------------------------------------------------------- out-of-KB (SUPP-009)
 
 DECLINE = re.compile(
-    r"(don.?t have (that|this|any|specific|information|details)|not (sure|able)|"
+    r"(don.?t have (that|this|any|specific|information|details|access)|not (sure|able)|"
     r"can.?t (help|answer|confirm|recommend|advise)|unable to|isn.?t (something|covered)|"
-    r"no information|pass(ed)? (this|it|you) (on|to)|member of our team|team will|a person)",
+    r"no information|pass(ed)? (this|it|you) (on|to)|member of our team|team will|a person|"
+    r"(suggest|recommend) (asking|checking)|ask your (villa )?caretaker)",
     re.I,
 )
 

@@ -63,6 +63,18 @@ def test_in_kb_code_checks() -> None:
     assert A.cites_expected_doc(case, bad) == 0.0
 
 
+def test_facts_allow_paraphrase_not_changed_numbers() -> None:
+    case = EvalCase(
+        id="x", agent="concierge", input={"message": "q"}, assertions=["answer_has_facts"],
+        expected={"answer_facts": ["1 June and 30 September",
+                                   "Emergency number in your arrival message"]},
+    )  # fmt: skip
+    para = "Monsoon runs 1 June – 30 September; the emergency number is in your arrival message."
+    assert A.answer_has_facts(case, out(answer=para)) == 1.0
+    assert A.answer_has_facts(case, out(answer=para.replace("30 September", "31 September"))) == 0.0
+    assert A.answer_has_facts(case, out(answer="Monsoon runs 1 June – 30 September.")) == 0.0
+
+
 def test_judge_assertions_record_verdict_and_cost() -> None:
     A.set_judge(Judge(FixedJudge(1)))
     case = first("in_kb", lambda c: "generated" in c.tags)
@@ -78,6 +90,8 @@ def test_out_of_kb_decline_detection() -> None:
     case = first("out_of_kb")
     assert A.declined_or_escalated(case, out(answer="I don't have that information, sorry.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="x", escalated=True)) == 1.0
+    assert A.declined_or_escalated(case, out(answer="I don't have access to forecasts.")) == 1.0
+    assert A.declined_or_escalated(case, out(answer="I'd suggest asking your caretaker.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="Try Café Mambo, open 9-5!")) == 0.0
 
 

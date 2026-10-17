@@ -1,7 +1,8 @@
 """Concierge eval suite: `make eval AGENT=concierge [ARGS="--smoke --max-usd 2"]`.
 
 Needs `make up`, `make ingest` and both API keys. The agent runs on Claude; the judge and the
-simulated user run on OpenAI (gpt-4o-mini) — the runner refuses same-provider helpers.
+simulated user run on OpenAI (judge gpt-4o, simulated user gpt-4o-mini) — the runner refuses
+same-provider helpers.
 """
 
 from __future__ import annotations
@@ -23,7 +24,10 @@ from core.runs import PgRunStore
 from core.tracing import make_langfuse
 
 ROOT = Path(__file__).resolve().parents[3]
+# Simulated user stays on the mini model; the judge needs to read tables reliably (first smoke
+# run: gpt-4o-mini failed 3 answers the KB supported). Calibration on 30 labels confirms.
 HELPER = ModelSpec(provider="openai", name="gpt-4o-mini", temperature=0.0, max_tokens=400)
+JUDGE = HELPER.model_copy(update={"name": "gpt-4o"})
 
 
 def suite() -> EvalSuite:
@@ -33,7 +37,7 @@ def suite() -> EvalSuite:
     kb = KnowledgeBase(s.database_url, "support", make_embedder(s.embed_model))
     if not kb.chunk_ids():
         raise SystemExit("support KB is empty: run `make ingest` first")
-    judge_client = ModelClient(HELPER)
+    judge_client = ModelClient(JUDGE)
     sim_client = ModelClient(HELPER.model_copy(update={"temperature": 0.7}))
     assertions.set_judge(Judge(judge_client))
     lf = make_langfuse(s)

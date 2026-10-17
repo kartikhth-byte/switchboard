@@ -111,8 +111,11 @@ def run_case(suite: EvalSuite, case: EvalCase, split: str) -> EvalResult:
             metrics[a] = 0.0
             errors.append(f"{a}: {type(exc).__name__}")
     notes: dict[str, Any] = {
-        k: out.data[k] for k in ("judge", "citations", "escalated", "status") if k in out.data
+        k: out.data[k]
+        for k in ("judge", "citations", "escalated", "status", "tool_calls")
+        if k in out.data
     }
+    notes["transcript"] = out.transcript  # so a failure can be read without re-running
     return EvalResult(
         case_id=case.id,
         passed=all(v == 1.0 for v in metrics.values()),
