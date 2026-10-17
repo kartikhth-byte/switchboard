@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval data ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -42,6 +42,9 @@ trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
 
 eval:             ## make eval AGENT=<name> [ARGS="--smoke --repeat 3 --max-usd 5"]
 	PYTHONPATH=. uv run python -m core.evals $(AGENT) $(ARGS)
+
+data:             ## rebuild eval sets (cached generations); ARGS=--refresh re-generates (OpenAI key)
+	PYTHONPATH=. uv run python -m data.generators.support_evals $(ARGS)
 
 ingest:           ## (re)index the support KB; ARGS="--embedder hash" works without a key
 	PYTHONPATH=. uv run python -m core.retrieval ingest $(ARGS)

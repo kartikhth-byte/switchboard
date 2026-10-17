@@ -1,0 +1,3 @@
+kind,author,question,doc_id,answer_facts,notes
+in_kb,example,"hey whats the latest we can leave on sunday",check-in-and-check-out,11:00 am,"EXAMPLE ROW — replace or delete. answer_facts = exact text from the doc, separated by ;"
+out_of_kb,example,"Which beach shack near Anjuna has the best live music on Fridays?",,,"EXAMPLE ROW — out_of_kb rows need only the question"

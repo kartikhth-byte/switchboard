@@ -34,7 +34,8 @@ select = ["E", "F", "I", "B", "UP", "S"]
 ignore = ["S101"]  # asserts are fine in tests
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S105", "S106"]  # fake test credentials
+"tests/**" = ["S105", "S106", "S311"]  # fake test credentials, seeded RNG
+"data/generators/**" = ["E501", "S311"]  # long data strings, seeded RNG (not crypto)
 
 [tool.mypy]
 python_version = "3.12"
