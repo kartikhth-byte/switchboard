@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "question": "What time can I use the pool at Monsoon Cottage?",
+      "answer_facts": [
+        "8am–7pm"
+      ]
+    },
+    {
+      "question": "yo, how many peeps can stay at Casa Kokum?",
+      "answer_facts": [
+        "sleeps up to 6 adults (plus 2 children under 12 on extra mattresses)"
+      ]
+    },
+    {
+      "question": "I'm looking for a quiet place for my family, maybe with a pool. What do you recommend?",
+      "answer_facts": [
+        "Best for families and small groups who want a quiet base"
+      ]
+    },
+    {
+      "question": "How far is Villa Sol from Morjim beach?",
+      "answer_facts": [
+        "About 10 minutes to Morjim beach"
+      ]
+    }
+  ]
+}

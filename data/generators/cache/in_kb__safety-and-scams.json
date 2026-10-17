@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "How do I pay for my booking?",
+      "answer_facts": [
+        "We only take booking payments through our website's secure checkout or the booking platform you booked on.",
+        "We never ask for payment by personal bank transfer, gift cards or crypto."
+      ]
+    },
+    {
+      "question": "Yo, how do I kno if this villa is legit?",
+      "answer_facts": [
+        "Fake listings and payment scams are common for holiday rentals.",
+        "We never ask for card numbers, OTPs, passwords or ID numbers over chat, WhatsApp or phone."
+      ]
+    },
+    {
+      "question": "I got a message asking for my card details, what should I do?",
+      "answer_facts": [
+        "If a message asks you to pay somewhere else or 'urgently' confirm card details, don't reply — contact us through our website."
+      ]
+    },
+    {
+      "question": "When will I receive the villa address after booking?",
+      "answer_facts": [
+        "The villa address is sent 48 hours before check-in after the balance is paid; we don't share it earlier, to protect current guests."
+      ]
+    }
+  ]
+}

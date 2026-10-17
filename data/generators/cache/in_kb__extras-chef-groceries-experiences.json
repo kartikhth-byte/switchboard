@@ -1,0 +1,31 @@
+{
+  "questions": [
+    {
+      "question": "How much does a private chef cost?",
+      "answer_facts": [
+        "₹2,500 per meal for up to 6 people",
+        "₹3,500 for 7–10 people"
+      ]
+    },
+    {
+      "question": "Can u tell me the price for breakfast hamper?",
+      "answer_facts": [
+        "₹800 for 2 people",
+        "₹1,500 for up to 6"
+      ]
+    },
+    {
+      "question": "I was thinking of having some local food prepared for my family, but I'm not sure how to arrange it or what it costs.",
+      "answer_facts": [
+        "₹2,500 per meal for up to 6 people",
+        "Book at least 24 hours ahead"
+      ]
+    },
+    {
+      "question": "What's the cost for a spice farm tour with lunch?",
+      "answer_facts": [
+        "₹2,200 per adult"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "What's the weather like during the monsoon?",
+      "answer_facts": [
+        "Heavy rain most days, often in bursts with sunny breaks.",
+        "July and August are the wettest months."
+      ]
+    },
+    {
+      "question": "Yo, is it safe to swim during the rainy season?",
+      "answer_facts": [
+        "Swimming in the sea is banned by local authorities for most of the season because of strong currents."
+      ]
+    },
+    {
+      "question": "If I plan to visit during the rainy season, should I be worried about getting stuck?",
+      "answer_facts": [
+        "Roads near the villas can flood briefly after very heavy rain; the caretaker will advise on travel."
+      ]
+    },
+    {
+      "question": "What discounts are available for stays during the monsoon?",
+      "answer_facts": [
+        "20% off the standard rate",
+        "1 June and 30 September"
+      ]
+    }
+  ]
+}

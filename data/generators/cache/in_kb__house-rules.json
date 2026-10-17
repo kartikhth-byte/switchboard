@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "question": "What time do I need to keep it down at night?",
+      "answer_facts": [
+        "10:00 pm to 7:00 am"
+      ]
+    },
+    {
+      "question": "Yo, can I smoke inside the villa or nah?",
+      "answer_facts": [
+        "No smoking indoors, including e-cigarettes."
+      ]
+    },
+    {
+      "question": "If I have some friends visiting, is there a limit on how many can come over?",
+      "answer_facts": [
+        "up to 4 visitors at a time"
+      ]
+    },
+    {
+      "question": "What happens if I break something during my stay?",
+      "answer_facts": [
+        "Tell the caretaker about any breakage straight away."
+      ]
+    }
+  ]
+}

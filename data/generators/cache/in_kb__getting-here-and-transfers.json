@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "How far is the airport from the villas?",
+      "answer_facts": [
+        "about 35–45 minutes to Siolim and Assagao",
+        "50 minutes to Anjuna and Candolim",
+        "about 75–90 minutes to our villas"
+      ]
+    },
+    {
+      "question": "yo, how much for a ride from Mopa airport?",
+      "answer_facts": [
+        "₹2,200",
+        "Sedan (up to 3 guests)",
+        "SUV (up to 6 guests)"
+      ]
+    },
+    {
+      "question": "I’m planning to arrive late at night; will there be any extra charges for transfers?",
+      "answer_facts": [
+        "Night transfers between 11:00 pm and 6:00 am cost ₹500 extra",
+        "the driver tracks your flight",
+        "waits up to 60 minutes after landing at no charge"
+      ]
+    },
+    {
+      "question": "What’s the pickup cost from Thivim station?",
+      "answer_facts": [
+        "Thivim (about 25 minutes from Assagao and Siolim)",
+        "₹1,200",
+        "the closest railway stations are Thivim and Karmali"
+      ]
+    }
+  ]
+}

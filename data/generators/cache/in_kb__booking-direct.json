@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "How do I book a villa?",
+      "answer_facts": [
+        "30% deposit",
+        "booking reference",
+        "PG-"
+      ]
+    },
+    {
+      "question": "Yo, can u change my booking? I need help!",
+      "answer_facts": [
+        "change and cancellation rules",
+        "reply to your confirmation email",
+        "Ask the assistant to pass you to a person"
+      ]
+    },
+    {
+      "question": "If I want to add some friends to my booking, what do I need to do?",
+      "answer_facts": [
+        "add guests up to the villa's maximum",
+        "Tell us their names before arrival",
+        "every adult needs ID at check-in"
+      ]
+    },
+    {
+      "question": "What are the rules for cancelling a booking?",
+      "answer_facts": [
+        "change and cancellation rules",
+        "Ask the assistant to pass you to a person",
+        "reply to your confirmation email"
+      ]
+    }
+  ]
+}

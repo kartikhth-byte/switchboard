@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "question": "What should I do if the Wi-Fi isn't working?",
+      "answer_facts": [
+        "Tell the caretaker first",
+        "most things (Wi-Fi, AC, hot water, a blocked drain) are fixed the same day."
+      ]
+    },
+    {
+      "question": "hey, how do I complain if somethin's wrong?",
+      "answer_facts": [
+        "Message us any time",
+        "A manager replies within **4 hours** between 8:00 am and 10:00 pm IST"
+      ]
+    },
+    {
+      "question": "If the AC in my room breaks down, what can I expect?",
+      "answer_facts": [
+        "If something essential (water, power, AC in all bedrooms) can't be fixed within 24 hours",
+        "a manager will offer options"
+      ]
+    },
+    {
+      "question": "How long does it take for a manager to respond to a complaint?",
+      "answer_facts": [
+        "A manager replies within **4 hours** between 8:00 am and 10:00 pm IST",
+        "by 10:00 am the next morning for messages sent overnight."
+      ]
+    }
+  ]
+}

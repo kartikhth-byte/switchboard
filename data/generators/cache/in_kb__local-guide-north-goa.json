@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "What are some good beaches near the villas?",
+      "answer_facts": [
+        "Ashwem and Morjim",
+        "Anjuna and Vagator",
+        "Candolim"
+      ]
+    },
+    {
+      "question": "yo, what time does that Anjuna flea market open?",
+      "answer_facts": [
+        "Wednesdays",
+        "9am",
+        "sunset"
+      ]
+    },
+    {
+      "question": "I heard there are some cool places to visit around. Can you tell me about that?",
+      "answer_facts": [
+        "Fort Aguada and Chapora Fort",
+        "20–30 minutes",
+        "Old Goa churches"
+      ]
+    },
+    {
+      "question": "How long does it take to get to Dudhsagar waterfalls from the villas?",
+      "answer_facts": [
+        "a full day",
+        "access depends on season",
+        "check before planning"
+      ]
+    }
+  ]
+}

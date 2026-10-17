@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "What time can we use the pool?",
+      "answer_facts": [
+        "7:00 am to 10:00 pm",
+        "10:00 pm"
+      ]
+    },
+    {
+      "question": "yo, what’s the deal with pool rules? like, can we dive?",
+      "answer_facts": [
+        "No diving: the pools are 1.4m deep at most."
+      ]
+    },
+    {
+      "question": "We were planning to swim after the rain; is that okay?",
+      "answer_facts": [
+        "The caretaker may close the pool for up to 24 hours after a storm"
+      ]
+    },
+    {
+      "question": "What should I do in case of a medical emergency?",
+      "answer_facts": [
+        "call **112**",
+        "duty manager"
+      ]
+    }
+  ]
+}

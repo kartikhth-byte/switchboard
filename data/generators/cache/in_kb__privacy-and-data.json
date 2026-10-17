@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "What info do you collect for my booking?",
+      "answer_facts": [
+        "Booking details: names, email, phone number, dates, payment status.",
+        "ID details required by law at check-in (see \"Guest ID and registration\")."
+      ]
+    },
+    {
+      "question": "So like, do u guys keep my data or what?",
+      "answer_facts": [
+        "We don't sell personal data, and we only send marketing emails if you opt in."
+      ]
+    },
+    {
+      "question": "I’m just wondering if there are cameras in the villa for privacy reasons.",
+      "answer_facts": [
+        "CCTV covers the gate and driveway only.",
+        "There are no cameras inside any villa."
+      ]
+    },
+    {
+      "question": "Can I get a copy of my personal data after my stay?",
+      "answer_facts": [
+        "You can ask for a copy of your data or for it to be deleted (except where the law requires us to keep it, such as Form C records)."
+      ]
+    }
+  ]
+}

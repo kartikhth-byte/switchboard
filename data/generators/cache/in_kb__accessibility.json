@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "Is there a ramp at Villa Sol?",
+      "answer_facts": [
+        "Yes (ramp at side gate)"
+      ]
+    },
+    {
+      "question": "hey, can i bring my assistance dog to Casa Kokum?",
+      "answer_facts": [
+        "Assistance dogs are welcome at every villa"
+      ]
+    },
+    {
+      "question": "I have a friend who's in a wheelchair and wants to stay somewhere accessible. What options do you have?",
+      "answer_facts": [
+        "Yes (ramp at side gate)",
+        "Yes, 1 bedroom",
+        "Yes"
+      ]
+    },
+    {
+      "question": "How many bedrooms are on the ground floor of Casa Kokum?",
+      "answer_facts": [
+        "Yes, 2 bedrooms"
+      ]
+    }
+  ]
+}

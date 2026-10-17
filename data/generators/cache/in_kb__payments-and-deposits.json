@@ -1,0 +1,31 @@
+{
+  "questions": [
+    {
+      "question": "How much do I need to pay when I book my villa?",
+      "answer_facts": [
+        "30% deposit",
+        "full when booked"
+      ]
+    },
+    {
+      "question": "yo, how much for villa sol security depost?",
+      "answer_facts": [
+        "₹20,000"
+      ]
+    },
+    {
+      "question": "If I book a villa now for a trip next week, when do I have to pay the full amount?",
+      "answer_facts": [
+        "14 days before check-in",
+        "Bookings made less than 14 days before check-in are paid in full when booked"
+      ]
+    },
+    {
+      "question": "What happens if I check out late from the villa?",
+      "answer_facts": [
+        "late check-out beyond 2:00 pm",
+        "one night"
+      ]
+    }
+  ]
+}

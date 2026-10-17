@@ -1,0 +1,29 @@
+{
+  "questions": [
+    {
+      "question": "How much is Villa Sol per night?",
+      "answer_facts": [
+        "₹22,000"
+      ]
+    },
+    {
+      "question": "hey, how much is Casa Kokum for new years?",
+      "answer_facts": [
+        "₹42,000"
+      ]
+    },
+    {
+      "question": "I'm planning a family get-together around Christmas and I heard I need to book for a certain number of nights, can you tell me about that?",
+      "answer_facts": [
+        "5 nights"
+      ]
+    },
+    {
+      "question": "What is the price for Monsoon Cottage during the standard season and how long do I need to stay?",
+      "answer_facts": [
+        "₹4,500",
+        "2 nights"
+      ]
+    }
+  ]
+}

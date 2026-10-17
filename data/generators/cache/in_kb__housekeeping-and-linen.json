@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "question": "When does housekeeping happen?",
+      "answer_facts": [
+        "Daily housekeeping between 10:00 am and 1:00 pm",
+        "except Sundays"
+      ]
+    },
+    {
+      "question": "yo, how often do u change the towels?",
+      "answer_facts": [
+        "Bed linen and bath towels are changed every 3 days",
+        "between guests on a booking"
+      ]
+    },
+    {
+      "question": "I have a bunch of clothes that need washing. What are my options?",
+      "answer_facts": [
+        "Laundry service (washed, dried and folded by our team) costs ₹300 per load",
+        "returned the next day"
+      ]
+    },
+    {
+      "question": "Are there any extra charges for linen and towels?",
+      "answer_facts": [
+        "Extra linen or towels are free",
+        "ask the caretaker"
+      ]
+    }
+  ]
+}

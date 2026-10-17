@@ -1,0 +1,33 @@
+{
+  "questions": [
+    {
+      "question": "When can I chat with someone if I have a question?",
+      "answer_facts": [
+        "24/7",
+        "Website chat"
+      ]
+    },
+    {
+      "question": "Hey, what time can I hit up the guest relations team?",
+      "answer_facts": [
+        "8:00 am – 10:00 pm IST, every day",
+        "Website chat (ask for a person)"
+      ]
+    },
+    {
+      "question": "If I'm staying at the villa and need help during the day, who do I contact?",
+      "answer_facts": [
+        "Caretaker (during your stay)",
+        "8:00 am – 8:00 pm",
+        "Phone number in your arrival message"
+      ]
+    },
+    {
+      "question": "What should I do if I have an emergency at 2 AM?",
+      "answer_facts": [
+        "24/7",
+        "Emergency number in your arrival message"
+      ]
+    }
+  ]
+}

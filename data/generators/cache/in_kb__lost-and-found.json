@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "What happens if I leave something behind?",
+      "answer_facts": [
+        "The caretaker checks the villa after every check-out and logs anything left behind.",
+        "We keep items for 30 days.",
+        "Unclaimed items after 30 days are donated, except passports and ID documents, which are handed to the local police station."
+      ]
+    },
+    {
+      "question": "i forgot my stuff, how long u keep it?",
+      "answer_facts": [
+        "We keep items for 30 days.",
+        "The caretaker checks the villa after every check-out and logs anything left behind.",
+        "Unclaimed items after 30 days are donated, except passports and ID documents, which are handed to the local police station."
+      ]
+    },
+    {
+      "question": "After my last stay, I realized I may have left my phone charger in the villa. What can I do?",
+      "answer_facts": [
+        "Tell us as soon as possible what you left and where.",
+        "We keep items for 30 days.",
+        "The caretaker checks the villa after every check-out and logs anything left behind."
+      ]
+    },
+    {
+      "question": "How much do you charge to ship items internationally?",
+      "answer_facts": [
+        "International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food, medicines or valuables over ₹20,000 internationally.",
+        "We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or card.",
+        "Tell us as soon as possible what you left and where."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "How fast is the Wi-Fi at the villas?",
+      "answer_facts": [
+        "100 Mbps at Villa Sol and Casa Kokum",
+        "50 Mbps at The Cashew House and Monsoon Cottage"
+      ]
+    },
+    {
+      "question": "yo, what do i do if the wifi drops?",
+      "answer_facts": [
+        "restart the white router in the hall cupboard",
+        "switch to the backup network 'Palmgrove-Backup'"
+      ]
+    },
+    {
+      "question": "I was wondering if the power goes out, will the fridge still work?",
+      "answer_facts": [
+        "Every villa has an inverter that keeps lights, fans, Wi-Fi and the fridge running for about 6 hours"
+      ]
+    },
+    {
+      "question": "How long should I switch on the water heater before my shower?",
+      "answer_facts": [
+        "Switch it on about 20 minutes before a shower"
+      ]
+    }
+  ]
+}

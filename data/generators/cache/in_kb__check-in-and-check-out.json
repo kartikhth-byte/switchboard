@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "question": "What time can I check in?",
+      "answer_facts": [
+        "Check-in: from 2:00 pm."
+      ]
+    },
+    {
+      "question": "Yo, if I arrive late, do I gotta pay extra?",
+      "answer_facts": [
+        "Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee."
+      ]
+    },
+    {
+      "question": "I'm arriving after 10 PM, what do I need to do?",
+      "answer_facts": [
+        "Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker can meet you."
+      ]
+    },
+    {
+      "question": "How much is the fee for early check-in?",
+      "answer_facts": [
+        "Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa."
+      ]
+    }
+  ]
+}

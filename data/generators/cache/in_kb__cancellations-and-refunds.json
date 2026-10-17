@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "What happens if I cancel my booking 20 days before check-in?",
+      "answer_facts": [
+        "50%",
+        "14–29 days before check-in",
+        "Standard season (1 March – 30 November)"
+      ]
+    },
+    {
+      "question": "if i cancel last min can i get my money back?",
+      "answer_facts": [
+        "No refund",
+        "Less than 14 days before check-in",
+        "Standard season (1 March – 30 November)"
+      ]
+    },
+    {
+      "question": "I booked for Christmas, but now I have to change my plans. Is there any way I can get my money back?",
+      "answer_facts": [
+        "non-refundable once confirmed",
+        "24 December to 2 January",
+        "Bookings that include"
+      ]
+    },
+    {
+      "question": "What is the refund policy for a booking in peak season if I cancel 30 days before check-in?",
+      "answer_facts": [
+        "50%",
+        "21–44 days before check-in",
+        "Peak season (1 December – 28 February)"
+      ]
+    }
+  ]
+}

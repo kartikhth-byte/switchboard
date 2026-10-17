@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "What should I do about mosquitoes at night?",
+      "answer_facts": [
+        "Every bedroom has window screens and a plug-in repellent; refills are in the kitchen drawer.",
+        "Mosquitoes are worst at dusk and during the monsoon.",
+        "Mosquito nets are available on request for any bed."
+      ]
+    },
+    {
+      "question": "yo, wat about those bug things at nite?",
+      "answer_facts": [
+        "Every bedroom has window screens and a plug-in repellent; refills are in the kitchen drawer.",
+        "Mosquitoes are worst at dusk and during the monsoon.",
+        "Mosquito nets are available on request for any bed."
+      ]
+    },
+    {
+      "question": "I’m planning to stay with my family and we usually get bitten by mosquitoes in the evenings, is there anything available to help with that?",
+      "answer_facts": [
+        "Every bedroom has window screens and a plug-in repellent; refills are in the kitchen drawer.",
+        "Mosquitoes are worst at dusk and during the monsoon.",
+        "Mosquito nets are available on request for any bed."
+      ]
+    },
+    {
+      "question": "What are the hottest months and what temperature can I expect during my stay?",
+      "answer_facts": [
+        "April and May are the hottest months;",
+        "midday temperatures can exceed 35°C.",
+        "Drink plenty of water — filtered drinking water is always available in the kitchen."
+      ]
+    }
+  ]
+}

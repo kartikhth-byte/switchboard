@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "question": "What ID do I need to bring?",
+      "answer_facts": [
+        "Every guest aged 18 or over shows a government photo ID on arrival",
+        "Aadhaar card, passport, driving licence or voter ID",
+        "PAN cards are not accepted as ID for check-in"
+      ]
+    },
+    {
+      "question": "hey, do i need a visa to stay?",
+      "answer_facts": [
+        "Every foreign guest (any age) shows their passport and valid Indian visa",
+        "We are required to submit a Form C registration to the immigration authorities",
+        "Overseas Citizens of India (OCI) cardholders still need Form C registration"
+      ]
+    },
+    {
+      "question": "I’m traveling with my younger sibling and want to know if we can stay together, just the two of us.",
+      "answer_facts": [
+        "Guests under 18 must stay with a parent or legal guardian who is on the booking",
+        "We can't accept bookings where every guest is under 18"
+      ]
+    },
+    {
+      "question": "What happens to my ID details after check-in?",
+      "answer_facts": [
+        "ID details are used only for the legal registration above",
+        "kept as long as the law requires",
+        "We don't share them for marketing"
+      ]
+    }
+  ]
+}

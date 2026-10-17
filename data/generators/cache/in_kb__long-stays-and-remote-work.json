@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "question": "What kind of discounts do you offer for long stays?",
+      "answer_facts": [
+        "14 nights or more: 15% off at any villa."
+      ]
+    },
+    {
+      "question": "Hey, what r the prices for the Monsoon Cottage if I wanna stay longer?",
+      "answer_facts": [
+        "Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November)."
+      ]
+    },
+    {
+      "question": "I'm thinking about a month-long stay at your place and might need to work from there. Can you tell me if the villas are good for that?",
+      "answer_facts": [
+        "Villa Sol has dedicated work desks in two bedrooms; the other villas have a dining table and a desk in the main bedroom.",
+        "Fibre broadband with a 4G backup router at every villa."
+      ]
+    },
+    {
+      "question": "How often do you provide housekeeping for a 28-night stay?",
+      "answer_facts": [
+        "Housekeeping is daily except Sundays, as for all stays.",
+        "For stays of 28 nights or more, a deep clean is done every two weeks at no charge."
+      ]
+    }
+  ]
+}

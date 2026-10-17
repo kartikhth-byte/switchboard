@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What kitchen stuff is in the villa?",
+      "answer_facts": [
+        "Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.",
+        "Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.",
+        "Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap."
+      ]
+    },
+    {
+      "question": "yo, do the villas have any cookin stuff?",
+      "answer_facts": [
+        "Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.",
+        "Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.",
+        "Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap."
+      ]
+    },
+    {
+      "question": "If I’m having a family get-together, can I cook there?",
+      "answer_facts": [
+        "Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.",
+        "Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.",
+        "Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap."
+      ]
+    },
+    {
+      "question": "Which villas have an oven and a dishwasher?",
+      "answer_facts": [
+        "Villa Sol and Casa Kokum also have an oven, a dishwasher and a coffee machine."
+      ]
+    }
+  ]
+}

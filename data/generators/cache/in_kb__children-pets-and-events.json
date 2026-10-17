@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "question": "Can I bring my kids?",
+      "answer_facts": [
+        "Children are welcome at every villa except The Cashew House for children under 5 (open rooftop)."
+      ]
+    },
+    {
+      "question": "Yo, can I take my dog to Casa Kokum or what?",
+      "answer_facts": [
+        "Dogs are allowed at Casa Kokum and Villa Sol only, up to 2 dogs per booking, with a ₹1,500 per-stay cleaning fee."
+      ]
+    },
+    {
+      "question": "If I wanted to throw a birthday party with more than 4 friends, how would I go about that?",
+      "answer_facts": [
+        "Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need written approval from a manager before booking."
+      ]
+    },
+    {
+      "question": "What are the rules for kids at the villas regarding supervision?",
+      "answer_facts": [
+        "Children must be supervised around water at all times."
+      ]
+    }
+  ]
+}
