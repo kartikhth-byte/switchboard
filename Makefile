@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check trace-smoke eval ingest search ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval ingest search ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -33,6 +33,9 @@ health:
 
 langfuse-check:
 	PYTHONPATH=. uv run python scripts/check_langfuse.py
+
+keys-check:       ## OpenAI + Anthropic keys: where they come from and whether they work
+	PYTHONPATH=. uv run python scripts/check_keys.py
 
 trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
 	PYTHONPATH=. uv run python scripts/trace_smoke.py
