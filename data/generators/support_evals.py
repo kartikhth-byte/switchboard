@@ -7,7 +7,8 @@ Soundness rules (build spec §8):
 - Generated questions come from an OpenAI model (the agent runs on Claude).
 - Every generated `answer_facts` string must appear verbatim in its KB doc, or the question is
   dropped. Generated output is cached in data/generators/cache/ so rebuilds are identical.
-- >=20% of in-KB and out-of-KB questions are hand-written (handwritten.csv).
+- >=20% of in-KB and out-of-KB questions are hand-written or rewritten from anonymised real
+  guest messages (handwritten.csv; see the data card for how they were anonymised).
 - Escalation personas, injections and long conversations come from fixed templates + seed.
 """
 

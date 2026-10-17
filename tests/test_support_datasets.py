@@ -68,3 +68,16 @@ def test_long_conversations_are_30_turns_with_planted_canary() -> None:
 
 def test_example_rows_in_handwritten_csv_are_ignored() -> None:
     assert all(r["author"] != "example" for r in g.handwritten())
+
+
+def test_handwritten_rows_are_valid() -> None:
+    """Every hand-written/anonymised in-KB row has facts that appear verbatim in its doc."""
+    docs = g.kb_docs()
+    rows = g.handwritten()
+    assert sum(r["kind"] == "in_kb" for r in rows) >= 16  # >=20% of 80
+    assert sum(r["kind"] == "out_of_kb" for r in rows) >= 5  # >=20% of 25
+    for r in rows:
+        assert r["author"] in ("anonymised-real", "hand-written"), r
+        if r["kind"] == "in_kb":
+            facts = [f.strip() for f in r["answer_facts"].split(";") if f.strip()]
+            assert facts and g.facts_in_doc(facts, docs[r["doc_id"]]), r["question"]
