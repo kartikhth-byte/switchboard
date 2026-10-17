@@ -35,6 +35,14 @@ class MemoryConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
     window_turns: int = Field(default=8, ge=1)
     summarize_over_tokens: int = Field(default=6000, ge=500)
+    model: str | None = None  # "provider/name" for summaries + fact extraction; None = agent model
+    facts: list[str] = Field(default_factory=lambda: ["name", "dates", "issue_type"])
+
+    def model_spec(self, fallback: ModelSpec) -> ModelSpec:
+        if not self.model:
+            return fallback
+        provider, _, name = self.model.partition("/")
+        return ModelSpec(provider=provider, name=name, max_tokens=300)
 
 
 class AgentConfig(BaseModel):
