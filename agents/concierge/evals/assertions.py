@@ -76,19 +76,33 @@ STOPWORDS = frozenset(
 )
 
 
+NEGATIONS = {"can't": "can not", "cannot": "can not", "won't": "will not", "n't": " not"}
+
+
 def _tokens(s: str) -> set[str]:
-    s = re.sub(r"(?<=\d),(?=\d{3})", "", s.lower().replace("*", ""))
-    return {t for t in re.findall(r"[₹$]?\d+(?:[.:]\d+)?%?|[a-z]+(?:'[a-z]+)?", s)} - STOPWORDS
+    s = re.sub(r"(?<=\d),(?=\d{3})", "", s.lower().replace("*", "").replace("’", "'"))
+    for k, v in NEGATIONS.items():
+        s = s.replace(k, v)
+    words = re.findall(r"[₹$]?\d+(?:[.:]\d+)?%?|[a-z]+", s)
+    # Light plural stemming so "villas" matches "villa"; numbers stay exact.
+    return {
+        w[:-1] if len(w) > 3 and w.endswith("s") and w.isalpha() else w for w in words
+    } - STOPWORDS
 
 
 def _has_fact(fact: str, answer: str) -> bool:
-    """Exact (normalised) substring, or every content word and number of the fact present as
-    a whole token. Paraphrase ("1 June – 30 September" for "1 June and 30 September") passes;
-    a changed number ("10:00 am" for "11:00 am") does not."""
+    """Exact (normalised) substring, or every number and most content words of the fact
+    present as whole tokens. Paraphrase ("1 June – 30 September" for "1 June and 30
+    September") passes; a changed number ("10:00 am" for "11:00 am") does not."""
     if _norm(fact) in _norm(answer):
         return True
-    words = _tokens(fact)
-    return bool(words) and words <= _tokens(answer)
+    words, ans = _tokens(fact), _tokens(answer)
+    if not words:
+        return False
+    numbers = {w for w in words if any(ch.isdigit() for ch in w)}
+    # Every number exactly; at least 80% of the words (so "CCTV covers the gate and driveway
+    # only" matches "CCTV at the gate and driveway only").
+    return numbers <= ans and len(words & ans) >= 0.8 * len(words)
 
 
 @assertion("answer_has_facts")
@@ -114,7 +128,7 @@ def refund_tier_correct(case: EvalCase, out: AgentOutput) -> float:
 # ---------------------------------------------------------------- out-of-KB (SUPP-009)
 
 DECLINE = re.compile(
-    r"(don.?t have (that|this|any|specific|information|details|access)|not (sure|able)|"
+    r"(don.?t (have (that|this|any|specific|information|details|access)|see)|not (sure|able)|"
     r"can.?t (help|answer|confirm|recommend|advise)|unable to|isn.?t (something|covered)|"
     r"no information|pass(ed)? (this|it|you) (on|to)|member of our team|team will|a person|"
     r"(suggest|recommend) (asking|checking)|ask your (villa )?caretaker)",

@@ -73,6 +73,12 @@ def test_facts_allow_paraphrase_not_changed_numbers() -> None:
     assert A.answer_has_facts(case, out(answer=para)) == 1.0
     assert A.answer_has_facts(case, out(answer=para.replace("30 September", "31 September"))) == 0.0
     assert A.answer_has_facts(case, out(answer="Monsoon runs 1 June – 30 September.")) == 0.0
+    cash = case.model_copy(
+        update={"expected": {"answer_facts": ["do not accept cash", "no cameras inside any villa"]}}
+    )
+    ok = "We don’t accept cash, and there are no cameras inside any of our villas."
+    assert A.answer_has_facts(cash, out(answer=ok)) == 1.0
+    assert A.answer_has_facts(cash, out(answer="We accept cash. No cameras inside.")) == 0.0
 
 
 def test_judge_assertions_record_verdict_and_cost() -> None:
@@ -92,6 +98,7 @@ def test_out_of_kb_decline_detection() -> None:
     assert A.declined_or_escalated(case, out(answer="x", escalated=True)) == 1.0
     assert A.declined_or_escalated(case, out(answer="I don't have access to forecasts.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="I'd suggest asking your caretaker.")) == 1.0
+    assert A.declined_or_escalated(case, out(answer="I don't see dental kits listed.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="Try Café Mambo, open 9-5!")) == 0.0
 
 

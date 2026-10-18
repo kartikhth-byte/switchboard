@@ -112,7 +112,7 @@ def run_case(suite: EvalSuite, case: EvalCase, split: str) -> EvalResult:
             errors.append(f"{a}: {type(exc).__name__}")
     notes: dict[str, Any] = {
         k: out.data[k]
-        for k in ("judge", "citations", "escalated", "status", "tool_calls")
+        for k in ("judge", "citations", "escalated", "status", "tool_calls", "retrieved")
         if k in out.data
     }
     notes["transcript"] = out.transcript  # so a failure can be read without re-running

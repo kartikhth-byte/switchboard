@@ -63,6 +63,15 @@ def norm(s: str) -> str:
 MAX_FACT_CHARS = 40
 TRIVIAL = {"yes", "no", "none", "true", "false"}
 
+# Generated in-KB facts a review found off-question (not needed to answer what was asked).
+# Replacement facts must still appear verbatim in the doc.
+IN_KB_FACT_FIXES = {
+    "I’m planning to arrive late at night; will there be any extra charges for transfers?": [
+        "11:00 pm and 6:00 am",
+        "₹500",
+    ],
+}
+
 # Generated out-of-KB questions a human review found the KB does (partly) answer. Kept as a
 # list, not deleted from the cache, so the review is visible and reproducible.
 OUT_OF_KB_REJECTED = {
@@ -238,7 +247,8 @@ def build_in_kb(rng: random.Random) -> list[dict[str, Any]]:
     dropped = 0
     for doc_id, text in docs.items():
         for q in _cached(f"in_kb__{doc_id}.json").get("questions", []):
-            facts = usable_facts([str(f) for f in q.get("answer_facts", [])])
+            raw = IN_KB_FACT_FIXES.get(str(q["question"]), q.get("answer_facts", []))
+            facts = usable_facts([str(f) for f in raw])
             if facts_in_doc(facts, text):
                 pool.append((doc_id, str(q["question"]), facts))
             else:

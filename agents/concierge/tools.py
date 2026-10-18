@@ -169,6 +169,8 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
         b = d.bookings.get(inp.booking_ref.upper())
         if b is None or b["email"].lower() != inp.email.strip().lower():
             st.failed_lookups += 1
+            if st.failed_lookups >= max_lookups:  # last allowed attempt failed: a person takes over
+                return ToolResult(ok=False, error="requires_human: too many failed booking lookups")
             # Same message for unknown ref and wrong email: don't help enumeration.
             return ToolResult(
                 ok=False, error="not_found: no booking matches that reference and email"
