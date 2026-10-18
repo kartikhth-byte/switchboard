@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from integrations.crm.base import ContactExists
+
 
 @dataclass
 class MockCRM:
@@ -20,6 +22,14 @@ class MockCRM:
         contact.update(fields)
         self.writes.append(("upsert_contact", {"email": email.lower(), **fields}))
         return dict(contact)
+
+    def create_contact(self, email: str, fields: dict[str, Any]) -> dict[str, Any]:
+        key = email.lower()
+        if key in self.contacts:
+            raise ContactExists(key)
+        self.contacts[key] = {"email": key, **fields}
+        self.writes.append(("create_contact", {"email": key, **fields}))
+        return dict(self.contacts[key])
 
     def create_ticket(
         self, email: str, subject: str, body: str, category: str, priority: str

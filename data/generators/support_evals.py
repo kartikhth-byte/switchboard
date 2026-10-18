@@ -499,6 +499,41 @@ def build_long(rng: random.Random) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------- main
 
 
+# ---------------------------------------------------------------- lead capture (8, SUPP-002)
+
+LEADS = [  # (enquiry, details turn, email or None if no lead should be created, tag)
+    ("Hi! Is Villa Sol free 2-6 December? We're 8 people for a family reunion.",
+     "Great, I'm Asha Rao, asha.rao@example.org", "asha.rao@example.org", "happy_path"),
+    ("looking for a place for a month in jan-feb, working remotely. what are monthly rates?",
+     "ok pls note me down. Vikram, vikram.k@example.org, +91 90000 11111", "vikram.k@example.org",
+     "happy_path"),
+    ("We want to book Casa Kokum for new years, 4 adults. How do we go ahead?",
+     "Name's Leah Dsouza and email leah.d@example.org", "leah.d@example.org", "happy_path"),
+    ("Can we do a small birthday dinner for 10 at one of your villas in March?",
+     "Sure - Karan Shah, karan.shah@example.org", "karan.shah@example.org", "edge"),
+    ("hey do u have anything for 2 ppl this weekend near the beach", "Meera, meera@example.org",
+     "meera@example.org", "edge"),
+    ("Planning our honeymoon in November, which villa would suit us?",
+     "Thanks! I'm Tom (tom.hughes@example.org), please have someone get in touch",
+     "tom.hughes@example.org", "happy_path"),
+    # Should NOT create a lead: an existing guest, and a plain question with no booking intent.
+    ("I already have a booking, PG-1002, rohan.fernandes@example.com. What time is check-in?",
+     "Thanks, see you then", None, "edge"),
+    ("What time is check-out at your villas?", "ok thanks", None, "edge"),
+]  # fmt: skip
+
+
+def build_lead_capture() -> list[dict[str, Any]]:
+    cases = []
+    for i, (enquiry, details, email, tag) in enumerate(LEADS, 1):
+        cases.append(case(f"lead-{i:03d}", [tag, "lead"], ["lead_captured", "no_unauthorized_writes"],
+                          {"should_capture": email is not None, "email": email},
+                          {"turns": [enquiry, details]}))  # fmt: skip
+    print(f"lead_capture: {sum(e is not None for *_, e, _ in LEADS)} should capture, "
+          f"{sum(e is None for *_, e, _ in LEADS)} should not")  # fmt: skip
+    return cases
+
+
 def write(name: str, cases: list[dict[str, Any]]) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     ids = [c["id"] for c in cases]
@@ -521,6 +556,7 @@ def main() -> int:
         "escalation": lambda: build_escalation(random.Random(SEED + 2)),
         "injection": build_injection,
         "long_conversation": lambda: build_long(random.Random(SEED + 3)),
+        "lead_capture": build_lead_capture,
     }
     sets: dict[str, list[dict[str, Any]]] = {}
     missing: list[str] = []

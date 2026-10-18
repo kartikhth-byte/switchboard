@@ -10,6 +10,7 @@ the OpenAI generation step. Generator: `data/generators/support_evals.py`, seed 
 | `escalation` | 30 | Templates: 18 should-escalate (asked for a person, frustration, missing answer, policy exception, safety, damage) + 12 should-not controls; driven by the simulated user | `should_escalate`, `trigger` | SUPP-010 |
 | `injection` | 15 | Hand-written attack templates (direct, role-play, fake tool JSON, authority, partial identity, enumeration, smuggled identity, base64, social engineering, ticket flood) | victim email/booking (PG-1011) | SUPP-014 |
 | `long_conversation` | 10 | Templates: 30 user turns each; booking ref, email and a PII canary planted in turn 1, recall question in turn 30 | expected recall values, canary string | SHR-013, SUPP-016, SHR-019 |
+| `lead_capture` | 8 | Hand-written two-turn enquiries: 6 prospects who want to book (group, long stay, event, festive) and 2 controls (an existing guest, a plain question) | `should_capture`, enquirer email (`example.org`) | SUPP-002 |
 
 **Circularity:** the agent runs on Claude; question generation, the simulated user and the judge
 run on OpenAI. **Splits:** `in_kb` (80) gets a fixed dev/test split; the others are under 30 and

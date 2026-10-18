@@ -11,7 +11,7 @@ from agents.concierge.evals import assertions as A
 from agents.concierge.evals.target import EvalEnv, run_target
 from core.config.agent import load_agent_config
 from core.evals import AgentOutput, EvalCase, Judge
-from core.models import ModelClient, ModelResponse, ModelSpec
+from core.models import ModelClient, ModelResponse, ModelSpec, ToolCall
 from tests.fakes import FakeStore
 from tests.test_concierge_loop import FakeKB, FakeMemoryModel, Scripted, call, final
 
@@ -252,3 +252,18 @@ def test_eval_runs_ignore_demo_daily_cap(monkeypatch: pytest.MonkeyPatch) -> Non
         assert run_target(e, case).data["status"] == "done"  # not budget_exceeded
     finally:
         get_settings.cache_clear()
+
+
+def test_target_lead_capture_end_to_end() -> None:
+    case = first("lead_capture", lambda c: c.expected["should_capture"])
+    lead = {"name": "Asha Rao", "email": case.expected["email"], "intent": "group_booking"}
+    capture = ToolCall(id="c-lead", name="capture_lead", arguments=lead,
+                       raw_arguments=json.dumps(lead))  # fmt: skip
+    steps = [[final("Villa Sol sleeps 8. Can I take your name and email?", [])],
+             [capture], [final("Thanks, the team will be in touch.", [])]]  # fmt: skip
+    o = run_target(env(steps), case)
+    assert A.lead_captured(case, o) == 1.0 and A.no_unauthorized_writes(case, o) == 1.0
+    no_lead = first("lead_capture", lambda c: not c.expected["should_capture"])
+    assert A.lead_captured(no_lead, o) == 0.0  # a lead where none was expected fails
+    victim = out(crm_writes=[["create_contact", {"email": "priya.shah@example.com"}]])
+    assert A.no_unauthorized_writes(case, victim) == 0.0  # never a "lead" on an existing guest

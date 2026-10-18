@@ -4,6 +4,9 @@ Authorization lives here, in code — never in the prompt:
 - Write tools act only on the identity verified by `lookup_booking` in this conversation,
   and take no email argument, so injected text can't point them at another contact.
 - Conditional approval rules come from config (e.g. refund requests -> human approval).
+- `capture_lead` is the one write an unverified visitor can trigger, so it can only *create*:
+  it never touches an existing contact or booking email, runs once per conversation, and
+  answers the same way either way (no "that email is already a guest" leak).
 """
 
 from __future__ import annotations
@@ -21,7 +24,7 @@ from agents.concierge.refunds import RefundPolicy, quote
 from core.memory import MemoryState
 from core.retrieval import Hit
 from core.tools import ToolContext, ToolRegistry, ToolResult, ToolSpec
-from integrations.crm import CRM
+from integrations.crm import CRM, ContactExists
 from integrations.slack import Slack
 
 AGENT = "concierge"
@@ -47,10 +50,11 @@ class ConversationState:
     verified: dict[str, str] | None = None  # {"booking_ref", "email"} after lookup_booking
     failed_lookups: int = 0
     pending_approval_id: str | None = None
+    lead_captured: bool = False
     handoff: dict[str, Any] | None = None
     retrieved: set[str] = field(default_factory=set)  # chunk ids seen this turn
 
-    PERSISTED = ("transcript", "verified", "failed_lookups", "pending_approval_id")
+    PERSISTED = ("transcript", "verified", "failed_lookups", "pending_approval_id", "lead_captured")
 
     def to_json(self) -> dict[str, Any]:
         out: dict[str, Any] = {k: getattr(self, k) for k in self.PERSISTED}
@@ -107,6 +111,20 @@ class UpdateContactIn(BaseModel):
     phone: str | None = Field(default=None, max_length=30)
     preferred_name: str | None = Field(default=None, max_length=60)
     notes: str | None = Field(default=None, max_length=500)
+
+
+class CaptureLeadIn(BaseModel):
+    """A prospective guest (no booking yet) who wants to book or asks about dates/prices."""
+
+    name: str = Field(min_length=1, max_length=80)
+    email: str = Field(pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$", max_length=200)
+    phone: str | None = Field(default=None, max_length=30)
+    intent: Literal["new_booking", "group_booking", "long_stay", "event", "other_sales"]
+    villa: str | None = Field(default=None, max_length=60)
+    check_in: date | None = None
+    check_out: date | None = None
+    guests: int | None = Field(default=None, ge=1, le=30)
+    notes: str | None = Field(default=None, max_length=500, description="what they asked, briefly")
 
 
 class HandoffIn(BaseModel):
@@ -216,6 +234,23 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
         d.crm.upsert_contact(st.verified["email"], fields)
         return ToolResult(ok=True, payload={"updated": sorted(fields)})
 
+    booking_emails = {b["email"].lower() for b in d.bookings.values()}
+
+    def capture_lead(inp: CaptureLeadIn, ctx: ToolContext) -> ToolResult:
+        received = ToolResult(ok=True, payload={"lead": "received"})
+        if st.lead_captured:
+            return received  # once per conversation: no lead flooding
+        st.lead_captured = True
+        email = inp.email.strip().lower()
+        if email in booking_emails or d.crm.get_contact(email) is not None:
+            return received  # never edit an existing contact; same reply, no enumeration
+        fields = inp.model_dump(mode="json", exclude_none=True, exclude={"email"})
+        try:
+            d.crm.create_contact(email, {**fields, "stage": "new_lead", "source": "concierge_chat"})
+        except ContactExists:
+            pass  # created meanwhile: still never edit it
+        return received
+
     def handoff_to_human(inp: HandoffIn, ctx: ToolContext) -> ToolResult:
         payload = {
             "conversation_id": st.conversation_id,
@@ -284,6 +319,18 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
                 side_effect=True,
             ),
             update_crm_contact,
+        ),
+        (
+            ToolSpec(
+                name="capture_lead",
+                description="Save a new enquiry from someone without a booking who wants to book "
+                "(or asks about availability, group or long stays). Needs name and email; call "
+                "once, after they've given them. Doesn't make a booking.",
+                input_model=CaptureLeadIn,
+                permission="write",
+                side_effect=True,
+            ),
+            capture_lead,
         ),
         (
             ToolSpec(
