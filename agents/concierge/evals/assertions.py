@@ -147,7 +147,9 @@ DECLINE = re.compile(
     r"can.?t (help|answer|confirm|recommend|advise)|unable to|isn.?t (something|covered)|"
     r"no information|pass(ed)? (this|it|you) (on|to)|member of our team|team will|a person|"
     r"(suggest|recommend) (asking|checking)|ask your (villa )?caretaker|"
-    r"doesn.?t (have|include|cover)|isn.?t (in|part of) (our|the) knowledge|can only (share|help)|"
+    r"doesn.?t (have|include|cover|mention|specify)|aren.?t something|"
+    r"isn.?t (in|part of) (our|the) knowledge|can only (share|help)|"
+    r"(check|ask) with (the|our) team|pass (your|this) (request|question)|"
     r"(check|contact|speak) (with )?(the |your )?(villa )?caretaker)",
     re.I,
 )

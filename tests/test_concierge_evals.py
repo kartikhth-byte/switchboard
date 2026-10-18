@@ -105,6 +105,8 @@ def test_out_of_kb_decline_detection() -> None:
         "The knowledge base doesn't have guidance on that.",
         "I can only share information about our villas.",
         "Please check with the caretaker.",
+        "The knowledge base doesn't mention gyms.",
+        "I can pass your question to the team.",
     ]:
         assert A.declined_or_escalated(case, out(answer=ans)) == 1.0
     assert A.declined_or_escalated(case, out(answer="Try Café Mambo, open 9-5!")) == 0.0
