@@ -8,5 +8,7 @@ COPY core ./core
 COPY integrations ./integrations
 COPY agents ./agents
 COPY api ./api
+# Fictional demo fixtures the agents read at runtime (bookings); no real data lives here.
+COPY data/fixtures ./data/fixtures
 EXPOSE 8000
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
