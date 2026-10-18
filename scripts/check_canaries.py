@@ -12,6 +12,8 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import defaultdict
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import httpx
@@ -28,6 +30,7 @@ CANARIES = [  # must match data/generators/support_evals.py
 ]
 SESSIONS = [f"eval-long-{i:03d}" for i in range(1, 11)]
 TARGET = 100
+DAYS = 7  # look back this far for eval traces
 
 
 def _digits(s: str) -> str:
@@ -52,21 +55,45 @@ def main() -> int:
         print("Langfuse keys not set — can't check exported traces.")
         return 1
     auth = (s.langfuse_public_key.get_secret_value(), s.langfuse_secret_key.get_secret_value())
-    base = f"{s.langfuse_host}/api/public"
-    scanned, leaks = 0, []
-    with httpx.Client(auth=auth, timeout=30) as http:
+    url = f"{s.langfuse_host}/api/public/v2/observations"  # v1 /traces is gone (410)
+    now = datetime.now(UTC)
+    by_trace: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    with httpx.Client(auth=auth, timeout=60) as http:
         for session in SESSIONS:
-            r = http.get(f"{base}/traces", params={"sessionId": session, "limit": 50})
-            r.raise_for_status()
-            for t in r.json().get("data", []):
-                detail = http.get(f"{base}/traces/{t['id']}")
-                detail.raise_for_status()
-                body: dict[str, Any] = detail.json()
-                hits = find_canaries(json.dumps(body, ensure_ascii=False))
-                scanned += 1
-                if hits:
-                    leaks.append((session, t["id"], hits))
-    print(f"scanned {scanned} traces (with observations) from {len(SESSIONS)} sessions")
+            cursor: str | None = None
+            while True:
+                params: dict[str, Any] = {
+                    "fields": "core,basic,io,trace_context",
+                    "filter": json.dumps([{"type": "string", "column": "sessionId",
+                                           "operator": "=", "value": session}]),
+                    "fromStartTime": (now - timedelta(days=DAYS)).isoformat(),
+                    "toStartTime": now.isoformat(),
+                    "limit": 1000,
+                }  # fmt: skip
+                if cursor:
+                    params["cursor"] = cursor
+                r = http.get(url, params=params)
+                if r.status_code != 200:
+                    print(f"Langfuse API error {r.status_code}: {r.text[:300]}")
+                    return 1
+                body = r.json()
+                for row in body.get("data", []):
+                    by_trace[row["traceId"]].append(row)
+                cursor = (body.get("meta") or {}).get("cursor")
+                if not cursor:
+                    break
+    scanned, leaks, planted = len(by_trace), [], 0
+    for tid, rows in by_trace.items():
+        text = json.dumps(rows, ensure_ascii=False)
+        planted += "You can reach me on" in text  # the turn that carries the canary (control)
+        hits = find_canaries(text)
+        if hits:
+            leaks.append((rows[0].get("sessionId", "?"), tid, hits))
+    if planted == 0 and scanned:
+        print("no trace contains the planted turn: input/output not returned, so nothing proven")
+        return 1
+    print(f"scanned {scanned} traces from {len(SESSIONS)} sessions; "
+          f"{planted} contain the planted-canary turn")  # fmt: skip
     for session, tid, hits in leaks:
         print(f"  LEAK {session} trace {tid}: {hits}")
     if scanned < TARGET:
