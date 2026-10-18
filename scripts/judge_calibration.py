@@ -22,6 +22,9 @@ CSV_PATH = ROOT / "data/fixtures/support/judge_calibration.csv"
 SIDECAR = ROOT / "data/fixtures/support/judge_calibration.json"  # full judge inputs per item
 RUBRIC_OF = {"grounded": "groundedness", "no_invented_policy": "invented_policy"}
 PER_RUBRIC = 15
+sys.path.insert(0, str(ROOT))
+from data.generators.support_evals import OUT_OF_KB_REJECTED  # noqa: E402
+
 TARGET = 0.85
 
 
@@ -31,14 +34,16 @@ def _h(s: str) -> str:
 
 def export(results: Path) -> None:
     run = json.loads(results.read_text(encoding="utf-8"))
-    cases = {}
-    for f in (ROOT / "data/fixtures/support/evals").glob("*.jsonl"):
-        for line in f.read_text(encoding="utf-8").splitlines():
-            d = json.loads(line)
-            cases[d["id"]] = d
+    old = _labels()  # keep labels already given to an unchanged question + answer
     items: list[dict[str, Any]] = []
     for metric, rubric in RUBRIC_OF.items():
-        judged = [c for c in run["cases"] if metric in c["metrics"] and c["notes"].get("judge")]
+        judged = [
+            c
+            for c in run["cases"]
+            if metric in c["metrics"]
+            and c["notes"].get("judge")
+            and _question(c) not in OUT_OF_KB_REJECTED
+        ]  # mislabelled since the run
         # Every judge "fail" (the judge is most often wrong there), then passes, deterministic.
         fails = [c for c in judged if c["metrics"][metric] == 0.0]
         passes = sorted((c for c in judged if c["metrics"][metric] == 1.0),
@@ -52,7 +57,9 @@ def export(results: Path) -> None:
                 "case_id": c["case_id"],
                 "rubric": rubric,
                 "metric": metric,
-                "question": (cases[c["case_id"]].get("input") or {}).get("message", ""),
+                # From the run's own transcript, never the current dataset: case ids can point
+                # at different questions after `make data` (that bug mismatched 4 rows once).
+                "question": _question(c),
                 "answer": c["answer"] or "",
                 "kb_excerpts": "\n\n".join(f"[{k}] {retrieved[k]['text']}" for k in retrieved),
                 "data": {"retrieved": retrieved, "citations": n.get("citations") or [],
@@ -61,11 +68,27 @@ def export(results: Path) -> None:
     with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["item", "rubric", "human_label", "note", "question", "answer", "kb_excerpts"])
+        kept = 0
         for it in items:
-            w.writerow([it["item"], it["rubric"], "", "", it["question"], it["answer"],
+            label, note = old.get((it["question"], it["answer"]), ("", ""))
+            kept += bool(label)
+            w.writerow([it["item"], it["rubric"], label, note, it["question"], it["answer"],
                         it["kb_excerpts"]])  # fmt: skip
+    print(f"kept {kept} existing labels")
     SIDECAR.write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"wrote {len(items)} items to {CSV_PATH.relative_to(ROOT)} (fill human_label 1/0)")
+    print(f"wrote {len(items)} items to {CSV_PATH.name} (fill human_label 1/0)")
+
+
+def _question(c: dict[str, Any]) -> str:
+    return str(next(t["content"] for t in c["notes"]["transcript"] if t["role"] == "user"))
+
+
+def _labels() -> dict[tuple[str, str], tuple[str, str]]:
+    if not CSV_PATH.exists():
+        return {}
+    with CSV_PATH.open(encoding="utf-8") as f:
+        return {(r["question"], r["answer"]): (r["human_label"].strip(), r["note"])
+                for r in csv.DictReader(f) if r["human_label"].strip()}  # fmt: skip
 
 
 def score() -> int:

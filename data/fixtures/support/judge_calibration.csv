@@ -782,7 +782,40 @@ names before arrival; every adult needs ID at check-in.
 
 Small celebrations for the booked guests are welcome. We can arrange a cake, flowers or
 decorations with 48 hours' notice; prices on request."
-inv-19,invented_policy,,,What are the flight prices from Mumbai to Goa?,"I don't have information about flight prices from Mumbai to Goa – that's something you'd need to check with airlines or travel booking sites directly.
+inv-19,invented_policy,,,What are the visa requirements for traveling to India?,"I can confirm that foreign nationals need a **valid Indian visa** (or OCI card) to enter India and stay at our villas. You'll need to show your passport and visa on arrival, and we're required to register foreign guests with immigration authorities within 24 hours.
+
+However, I can't advise on specific visa types, application processes, or eligibility—please check directly with the Indian embassy, consulate, or official government immigration websites for up-to-date visa requirements for your nationality and travel purpose.","[guest-id-and-registration#2] Guest ID and registration > Foreign nationals
+
+- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on
+  arrival.
+- We are required to submit a **Form C** registration to the immigration authorities within
+  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page
+  for this.
+- Overseas Citizens of India (OCI) cardholders still need Form C registration.
+
+[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration
+
+Foreign guests on long stays still need Form C registration (see ""Guest ID and registration"").
+We can't advise on visa rules; please check with the Indian authorities.
+
+[guest-id-and-registration#1] Guest ID and registration > Indian citizens
+
+- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,
+  driving licence or voter ID.
+- PAN cards are not accepted as ID for check-in.
+- You can upload ID copies through the link in your confirmation email before arrival to make
+  check-in faster.
+
+[guest-id-and-registration#0] Guest ID and registration
+
+Indian law requires accommodation providers to check and record the identity of every adult
+guest. We can't check anyone in without valid ID.
+
+[pricing-and-rates#0] Prices, seasons and minimum stays
+
+All prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is
+added once per booking."
+inv-20,invented_policy,,,What are the flight prices from Mumbai to Goa?,"I don't have information about flight prices from Mumbai to Goa – that's something you'd need to check with airlines or travel booking sites directly.
 
 What I can help with is arranging your airport transfer once you arrive in Goa! We offer pickups from both Mopa Airport (₹2,200 for a sedan, ₹3,000 for an SUV) and Dabolim Airport (₹2,800 for a sedan, ₹3,800 for an SUV). Just let us know your flight details at least 24 hours in advance.","[getting-here-and-transfers#1] Getting here and airport transfers > Airport transfers we arrange
 
@@ -815,7 +848,7 @@ The closest railway stations are Thivim (about 25 minutes from Assagao and Sioli
 - Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).
 - Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.
 - Yoga session at the villa: ₹1,500 per session for up to 4 people."
-inv-20,invented_policy,,,Can you recommend a good tailor in Mapusa for a quick suit alteration?,"I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.
+inv-21,invented_policy,,,What are the customs regulations for bringing items into India?,"I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.
 
 If you have any questions about our villas, your booking, or what to expect during your stay with us, I'm happy to help with those!","[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration
 
@@ -864,12 +897,12 @@ added once per booking.
 
 Items like early check-in, airport transfers or a private chef are added to a running bill and
 settled by UPI or card before check-out."
-inv-21,invented_policy,,,What is the weather like in Morjim this weekend?,"I don't have access to weather information in my knowledge base. My role is to help with questions about Palmgrove Stays' villas, bookings, policies, and guest services.
+inv-22,invented_policy,,,What is the weather like in Morjim this weekend?,"I don't have access to weather information in my knowledge base. My role is to help with questions about Palmgrove Stays' villas, bookings, policies, and guest services.
 
 For the current weather forecast in Morjim, I'd recommend checking a weather service like weather.com, the Weather Channel app, or the India Meteorological Department (IMD).
 
 Is there anything else I can help you with regarding your stay or our villas?",
-inv-22,invented_policy,,,What are the customs regulations for bringing items into India?,"I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).
+inv-23,invented_policy,,,Where can I find grocery stores that deliver in the area?,"I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).
 
 For local grocery stores and delivery options, your villa caretaker will be the best resource – they can recommend nearby shops and delivery services when you arrive or you can message them ahead of your stay.","[extras-chef-groceries-experiences#2] Extras: chef, groceries and experiences > Grocery stocking
 
@@ -910,7 +943,7 @@ A breakfast hamper (bread, eggs, fruit, butter, jam, coffee, tea, milk) is ₹80
 [local-guide-north-goa#0] Local guide — North Goa
 
 Our caretakers' favourite things near the villas. We don't take commissions from any of these."
-inv-23,invented_policy,,,is it safe around the area to walk to dinner at night?,"I don't have specific safety information about walking to dinner at night in the knowledge base. North Goa is generally a popular tourist area, but local conditions can vary by villa location and season.
+inv-24,invented_policy,,,is it safe around the area to walk to dinner at night?,"I don't have specific safety information about walking to dinner at night in the knowledge base. North Goa is generally a popular tourist area, but local conditions can vary by villa location and season.
 
 I'd recommend asking your caretaker when you arrive – they know the immediate neighborhood best and can point you to nearby restaurants and advise on the safest routes. They're also a great resource for current restaurant recommendations, as places change often in the area.","[pool-and-safety#0] Pool use and safety > Pool hours and rules
 
@@ -979,100 +1012,6 @@ fish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.
   manager.
 - The nearest 24-hour hospitals are listed on the card on the fridge in every villa.
 - Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door."
-inv-24,invented_policy,,,Where can I find grocery stores that deliver in the area?,"I can see you're asking about amenities beyond those already listed, but I'm not sure which list you're referring to. Let me share the complete overview of what we offer at all our villas:
-
-**Standard amenities at every villa:**
-- Daily housekeeping (except Sundays), fresh linen and towels every 3 days
-- On-site caretaker (8am–8pm)
-- Fully equipped kitchen with gas hob, microwave, toaster, kettle, fridge-freezer, mixer-grinder
-- Kitchen basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap
-- Filtered drinking water and washing machine
-- Wi-Fi and power backup
-- Air conditioning in all bedrooms (ceiling fans in living rooms)
-- Swimming pool (open 7am–10pm)
-- Safe in the main bedroom
-- CCTV at gate and driveway
-
-Could you let me know which specific list you saw, or what particular amenities you're interested in? That way I can tell you if we offer them or suggest alternatives!","[properties-overview#5] Our villas > What every villa has
-
-- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.
-- A caretaker on site or within 5 minutes, 8am–8pm.
-- Fully equipped kitchen, filtered drinking water, washing machine.
-- Wi-Fi and power backup — see ""Wi-Fi, power and utilities"".
-
-[properties-overview#0] Our villas
-
-Palmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never
-share a villa between separate bookings.
-
-[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has
-
-- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.
-- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.
-- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.
-- A water purifier for drinking water.
-
-[long-stays-and-remote-work#0] Long stays and remote work > Discounts
-
-- 14 nights or more: 15% off at any villa.
-- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).
-  See ""Prices, seasons and minimum stays"".
-
-[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays
-
-- 14 nights or more: 15% off the nightly rate at any villa.
-- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not
-  available in peak or festive periods.
-- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount
-  applies.
-
-[pool-and-safety#1] Pool use and safety > Monsoon pool closures
-
-During heavy rain or lightning, please leave the pool. The caretaker may close the pool for up
-to 24 hours after a storm to clear debris and rebalance the water.
-
-[pool-and-safety#0] Pool use and safety > Pool hours and rules
-
-- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.
-- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and
-  around the pool.
-- No glass in or next to the pool — use the plastic cups provided.
-- No diving: the pools are 1.4m deep at most.
-- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker
-  is cleaning.
-
-[pool-and-safety#4] Pool use and safety > Security
-
-- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports
-  and valuables.
-- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.
-
-[wifi-power-and-utilities#2] Wi-Fi, power and utilities > Air conditioning
-
-- All bedrooms have AC; living rooms have ceiling fans.
-- Please keep doors and windows closed when the AC is on.
-
-[pool-and-safety#3] Pool use and safety > Beach safety
-
-- Many North Goa beaches have strong currents, especially from June to September, when swimming
-  in the sea is banned by local authorities. Only swim at beaches with lifeguards and between
-  their flags.
-
-[pricing-and-rates#5] Prices, seasons and minimum stays > What's included
-
-Daily housekeeping (except Sundays), linen and towels, Wi-Fi, utilities and the caretaker. Meals,
-airport transfers and extras are not included (see ""Extras: chef, groceries and experiences"").
-
-[house-rules#0] House rules
-
-These rules apply at every Palmgrove Stays villa. They are part of the booking terms.
-
-[check-in-and-check-out#2] Check-in and check-out > On arrival
-
-1. The caretaker meets you at the villa, checks ID for every adult guest (see ""Guest ID and
-   registration"") and walks you through the house.
-2. The security deposit is collected or confirmed (see ""Payments and deposits"").
-3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number."
 inv-25,invented_policy,,,where do we get pork sorpotel nearby,"I don't have specific restaurant recommendations for pork sorpotel in our knowledge base. However, the best thing to do is **ask your villa caretaker for current recommendations** – they'll know the local spots and which restaurants are good right now, as places change often in Goa.
 
 Sorpotel is a classic Goan dish, so you should find it at traditional Goan restaurants nearby!","[kitchen-and-appliances#2] Kitchen and appliances > Barbecue

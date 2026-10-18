@@ -1078,6 +1078,59 @@
  },
  {
   "item": "inv-19",
+  "case_id": "ookb-g004",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "What are the visa requirements for traveling to India?",
+  "answer": "I can confirm that foreign nationals need a **valid Indian visa** (or OCI card) to enter India and stay at our villas. You'll need to show your passport and visa on arrival, and we're required to register foreign guests with immigration authorities within 24 hours.\n\nHowever, I can't advise on specific visa types, application processes, or eligibility—please check directly with the Indian embassy, consulate, or official government immigration websites for up-to-date visa requirements for your nationality and travel purpose.",
+  "kb_excerpts": "[guest-id-and-registration#2] Guest ID and registration > Foreign nationals\n\n- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on\n  arrival.\n- We are required to submit a **Form C** registration to the immigration authorities within\n  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page\n  for this.\n- Overseas Citizens of India (OCI) cardholders still need Form C registration.\n\n[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration\n\nForeign guests on long stays still need Form C registration (see \"Guest ID and registration\").\nWe can't advise on visa rules; please check with the Indian authorities.\n\n[guest-id-and-registration#1] Guest ID and registration > Indian citizens\n\n- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,\n  driving licence or voter ID.\n- PAN cards are not accepted as ID for check-in.\n- You can upload ID copies through the link in your confirmation email before arrival to make\n  check-in faster.\n\n[guest-id-and-registration#0] Guest ID and registration\n\nIndian law requires accommodation providers to check and record the identity of every adult\nguest. We can't check anyone in without valid ID.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+  "data": {
+   "retrieved": {
+    "guest-id-and-registration#2": {
+     "chunk_id": "guest-id-and-registration#2",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration > Foreign nationals\n\n- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on\n  arrival.\n- We are required to submit a **Form C** registration to the immigration authorities within\n  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page\n  for this.\n- Overseas Citizens of India (OCI) cardholders still need Form C registration.",
+     "score": 0.5267779012680874
+    },
+    "long-stays-and-remote-work#4": {
+     "chunk_id": "long-stays-and-remote-work#4",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Visas and registration\n\nForeign guests on long stays still need Form C registration (see \"Guest ID and registration\").\nWe can't advise on visa rules; please check with the Indian authorities.",
+     "score": 0.5207353112115326
+    },
+    "guest-id-and-registration#1": {
+     "chunk_id": "guest-id-and-registration#1",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration > Indian citizens\n\n- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,\n  driving licence or voter ID.\n- PAN cards are not accepted as ID for check-in.\n- You can upload ID copies through the link in your confirmation email before arrival to make\n  check-in faster.",
+     "score": 0.5017479168058193
+    },
+    "guest-id-and-registration#0": {
+     "chunk_id": "guest-id-and-registration#0",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration\n\nIndian law requires accommodation providers to check and record the identity of every adult\nguest. We can't check anyone in without valid ID.",
+     "score": 0.41530989644078575
+    },
+    "pricing-and-rates#0": {
+     "chunk_id": "pricing-and-rates#0",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+     "score": 0.3273286995681295
+    }
+   },
+   "citations": [
+    "guest-id-and-registration#2",
+    "long-stays-and-remote-work#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-20",
   "case_id": "ookb-g003",
   "rubric": "invented_policy",
   "metric": "no_invented_policy",
@@ -1130,11 +1183,11 @@
   }
  },
  {
-  "item": "inv-20",
+  "item": "inv-21",
   "case_id": "ookb-g008",
   "rubric": "invented_policy",
   "metric": "no_invented_policy",
-  "question": "Can you recommend a good tailor in Mapusa for a quick suit alteration?",
+  "question": "What are the customs regulations for bringing items into India?",
   "answer": "I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.\n\nIf you have any questions about our villas, your booking, or what to expect during your stay with us, I'm happy to help with those!",
   "kb_excerpts": "[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration\n\nForeign guests on long stays still need Form C registration (see \"Guest ID and registration\").\nWe can't advise on visa rules; please check with the Indian authorities.\n\n[guest-id-and-registration#2] Guest ID and registration > Foreign nationals\n\n- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on\n  arrival.\n- We are required to submit a **Form C** registration to the immigration authorities within\n  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page\n  for this.\n- Overseas Citizens of India (OCI) cardholders still need Form C registration.\n\n[guest-id-and-registration#1] Guest ID and registration > Indian citizens\n\n- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,\n  driving licence or voter ID.\n- PAN cards are not accepted as ID for check-in.\n- You can upload ID copies through the link in your confirmation email before arrival to make\n  check-in faster.\n\n[lost-and-found#0] Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.\n\n[guest-id-and-registration#0] Guest ID and registration\n\nIndian law requires accommodation providers to check and record the identity of every adult\nguest. We can't check anyone in without valid ID.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.\n\n[payments-and-deposits#3] Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.",
   "data": {
@@ -1194,7 +1247,7 @@
   }
  },
  {
-  "item": "inv-21",
+  "item": "inv-22",
   "case_id": "ookb-h007",
   "rubric": "invented_policy",
   "metric": "no_invented_policy",
@@ -1208,11 +1261,11 @@
   }
  },
  {
-  "item": "inv-22",
+  "item": "inv-23",
   "case_id": "ookb-g007",
   "rubric": "invented_policy",
   "metric": "no_invented_policy",
-  "question": "What are the customs regulations for bringing items into India?",
+  "question": "Where can I find grocery stores that deliver in the area?",
   "answer": "I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).\n\nFor local grocery stores and delivery options, your villa caretaker will be the best resource – they can recommend nearby shops and delivery services when you arrive or you can message them ahead of your stay.",
   "kb_excerpts": "[extras-chef-groceries-experiences#2] Extras: chef, groceries and experiences > Grocery stocking\n\nWe can stock the kitchen before you arrive: send a list at least 48 hours before check-in. You\npay the shop price plus a ₹500 service charge.\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[extras-chef-groceries-experiences#0] Extras: chef, groceries and experiences\n\nExtras are added to your running bill and paid by UPI or card before check-out.\n\n[housekeeping-and-linen#3] Housekeeping, linen and laundry > Rubbish and recycling\n\nNorth Goa villages separate wet and dry waste. Please use the green bin for food waste and the\nblue bin for dry waste; the caretaker handles collection.\n\n[extras-chef-groceries-experiences#3] Extras: chef, groceries and experiences > Breakfast hamper\n\nA breakfast hamper (bread, eggs, fruit, butter, jam, coffee, tea, milk) is ₹800 for 2 people,\n₹1,500 for up to 6.\n\n[health-and-comfort#3] Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.\n\n[local-guide-north-goa#2] Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
   "data": {
@@ -1281,7 +1334,7 @@
   }
  },
  {
-  "item": "inv-23",
+  "item": "inv-24",
   "case_id": "ookb-h005",
   "rubric": "invented_policy",
   "metric": "no_invented_policy",
@@ -1369,119 +1422,6 @@
     }
    },
    "citations": [],
-   "escalated": false
-  }
- },
- {
-  "item": "inv-24",
-  "case_id": "ookb-g005",
-  "rubric": "invented_policy",
-  "metric": "no_invented_policy",
-  "question": "Where can I find grocery stores that deliver in the area?",
-  "answer": "I can see you're asking about amenities beyond those already listed, but I'm not sure which list you're referring to. Let me share the complete overview of what we offer at all our villas:\n\n**Standard amenities at every villa:**\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days\n- On-site caretaker (8am–8pm)\n- Fully equipped kitchen with gas hob, microwave, toaster, kettle, fridge-freezer, mixer-grinder\n- Kitchen basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap\n- Filtered drinking water and washing machine\n- Wi-Fi and power backup\n- Air conditioning in all bedrooms (ceiling fans in living rooms)\n- Swimming pool (open 7am–10pm)\n- Safe in the main bedroom\n- CCTV at gate and driveway\n\nCould you let me know which specific list you saw, or what particular amenities you're interested in? That way I can tell you if we offer them or suggest alternatives!",
-  "kb_excerpts": "[properties-overview#5] Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".\n\n[properties-overview#0] Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.\n\n[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.\n\n[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.\n\n[pool-and-safety#1] Pool use and safety > Monsoon pool closures\n\nDuring heavy rain or lightning, please leave the pool. The caretaker may close the pool for up\nto 24 hours after a storm to clear debris and rebalance the water.\n\n[pool-and-safety#0] Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.\n\n[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[wifi-power-and-utilities#2] Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.\n\n[pool-and-safety#3] Pool use and safety > Beach safety\n\n- Many North Goa beaches have strong currents, especially from June to September, when swimming\n  in the sea is banned by local authorities. Only swim at beaches with lifeguards and between\n  their flags.\n\n[pricing-and-rates#5] Prices, seasons and minimum stays > What's included\n\nDaily housekeeping (except Sundays), linen and towels, Wi-Fi, utilities and the caretaker. Meals,\nairport transfers and extras are not included (see \"Extras: chef, groceries and experiences\").\n\n[house-rules#0] House rules\n\nThese rules apply at every Palmgrove Stays villa. They are part of the booking terms.\n\n[check-in-and-check-out#2] Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.",
-  "data": {
-   "retrieved": {
-    "properties-overview#5": {
-     "chunk_id": "properties-overview#5",
-     "doc_id": "properties-overview",
-     "title": "Our villas",
-     "text": "Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
-     "score": 0.5834371350376304
-    },
-    "properties-overview#0": {
-     "chunk_id": "properties-overview#0",
-     "doc_id": "properties-overview",
-     "title": "Our villas",
-     "text": "Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.",
-     "score": 0.4925417669134401
-    },
-    "kitchen-and-appliances#0": {
-     "chunk_id": "kitchen-and-appliances#0",
-     "doc_id": "kitchen-and-appliances",
-     "title": "Kitchen and appliances",
-     "text": "Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.",
-     "score": 0.5139026047234244
-    },
-    "long-stays-and-remote-work#0": {
-     "chunk_id": "long-stays-and-remote-work#0",
-     "doc_id": "long-stays-and-remote-work",
-     "title": "Long stays and remote work",
-     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
-     "score": 0.4659659615304308
-    },
-    "pricing-and-rates#4": {
-     "chunk_id": "pricing-and-rates#4",
-     "doc_id": "pricing-and-rates",
-     "title": "Prices, seasons and minimum stays",
-     "text": "Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.",
-     "score": 0.4614577952611576
-    },
-    "pool-and-safety#1": {
-     "chunk_id": "pool-and-safety#1",
-     "doc_id": "pool-and-safety",
-     "title": "Pool use and safety",
-     "text": "Pool use and safety > Monsoon pool closures\n\nDuring heavy rain or lightning, please leave the pool. The caretaker may close the pool for up\nto 24 hours after a storm to clear debris and rebalance the water.",
-     "score": 0.42555386600277867
-    },
-    "pool-and-safety#0": {
-     "chunk_id": "pool-and-safety#0",
-     "doc_id": "pool-and-safety",
-     "title": "Pool use and safety",
-     "text": "Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.",
-     "score": 0.4249807340211531
-    },
-    "pool-and-safety#4": {
-     "chunk_id": "pool-and-safety#4",
-     "doc_id": "pool-and-safety",
-     "title": "Pool use and safety",
-     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
-     "score": 0.40501049709254433
-    },
-    "wifi-power-and-utilities#2": {
-     "chunk_id": "wifi-power-and-utilities#2",
-     "doc_id": "wifi-power-and-utilities",
-     "title": "Wi-Fi, power and utilities",
-     "text": "Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.",
-     "score": 0.40117438641022485
-    },
-    "pool-and-safety#3": {
-     "chunk_id": "pool-and-safety#3",
-     "doc_id": "pool-and-safety",
-     "title": "Pool use and safety",
-     "text": "Pool use and safety > Beach safety\n\n- Many North Goa beaches have strong currents, especially from June to September, when swimming\n  in the sea is banned by local authorities. Only swim at beaches with lifeguards and between\n  their flags.",
-     "score": 0.3629639320693676
-    },
-    "pricing-and-rates#5": {
-     "chunk_id": "pricing-and-rates#5",
-     "doc_id": "pricing-and-rates",
-     "title": "Prices, seasons and minimum stays",
-     "text": "Prices, seasons and minimum stays > What's included\n\nDaily housekeeping (except Sundays), linen and towels, Wi-Fi, utilities and the caretaker. Meals,\nairport transfers and extras are not included (see \"Extras: chef, groceries and experiences\").",
-     "score": 0.5081854032623773
-    },
-    "house-rules#0": {
-     "chunk_id": "house-rules#0",
-     "doc_id": "house-rules",
-     "title": "House rules",
-     "text": "House rules\n\nThese rules apply at every Palmgrove Stays villa. They are part of the booking terms.",
-     "score": 0.48645486107344627
-    },
-    "check-in-and-check-out#2": {
-     "chunk_id": "check-in-and-check-out#2",
-     "doc_id": "check-in-and-check-out",
-     "title": "Check-in and check-out",
-     "text": "Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.",
-     "score": 0.47227920473735907
-    }
-   },
-   "citations": [
-    "properties-overview#5",
-    "kitchen-and-appliances#0",
-    "pricing-and-rates#5",
-    "wifi-power-and-utilities#2",
-    "pool-and-safety#0",
-    "pool-and-safety#4"
-   ],
    "escalated": false
   }
  },
