@@ -185,3 +185,12 @@ def test_judge_parses_and_fails_closed() -> None:
     v = bad.grade("rubric", {"Answer": "x"})
     assert v.score == 0 and v.reason == "judge_output_unparseable"
     assert agreement([1, 0, 1, 1], [1, 0, 0, 1]) == 0.75
+
+
+def test_only_runs_named_sets(tmp_path: Path) -> None:
+    write_set(tmp_path, "a", 5)
+    write_set(tmp_path, "b", 5)
+    rep = run_suite(suite(tmp_path), split="all", out_dir=tmp_path / "o", only=["b"])
+    assert list(rep["by_set"]) == ["b"] and rep["sets"] == {"b": 5}
+    with pytest.raises(ValueError, match="unknown eval sets"):
+        run_suite(suite(tmp_path), split="all", out_dir=tmp_path / "o", only=["nope"])

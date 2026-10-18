@@ -18,10 +18,16 @@ def main() -> int:
     )
     p.add_argument("--repeat", type=int, default=1, help="variance run: report mean and min")
     p.add_argument("--max-usd", type=float, default=None, help="stop when spend reaches this")
+    p.add_argument("--sets", default="", help="comma-separated set names, e.g. lead_capture")
     a = p.parse_args()
     split: Split = a.split or ("dev" if a.smoke else "test")
     report = run_suite(
-        load_suite(a.agent), split=split, smoke=a.smoke, repeat=a.repeat, max_usd=a.max_usd
+        load_suite(a.agent),
+        split=split,
+        smoke=a.smoke,
+        repeat=a.repeat,
+        max_usd=a.max_usd,
+        only=[s for s in a.sets.split(",") if s] or None,
     )
     print(to_markdown(report))
     print("written:", *report["paths"])

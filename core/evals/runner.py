@@ -152,9 +152,15 @@ def run_suite(
     repeat: int = 1,
     max_usd: float | None = None,
     out_dir: Path = Path("evals/results"),
+    only: list[str] | None = None,
 ) -> dict[str, Any]:
     check_cross_provider(suite.agent_provider, *suite.helpers)
     sets = load_sets(suite.cases_dir)
+    if only:  # e.g. one set while iterating on it; reports say which sets ran
+        unknown = set(only) - set(sets)
+        if unknown:
+            raise ValueError(f"unknown eval sets: {sorted(unknown)}; have {sorted(sets)}")
+        sets = {k: v for k, v in sets.items() if k in only}
     chosen = select(sets, split, smoke)
     runs: list[list[EvalResult]] = []
     by_set: dict[str, str] = {c.id: name for name, c, _ in chosen}
