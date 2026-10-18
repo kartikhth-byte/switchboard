@@ -7,6 +7,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 RunStatus = Literal["running", "waiting_approval", "done", "failed", "budget_exceeded"]
+RunKind = Literal["live", "eval"]
 
 
 class AgentRun(BaseModel):

@@ -6,13 +6,15 @@ from typing import Protocol
 from uuid import UUID
 
 from core.db import connect
-from core.runs.models import AgentRun, RunStatus
+from core.runs.models import AgentRun, RunKind, RunStatus
 
 _FINAL: tuple[RunStatus, ...] = ("done", "failed", "budget_exceeded", "waiting_approval")
 
 
 class RunStore(Protocol):
-    def create(self, run_id: UUID, agent: str, trace_id: str) -> AgentRun: ...
+    def create(
+        self, run_id: UUID, agent: str, trace_id: str, kind: RunKind = "live"
+    ) -> AgentRun: ...
     def add_usage(self, run_id: UUID, tokens_in: int, tokens_out: int, cost_usd: float) -> None: ...
     def finish(self, run_id: UUID, status: RunStatus, error: str | None = None) -> None: ...
     def get(self, run_id: UUID) -> AgentRun | None: ...
@@ -23,11 +25,11 @@ class PgRunStore:
     def __init__(self, dsn: str) -> None:
         self.dsn = dsn
 
-    def create(self, run_id: UUID, agent: str, trace_id: str) -> AgentRun:
+    def create(self, run_id: UUID, agent: str, trace_id: str, kind: RunKind = "live") -> AgentRun:
         with connect(self.dsn) as c:
             row = c.execute(
-                "INSERT INTO runs (id, agent, trace_id) VALUES (%s, %s, %s) RETURNING *",
-                (run_id, agent, trace_id),
+                "INSERT INTO runs (id, agent, trace_id, kind) VALUES (%s, %s, %s, %s) RETURNING *",
+                (run_id, agent, trace_id, kind),
             ).fetchone()
         return AgentRun.model_validate(row)
 
@@ -54,11 +56,12 @@ class PgRunStore:
         return AgentRun.model_validate(row) if row else None
 
     def spend_today(self) -> float:
-        """Total model spend across all runs since 00:00 UTC (daily cap, SHR-018)."""
+        """Live-run model spend since 00:00 UTC (daily cap, SHR-018). Eval runs don't count:
+        they're capped by the runner's --max-usd and must not lock the demo."""
         with connect(self.dsn) as c:
             row = c.execute(
                 "SELECT COALESCE(SUM(cost_usd), 0)::float8 AS total FROM runs"
-                " WHERE started_at >="
+                " WHERE kind = 'live' AND started_at >="
                 " date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'"
             ).fetchone()
         total = row["total"] if row else 0.0

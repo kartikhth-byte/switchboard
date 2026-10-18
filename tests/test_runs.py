@@ -141,3 +141,21 @@ def test_pg_run_store_roundtrip() -> None:
     assert row is not None and row.status == "done" and row.ended_at is not None
     assert row.tokens_in == run.tokens_in and row.cost_usd == pytest.approx(run.cost_usd)
     assert migrate(dsn) == []  # idempotent
+
+
+@pytest.mark.integration
+def test_eval_runs_do_not_count_toward_daily_cap() -> None:
+    from uuid import uuid4
+
+    from core.db import migrate
+
+    dsn = get_settings().database_url
+    migrate(dsn)
+    store = PgRunStore(dsn)
+    before = store.spend_today()
+    live, ev = uuid4(), uuid4()
+    store.create(live, "concierge", "t1")
+    store.create(ev, "concierge", "t2", kind="eval")
+    store.add_usage(live, 1, 1, 0.25)
+    store.add_usage(ev, 1, 1, 5.0)
+    assert store.spend_today() == pytest.approx(before + 0.25)

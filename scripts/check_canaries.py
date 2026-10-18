@@ -33,6 +33,16 @@ TARGET = 100
 DAYS = 7  # look back this far for eval traces
 
 
+def _filters(session: str) -> list[list[dict[str, str]]]:
+    """Trace sessionId (runs since session propagation), then the root observation's
+    metadata.session_id (older runs recorded it only there)."""
+    return [
+        [{"type": "string", "column": "sessionId", "operator": "=", "value": session}],
+        [{"type": "stringObject", "column": "metadata", "key": "session_id", "operator": "=",
+          "value": session}],
+    ]  # fmt: skip
+
+
 def _digits(s: str) -> str:
     return re.sub(r"\D", "", s)
 
@@ -59,13 +69,14 @@ def main() -> int:
     now = datetime.now(UTC)
     by_trace: dict[str, list[dict[str, Any]]] = defaultdict(list)
     with httpx.Client(auth=auth, timeout=60) as http:
-        for session in SESSIONS:
+        for session, filt in [(sess, f) for sess in SESSIONS for f in _filters(sess)]:
+            if any(r.get("_session") == session for rows in by_trace.values() for r in rows):
+                continue  # already found via the first filter
             cursor: str | None = None
             while True:
                 params: dict[str, Any] = {
                     "fields": "core,basic,io,trace_context",
-                    "filter": json.dumps([{"type": "string", "column": "sessionId",
-                                           "operator": "=", "value": session}]),
+                    "filter": json.dumps(filt),
                     "fromStartTime": (now - timedelta(days=DAYS)).isoformat(),
                     "toStartTime": now.isoformat(),
                     "limit": 1000,
@@ -74,11 +85,13 @@ def main() -> int:
                     params["cursor"] = cursor
                 r = http.get(url, params=params)
                 if r.status_code != 200:
-                    print(f"Langfuse API error {r.status_code}: {r.text[:300]}")
-                    return 1
+                    print(
+                        f"Langfuse API error {r.status_code} ({filt[0]['column']}): {r.text[:200]}"
+                    )
+                    break
                 body = r.json()
                 for row in body.get("data", []):
-                    by_trace[row["traceId"]].append(row)
+                    by_trace[row["traceId"]].append({**row, "_session": session})
                 cursor = (body.get("meta") or {}).get("cursor")
                 if not cursor:
                     break
@@ -88,7 +101,7 @@ def main() -> int:
         planted += "You can reach me on" in text  # the turn that carries the canary (control)
         hits = find_canaries(text)
         if hits:
-            leaks.append((rows[0].get("sessionId", "?"), tid, hits))
+            leaks.append((rows[0]["_session"], tid, hits))
     if planted == 0 and scanned:
         print("no trace contains the planted turn: input/output not returned, so nothing proven")
         return 1

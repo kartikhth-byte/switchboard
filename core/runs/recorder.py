@@ -18,7 +18,7 @@ from datetime import timedelta
 from typing import Any
 from uuid import UUID, uuid4
 
-from langfuse import Langfuse
+from langfuse import Langfuse, propagate_attributes
 
 from core.approvals import DEFAULT_TTL, ApprovalRequest, ApprovalStore
 from core.config.settings import get_settings
@@ -26,7 +26,7 @@ from core.guardrails import Budget, BudgetExceeded
 from core.jobs.retry import RetryPolicy
 from core.logs import current_agent, current_run_id
 from core.models import Message, ModelClient, ModelResponse
-from core.runs.models import RunStatus
+from core.runs.models import RunKind, RunStatus
 from core.runs.store import RunStore
 from core.tools import ToolContext, ToolRegistry, ToolResult
 from core.tools.registry import OutboundMode
@@ -206,13 +206,14 @@ def start_run(
     run_input: Any = None,
     session_id: str | None = None,
     budget: Budget | None = None,
+    kind: RunKind = "live",
 ) -> Iterator[RunHandle]:
     """Guardrail stops (BudgetExceeded) end the run as `budget_exceeded` and are NOT re-raised:
     check `run.status` / `run.user_message` after the block. Other errors re-raise."""
     if budget is None:
         budget = Budget(daily_usd=get_settings().daily_usd_cap)
     run = RunHandle(uuid4(), agent, store, langfuse, outbound_mode, budget)
-    store.create(run.run_id, agent, run.trace_id)
+    store.create(run.run_id, agent, run.trace_id, kind)
     tok_run = current_run_id.set(str(run.run_id))
     tok_agent = current_agent.set(agent)
     obs: AbstractContextManager[Any] = (
@@ -226,9 +227,15 @@ def start_run(
         if langfuse is not None
         else nullcontext(None)
     )
+    # Trace-level attributes (session, live/eval tag) so traces can be filtered by conversation.
+    attrs: AbstractContextManager[Any] = (
+        propagate_attributes(session_id=session_id, tags=[kind])
+        if langfuse is not None
+        else nullcontext(None)
+    )
     error: str | None = None
     try:
-        with obs as root:
+        with obs as root, attrs:
             log.info("run started", extra={"event": "run_started"})
             try:
                 yield run

@@ -11,7 +11,7 @@ class FakeStore:
         self.runs: dict[UUID, AgentRun] = {}
         self.spent_today = spent_today  # spend from "other" runs earlier today
 
-    def create(self, run_id: UUID, agent: str, trace_id: str) -> AgentRun:
+    def create(self, run_id: UUID, agent: str, trace_id: str, kind: str = "live") -> AgentRun:
         run = AgentRun(
             id=run_id,
             agent=agent,

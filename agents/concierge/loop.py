@@ -31,6 +31,7 @@ from core.guardrails import BudgetExceeded
 from core.memory import make_fact_extractor, make_summarizer
 from core.models import Message, ModelClient, ModelResponse
 from core.runs import RunHandle, RunStore, start_run
+from core.runs.models import RunKind
 from core.tools import ToolRegistry, ToolResult
 
 log = logging.getLogger(__name__)
@@ -57,6 +58,7 @@ class Deps:
     # Daily spend cap: "settings" = DAILY_USD_CAP (demo default). Evals pass None and rely on
     # the runner's --max-usd instead (build spec §4: eval runs use their own cap).
     daily_cap: float | None | Literal["settings"] = "settings"
+    run_kind: RunKind = "live"  # evals pass "eval" so their spend never counts toward the cap
 
 
 @dataclass
@@ -87,6 +89,7 @@ def respond(deps: Deps, user_message: str) -> TurnResult:
         outbound_mode=settings.outbound_mode,
         run_input=user_message,
         session_id=state.conversation_id,
+        kind=deps.run_kind,
         budget=deps.cfg.budget(
             settings.daily_usd_cap if deps.daily_cap == "settings" else deps.daily_cap
         ),
