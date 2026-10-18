@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval data ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate data ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -42,6 +42,12 @@ trace-smoke:      ## one mock-model run traced to Langfuse; needs `make up`
 
 eval:             ## make eval AGENT=<name> [ARGS="--smoke --repeat 3 --max-usd 5"]
 	PYTHONPATH=. uv run python -m core.evals $(AGENT) $(ARGS)
+
+calib-export:     ## pick 30 judged answers to hand-label: make calib-export RESULTS=<run>.json
+	PYTHONPATH=. uv run python scripts/judge_calibration.py export $(RESULTS)
+
+calibrate:        ## re-judge the hand-labelled answers and report agreement (target 85%)
+	PYTHONPATH=. uv run python scripts/judge_calibration.py
 
 data:             ## rebuild eval sets (cached generations); ARGS=--refresh re-generates (OpenAI key)
 	PYTHONPATH=. uv run python -m data.generators.support_evals $(ARGS)

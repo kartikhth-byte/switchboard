@@ -1,0 +1,1843 @@
+[
+ {
+  "item": "gro-01",
+  "case_id": "inkb-g013",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "What kind of discounts do you offer for long stays?",
+  "answer": "We offer a **15% discount** for stays of **14 nights or more** at any of our villas.\n\nFor Monsoon Cottage specifically, we also have a monthly rate of **₹85,000 for 28 nights or more** during the standard season (1 March – 30 November), though this isn't available during peak or festive periods.\n\nIf your long stay happens to fall entirely within monsoon season (1 June – 30 September), you'd get whichever discount is larger – the 15% long-stay discount or the 20% monsoon discount – but they don't combine.",
+  "kb_excerpts": "[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.\n\n[long-stays-and-remote-work#2] Long stays and remote work > Long-stay housekeeping\n\nHousekeeping is daily except Sundays, as for all stays. For stays of 28 nights or more, a deep\nclean is done every two weeks at no charge.\n\n[pricing-and-rates#2] Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.\n\n[monsoon-season#3] Staying during the monsoon (June – September) > Price\n\nStays with every night between 1 June and 30 September get 20% off the standard rate (see\n\"Prices, seasons and minimum stays\").",
+  "data": {
+   "retrieved": {
+    "long-stays-and-remote-work#0": {
+     "chunk_id": "long-stays-and-remote-work#0",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
+     "score": 0.579533723901213
+    },
+    "pricing-and-rates#4": {
+     "chunk_id": "pricing-and-rates#4",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.",
+     "score": 0.5316329418038978
+    },
+    "long-stays-and-remote-work#2": {
+     "chunk_id": "long-stays-and-remote-work#2",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Long-stay housekeeping\n\nHousekeeping is daily except Sundays, as for all stays. For stays of 28 nights or more, a deep\nclean is done every two weeks at no charge.",
+     "score": 0.5162896849549394
+    },
+    "pricing-and-rates#2": {
+     "chunk_id": "pricing-and-rates#2",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.",
+     "score": 0.5155282691469749
+    },
+    "monsoon-season#3": {
+     "chunk_id": "monsoon-season#3",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Price\n\nStays with every night between 1 June and 30 September get 20% off the standard rate (see\n\"Prices, seasons and minimum stays\").",
+     "score": 0.508194954638742
+    }
+   },
+   "citations": [
+    "long-stays-and-remote-work#0",
+    "pricing-and-rates#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-02",
+  "case_id": "inkb-g012",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "What are some good beaches near the villas?",
+  "answer": "Great question! North Goa has some lovely beaches, all within easy reach of our villas:\n\n**Closest to our properties:**\n- **Candolim** — a long, easy beach with lifeguards in season; just 5 minutes' walk from Monsoon Cottage\n- **Anjuna** — 10 minutes' walk from The Cashew House; known for cliffs, cafés and beautiful sunsets (busier in peak season)\n\n**A bit further out:**\n- **Vagator** — also great for cliffs and sunsets\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site from November to March, so please keep away from any marked nests\n\nWould you like to know more about any of our villas or the local area?",
+  "kb_excerpts": "[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[properties-overview#0] Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.\n\n[properties-overview#3] Our villas > The Cashew House — Anjuna\n\n- 2 bedrooms, 2 bathrooms, sleeps up to 4 adults.\n- Plunge pool (4m × 2.5m), rooftop terrace.\n- Walking distance (10 minutes) to Anjuna beach and the Wednesday flea market.\n- Best for couples and friends. Not suitable for children under 5 because of the open rooftop.\n\n[getting-here-and-transfers#4] Getting here and airport transfers > Finding the villa\n\nThe exact address and a map pin are sent 48 hours before check-in, after the balance is paid.\n\n[properties-overview#4] Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).\n\n[local-guide-north-goa#1] Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.\n\n[local-guide-north-goa#4] Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.\n\n[getting-here-and-transfers#0] Getting here and airport transfers > Airports\n\nGoa has two airports:\n- Manohar International Airport, Mopa (GOX) in North Goa — the closest to our villas: about 35–45 minutes to Siolim and Assagao, 50 minutes to Anjuna and Candolim.\n- Dabolim Airport (GOI) in South Goa — about 75–90 minutes to our villas, longer in evening traffic.\nCheck which airport your flight uses before booking a transfer.\n\n[local-guide-north-goa#2] Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.\n\n[properties-overview#1] Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.",
+  "data": {
+   "retrieved": {
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.4915648575019751
+    },
+    "properties-overview#0": {
+     "chunk_id": "properties-overview#0",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.",
+     "score": 0.48356888654120933
+    },
+    "properties-overview#3": {
+     "chunk_id": "properties-overview#3",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > The Cashew House — Anjuna\n\n- 2 bedrooms, 2 bathrooms, sleeps up to 4 adults.\n- Plunge pool (4m × 2.5m), rooftop terrace.\n- Walking distance (10 minutes) to Anjuna beach and the Wednesday flea market.\n- Best for couples and friends. Not suitable for children under 5 because of the open rooftop.",
+     "score": 0.48177523626588825
+    },
+    "getting-here-and-transfers#4": {
+     "chunk_id": "getting-here-and-transfers#4",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Finding the villa\n\nThe exact address and a map pin are sent 48 hours before check-in, after the balance is paid.",
+     "score": 0.4811407562752289
+    },
+    "properties-overview#4": {
+     "chunk_id": "properties-overview#4",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).",
+     "score": 0.47709787417932836
+    },
+    "local-guide-north-goa#1": {
+     "chunk_id": "local-guide-north-goa#1",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+     "score": 0.6636304869341378
+    },
+    "local-guide-north-goa#4": {
+     "chunk_id": "local-guide-north-goa#4",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.",
+     "score": 0.5791119592131561
+    },
+    "getting-here-and-transfers#0": {
+     "chunk_id": "getting-here-and-transfers#0",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Airports\n\nGoa has two airports:\n- Manohar International Airport, Mopa (GOX) in North Goa — the closest to our villas: about 35–45 minutes to Siolim and Assagao, 50 minutes to Anjuna and Candolim.\n- Dabolim Airport (GOI) in South Goa — about 75–90 minutes to our villas, longer in evening traffic.\nCheck which airport your flight uses before booking a transfer.",
+     "score": 0.5749465825235084
+    },
+    "local-guide-north-goa#2": {
+     "chunk_id": "local-guide-north-goa#2",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.",
+     "score": 0.5709590175257641
+    },
+    "properties-overview#1": {
+     "chunk_id": "properties-overview#1",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.",
+     "score": 0.5676324078629048
+    }
+   },
+   "citations": [
+    "local-guide-north-goa#1",
+    "properties-overview#3",
+    "properties-overview#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-03",
+  "case_id": "inkb-g042",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "I’m planning to arrive late at night; will there be any extra charges for transfers?",
+  "answer": "Yes, if you book an airport transfer through us and arrive between 11:00 pm and 6:00 am, there's a ₹500 night surcharge on top of the regular transfer price. \n\nAlso, if you're arriving at the villa itself between midnight and 6:00 am, there's a separate ₹1,500 late-arrival fee. Arrivals after 10:00 pm need to be confirmed at least 24 hours ahead so the caretaker can meet you.\n\nAll extra charges are added to your bill and settled before check-out.",
+  "kb_excerpts": "[check-in-and-check-out#0] Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.\n\n[payments-and-deposits#3] Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.\n\n[check-in-and-check-out#1] Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.\n\n[getting-here-and-transfers#1] Getting here and airport transfers > Airport transfers we arrange\n\n| Route | Sedan (up to 3 guests) | SUV (up to 6 guests) |\n| Mopa (GOX) to any villa | ₹2,200 | ₹3,000 |\n| Dabolim (GOI) to any villa | ₹2,800 | ₹3,800 |\n- Book at least 24 hours before your flight; we need the flight number.\n- The driver tracks your flight and waits up to 60 minutes after landing at no charge.\n- Night transfers between 11:00 pm and 6:00 am cost ₹500 extra.\n- Transfers are added to your bill and paid before check-out.\n\n[check-in-and-check-out#4] Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.\n\n[cancellations-and-refunds#3] Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.\n\n[pricing-and-rates#2] Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.",
+  "data": {
+   "retrieved": {
+    "check-in-and-check-out#0": {
+     "chunk_id": "check-in-and-check-out#0",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.",
+     "score": 0.44581479036643423
+    },
+    "payments-and-deposits#3": {
+     "chunk_id": "payments-and-deposits#3",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.",
+     "score": 0.4017175130361198
+    },
+    "check-in-and-check-out#1": {
+     "chunk_id": "check-in-and-check-out#1",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.",
+     "score": 0.3877438795493927
+    },
+    "getting-here-and-transfers#1": {
+     "chunk_id": "getting-here-and-transfers#1",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Airport transfers we arrange\n\n| Route | Sedan (up to 3 guests) | SUV (up to 6 guests) |\n| Mopa (GOX) to any villa | ₹2,200 | ₹3,000 |\n| Dabolim (GOI) to any villa | ₹2,800 | ₹3,800 |\n- Book at least 24 hours before your flight; we need the flight number.\n- The driver tracks your flight and waits up to 60 minutes after landing at no charge.\n- Night transfers between 11:00 pm and 6:00 am cost ₹500 extra.\n- Transfers are added to your bill and paid before check-out.",
+     "score": 0.3981303320349402
+    },
+    "check-in-and-check-out#4": {
+     "chunk_id": "check-in-and-check-out#4",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.",
+     "score": 0.4035397221439938
+    },
+    "cancellations-and-refunds#3": {
+     "chunk_id": "cancellations-and-refunds#3",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+     "score": 0.3650028222798798
+    },
+    "pricing-and-rates#2": {
+     "chunk_id": "pricing-and-rates#2",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.",
+     "score": 0.357926366468313
+    }
+   },
+   "citations": [
+    "getting-here-and-transfers#1",
+    "check-in-and-check-out#0",
+    "payments-and-deposits#3"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-04",
+  "case_id": "inkb-g032",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "What happens if I check out late from the villa?",
+  "answer": "Standard check-out is by 11:00 am. If you need a bit more time, here's what applies:\n\n• **Late check-out until 2:00 pm:** ₹1,000 per villa, subject to availability (we can only confirm this 48 hours before, depending on other bookings).\n• **Check-out later than 2:00 pm:** charged as an extra night at the current nightly rate.\n\nIf you'd like to request late check-out, just let us know your booking reference and email, and I can help pass that on to the team!",
+  "kb_excerpts": "[check-in-and-check-out#0] Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.\n\n[check-in-and-check-out#1] Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.\n\n[check-in-and-check-out#4] Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.\n\n[check-in-and-check-out#3] Check-in and check-out > On departure\n\n- Leave keys on the kitchen counter, or hand them to the caretaker if they are on site.\n- Please run the dishwasher or leave dishes in the sink — no need to clean.\n- The caretaker checks the villa within 2 hours of check-out. The deposit is refunded within\n  5 working days after that check (see \"Payments and deposits\").\n\n[cancellations-and-refunds#3] Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+  "data": {
+   "retrieved": {
+    "check-in-and-check-out#0": {
+     "chunk_id": "check-in-and-check-out#0",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.",
+     "score": 0.5832160855051585
+    },
+    "check-in-and-check-out#1": {
+     "chunk_id": "check-in-and-check-out#1",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.",
+     "score": 0.5609406457871244
+    },
+    "check-in-and-check-out#4": {
+     "chunk_id": "check-in-and-check-out#4",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.",
+     "score": 0.5201126759372908
+    },
+    "check-in-and-check-out#3": {
+     "chunk_id": "check-in-and-check-out#3",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > On departure\n\n- Leave keys on the kitchen counter, or hand them to the caretaker if they are on site.\n- Please run the dishwasher or leave dishes in the sink — no need to clean.\n- The caretaker checks the villa within 2 hours of check-out. The deposit is refunded within\n  5 working days after that check (see \"Payments and deposits\").",
+     "score": 0.49390744985215795
+    },
+    "cancellations-and-refunds#3": {
+     "chunk_id": "cancellations-and-refunds#3",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+     "score": 0.4306037182899204
+    }
+   },
+   "citations": [
+    "check-in-and-check-out#1"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-05",
+  "case_id": "inkb-h001",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "can we have fresh towels and the room cleaned tomorrow?",
+  "answer": "Yes! Daily housekeeping is included with your stay and runs between 10:00 am and 1:00 pm, except on Sundays. Tomorrow (Sunday 18 October) there won't be regular housekeeping service.\n\nFresh towels: bath towels are changed every 3 days as standard, but you can request extra towels anytime from your villa caretaker at no charge. Pool and beach towels can be swapped daily on request.\n\nIf you need anything specific, just let your caretaker know!",
+  "kb_excerpts": "[housekeeping-and-linen#1] Housekeeping, linen and laundry > Linen and towels\n\n- Bed linen and bath towels are changed every 3 days, or between guests on a booking.\n- Pool and beach towels are provided (2 per guest) and swapped daily on request.\n- Extra linen or towels are free; ask the caretaker.\n\n[housekeeping-and-linen#0] Housekeeping, linen and laundry > Housekeeping\n\n- Daily housekeeping between 10:00 am and 1:00 pm, **except Sundays**.\n- Tell the caretaker if you'd like a different time that day or no cleaning at all.\n- Housekeeping covers sweeping, mopping, bathrooms, bins and washing up left in the sink.\n\n[long-stays-and-remote-work#2] Long stays and remote work > Long-stay housekeeping\n\nHousekeeping is daily except Sundays, as for all stays. For stays of 28 nights or more, a deep\nclean is done every two weeks at no charge.\n\n[housekeeping-and-linen#2] Housekeeping, linen and laundry > Laundry\n\n- Every villa has a washing machine and a drying rack; detergent is provided.\n- Laundry service (washed, dried and folded by our team) costs ₹300 per load, returned the next\n  day — an extra day in the monsoon.\n- We don't offer dry cleaning, but the caretaker can arrange it with a local shop at cost.\n\n[properties-overview#5] Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
+  "data": {
+   "retrieved": {
+    "housekeeping-and-linen#1": {
+     "chunk_id": "housekeeping-and-linen#1",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Linen and towels\n\n- Bed linen and bath towels are changed every 3 days, or between guests on a booking.\n- Pool and beach towels are provided (2 per guest) and swapped daily on request.\n- Extra linen or towels are free; ask the caretaker.",
+     "score": 0.6283596111734471
+    },
+    "housekeeping-and-linen#0": {
+     "chunk_id": "housekeeping-and-linen#0",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Housekeeping\n\n- Daily housekeeping between 10:00 am and 1:00 pm, **except Sundays**.\n- Tell the caretaker if you'd like a different time that day or no cleaning at all.\n- Housekeeping covers sweeping, mopping, bathrooms, bins and washing up left in the sink.",
+     "score": 0.5939044211918981
+    },
+    "long-stays-and-remote-work#2": {
+     "chunk_id": "long-stays-and-remote-work#2",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Long-stay housekeeping\n\nHousekeeping is daily except Sundays, as for all stays. For stays of 28 nights or more, a deep\nclean is done every two weeks at no charge.",
+     "score": 0.5588436590643128
+    },
+    "housekeeping-and-linen#2": {
+     "chunk_id": "housekeeping-and-linen#2",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Laundry\n\n- Every villa has a washing machine and a drying rack; detergent is provided.\n- Laundry service (washed, dried and folded by our team) costs ₹300 per load, returned the next\n  day — an extra day in the monsoon.\n- We don't offer dry cleaning, but the caretaker can arrange it with a local shop at cost.",
+     "score": 0.5218213142207212
+    },
+    "properties-overview#5": {
+     "chunk_id": "properties-overview#5",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
+     "score": 0.45269387275074346
+    }
+   },
+   "citations": [
+    "housekeeping-and-linen#0",
+    "housekeeping-and-linen#1"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-06",
+  "case_id": "inkb-h023",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "Is it okay if I pay you cash for the booking? 🙏🏼",
+  "answer": "Unfortunately, we don't accept cash for booking payments. 🙏🏼\n\nWe accept UPI, Indian and international cards, and bank transfer for all bookings. A ₹500 processing fee applies to each booking. If you'd like help with any of these payment methods, I'm happy to assist!",
+  "kb_excerpts": "[payments-and-deposits#0] Payments and the security deposit > Paying for your booking (direct bookings)\n\n- **30% deposit** when you book, to confirm the dates.\n- **Balance** due 14 days before check-in (21 days in peak season, 1 December – 28 February).\n  If the balance isn't paid on time we send a reminder; after 3 days the booking may be cancelled\n  under the cancellation policy.\n- Bookings made less than 14 days before check-in are paid in full when booked.\n- We accept UPI, Indian and international cards, and bank transfer. A ₹500 processing fee applies\n  to each booking. We do not accept cash for booking payments.\n\n[payments-and-deposits#3] Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.\n\n[booking-direct#3] How to book and change a booking > Bookings made on a booking platform\n\nContact us through that platform for changes, cancellations and payments. Its terms apply where\nthey differ from ours, and we can't see or change payments made there.\n\n[payments-and-deposits#1] Payments and the security deposit > Security deposit\n\n| Villa | Deposit |\n|---|---|\n| Villa Sol | ₹20,000 |\n| Casa Kokum | ₹15,000 |\n| The Cashew House | ₹10,000 |\n| Monsoon Cottage | ₹5,000 |\n\n- The deposit is taken as a card pre-authorisation or a UPI payment on arrival.\n- It is released or refunded within **5 working days** after the caretaker's check-out check.\n- Deductions are only made for damage beyond normal wear, missing items, indoor smoking\n  (₹5,000), or late check-out beyond 2:00 pm (one night). We send photos and an itemised list\n  before deducting anything.\n\n[payments-and-deposits#2] Payments and the security deposit > Invoices\n\nA GST invoice is emailed after check-out. If you need it in a company's name with a GSTIN, tell us\nbefore check-in — invoices can't be reissued afterwards.",
+  "data": {
+   "retrieved": {
+    "payments-and-deposits#0": {
+     "chunk_id": "payments-and-deposits#0",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Paying for your booking (direct bookings)\n\n- **30% deposit** when you book, to confirm the dates.\n- **Balance** due 14 days before check-in (21 days in peak season, 1 December – 28 February).\n  If the balance isn't paid on time we send a reminder; after 3 days the booking may be cancelled\n  under the cancellation policy.\n- Bookings made less than 14 days before check-in are paid in full when booked.\n- We accept UPI, Indian and international cards, and bank transfer. A ₹500 processing fee applies\n  to each booking. We do not accept cash for booking payments.",
+     "score": 0.6028270309274919
+    },
+    "payments-and-deposits#3": {
+     "chunk_id": "payments-and-deposits#3",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.",
+     "score": 0.48175129096784475
+    },
+    "booking-direct#3": {
+     "chunk_id": "booking-direct#3",
+     "doc_id": "booking-direct",
+     "title": "How to book and change a booking",
+     "text": "How to book and change a booking > Bookings made on a booking platform\n\nContact us through that platform for changes, cancellations and payments. Its terms apply where\nthey differ from ours, and we can't see or change payments made there.",
+     "score": 0.4787676112120576
+    },
+    "payments-and-deposits#1": {
+     "chunk_id": "payments-and-deposits#1",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Security deposit\n\n| Villa | Deposit |\n|---|---|\n| Villa Sol | ₹20,000 |\n| Casa Kokum | ₹15,000 |\n| The Cashew House | ₹10,000 |\n| Monsoon Cottage | ₹5,000 |\n\n- The deposit is taken as a card pre-authorisation or a UPI payment on arrival.\n- It is released or refunded within **5 working days** after the caretaker's check-out check.\n- Deductions are only made for damage beyond normal wear, missing items, indoor smoking\n  (₹5,000), or late check-out beyond 2:00 pm (one night). We send photos and an itemised list\n  before deducting anything.",
+     "score": 0.4635062677020666
+    },
+    "payments-and-deposits#2": {
+     "chunk_id": "payments-and-deposits#2",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Invoices\n\nA GST invoice is emailed after check-out. If you need it in a company's name with a GSTIN, tell us\nbefore check-in — invoices can't be reissued afterwards.",
+     "score": 0.4614537746171534
+    }
+   },
+   "citations": [
+    "payments-and-deposits#0"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-07",
+  "case_id": "inkb-g018",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "I’m just wondering if there are cameras in the villa for privacy reasons.",
+  "answer": "Great question! There are no cameras inside any of our villas. CCTV covers only the gate and driveway for security purposes. Your privacy inside the villa is completely protected.",
+  "kb_excerpts": "[privacy-and-data#3] Privacy and your data > Cameras\n\nCCTV covers the gate and driveway only. There are no cameras inside any villa.\n\n[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[long-stays-and-remote-work#1] Long stays and remote work > Working from the villa\n\n- Villa Sol has dedicated work desks in two bedrooms; the other villas have a dining table and a\n  desk in the main bedroom.\n- Fibre broadband with a 4G backup router at every villa. We can't guarantee video-call quality\n  during monsoon storms.\n- Power backup keeps Wi-Fi running for about 6 hours during cuts.\n\n[properties-overview#5] Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".\n\n[kitchen-and-appliances#4] Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+  "data": {
+   "retrieved": {
+    "privacy-and-data#3": {
+     "chunk_id": "privacy-and-data#3",
+     "doc_id": "privacy-and-data",
+     "title": "Privacy and your data",
+     "text": "Privacy and your data > Cameras\n\nCCTV covers the gate and driveway only. There are no cameras inside any villa.",
+     "score": 0.679834944354036
+    },
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.6257811735580306
+    },
+    "long-stays-and-remote-work#1": {
+     "chunk_id": "long-stays-and-remote-work#1",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Working from the villa\n\n- Villa Sol has dedicated work desks in two bedrooms; the other villas have a dining table and a\n  desk in the main bedroom.\n- Fibre broadband with a 4G backup router at every villa. We can't guarantee video-call quality\n  during monsoon storms.\n- Power backup keeps Wi-Fi running for about 6 hours during cuts.",
+     "score": 0.3976629548720363
+    },
+    "properties-overview#5": {
+     "chunk_id": "properties-overview#5",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
+     "score": 0.3934217975185256
+    },
+    "kitchen-and-appliances#4": {
+     "chunk_id": "kitchen-and-appliances#4",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+     "score": 0.3848133415037486
+    }
+   },
+   "citations": [
+    "privacy-and-data#3",
+    "pool-and-safety#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-08",
+  "case_id": "inkb-h002",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "Got it. Is it ok if we leave our luggage somewhere after checkout? Our flight is at 5pm",
+  "answer": "Yes, absolutely! We can hold your luggage at the villa until 6:00 pm on your check-out day at no charge. Since your flight is at 5pm, that works perfectly. Just let the caretaker know when you check out at 11am, and you can collect your bags before heading to the airport.",
+  "kb_excerpts": "[check-in-and-check-out#4] Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.\n\n[lost-and-found#0] Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.\n\n[check-in-and-check-out#0] Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.\n\n[check-in-and-check-out#1] Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.\n\n[check-in-and-check-out#3] Check-in and check-out > On departure\n\n- Leave keys on the kitchen counter, or hand them to the caretaker if they are on site.\n- Please run the dishwasher or leave dishes in the sink — no need to clean.\n- The caretaker checks the villa within 2 hours of check-out. The deposit is refunded within\n  5 working days after that check (see \"Payments and deposits\").",
+  "data": {
+   "retrieved": {
+    "check-in-and-check-out#4": {
+     "chunk_id": "check-in-and-check-out#4",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Luggage\n\nWe can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as\nit is collected by then.",
+     "score": 0.6140281218251433
+    },
+    "lost-and-found#0": {
+     "chunk_id": "lost-and-found#0",
+     "doc_id": "lost-and-found",
+     "title": "Lost and found",
+     "text": "Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.",
+     "score": 0.4470532283793017
+    },
+    "check-in-and-check-out#0": {
+     "chunk_id": "check-in-and-check-out#0",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Times\n\n- **Check-in:** from 2:00 pm.\n- **Check-out:** by 11:00 am.\n- Arrivals after 10:00 pm are fine but must be confirmed at least 24 hours ahead so the caretaker\n  can meet you. Arrivals between midnight and 6:00 am carry a ₹1,500 late-arrival fee.",
+     "score": 0.4325137313613967
+    },
+    "check-in-and-check-out#1": {
+     "chunk_id": "check-in-and-check-out#1",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.",
+     "score": 0.42752854541804464
+    },
+    "check-in-and-check-out#3": {
+     "chunk_id": "check-in-and-check-out#3",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > On departure\n\n- Leave keys on the kitchen counter, or hand them to the caretaker if they are on site.\n- Please run the dishwasher or leave dishes in the sink — no need to clean.\n- The caretaker checks the villa within 2 hours of check-out. The deposit is refunded within\n  5 working days after that check (see \"Payments and deposits\").",
+     "score": 0.4138449815230021
+    }
+   },
+   "citations": [
+    "check-in-and-check-out#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-09",
+  "case_id": "inkb-g017",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "What is the price for Monsoon Cottage during the standard season and how long do I need to stay?",
+  "answer": "Monsoon Cottage is **₹4,500 per night** during the standard season (1 March – 30 November), and the minimum stay is **2 nights**. \n\nIf you're staying 14+ nights you'll get 15% off, and for 28+ nights there's a monthly rate of ₹85,000. Also, if your stay falls entirely between 1 June and 30 September, you'll receive a 20% monsoon discount!",
+  "kb_excerpts": "[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.\n\n[pricing-and-rates#2] Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.\n\n[monsoon-season#3] Staying during the monsoon (June – September) > Price\n\nStays with every night between 1 June and 30 September get 20% off the standard rate (see\n\"Prices, seasons and minimum stays\").\n\n[pricing-and-rates#1] Prices, seasons and minimum stays > Nightly rates\n\n| Villa | Standard (1 Mar – 30 Nov) | Peak (1 Dec – 28 Feb) | Festive (24 Dec – 2 Jan) |\n|---|---|---|---|\n| Villa Sol | ₹22,000 | ₹38,000 | ₹55,000 |\n| Casa Kokum | ₹16,000 | ₹28,000 | ₹42,000 |\n| The Cashew House | ₹9,000 | ₹16,000 | ₹24,000 |\n| Monsoon Cottage | ₹4,500 | ₹7,500 | ₹11,000 |\n\n[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[long-stays-and-remote-work#3] Long stays and remote work > Utilities on long stays\n\nElectricity is included up to 30 units (kWh) per day at Monsoon Cottage on monthly stays; use\nabove that is charged at ₹10 per unit. Electricity is included without limit at the other villas.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.\n\n[house-rules#1] House rules > Guests and visitors\n\n- Only guests named on the booking may stay overnight. The maximum guest count for each villa is\n  in \"Our villas\".\n- Day visitors are welcome between 9:00 am and 9:00 pm, up to 4 visitors at a time, and must be\n  told to the caretaker. More visitors count as an event (see \"Children, pets and events\").\n\n[check-in-and-check-out#1] Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.\n\n[pricing-and-rates#3] Prices, seasons and minimum stays > Minimum stays\n\n- Standard season: 2 nights.\n- Peak season: 3 nights.\n- Festive period (24 Dec – 2 Jan): 5 nights.\n\n[cancellations-and-refunds#3] Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+  "data": {
+   "retrieved": {
+    "pricing-and-rates#4": {
+     "chunk_id": "pricing-and-rates#4",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.",
+     "score": 0.46667728391974883
+    },
+    "pricing-and-rates#2": {
+     "chunk_id": "pricing-and-rates#2",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Monsoon discount\n\nStays with every night between 1 June and 30 September get **20% off** the standard rate.",
+     "score": 0.46961551630216825
+    },
+    "monsoon-season#3": {
+     "chunk_id": "monsoon-season#3",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Price\n\nStays with every night between 1 June and 30 September get 20% off the standard rate (see\n\"Prices, seasons and minimum stays\").",
+     "score": 0.5804651958643976
+    },
+    "pricing-and-rates#1": {
+     "chunk_id": "pricing-and-rates#1",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Nightly rates\n\n| Villa | Standard (1 Mar – 30 Nov) | Peak (1 Dec – 28 Feb) | Festive (24 Dec – 2 Jan) |\n|---|---|---|---|\n| Villa Sol | ₹22,000 | ₹38,000 | ₹55,000 |\n| Casa Kokum | ₹16,000 | ₹28,000 | ₹42,000 |\n| The Cashew House | ₹9,000 | ₹16,000 | ₹24,000 |\n| Monsoon Cottage | ₹4,500 | ₹7,500 | ₹11,000 |",
+     "score": 0.6552268934333534
+    },
+    "long-stays-and-remote-work#0": {
+     "chunk_id": "long-stays-and-remote-work#0",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
+     "score": 0.5533244741102809
+    },
+    "long-stays-and-remote-work#3": {
+     "chunk_id": "long-stays-and-remote-work#3",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Utilities on long stays\n\nElectricity is included up to 30 units (kWh) per day at Monsoon Cottage on monthly stays; use\nabove that is charged at ₹10 per unit. Electricity is included without limit at the other villas.",
+     "score": 0.573828995736918
+    },
+    "pricing-and-rates#0": {
+     "chunk_id": "pricing-and-rates#0",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+     "score": 0.4634519248300135
+    },
+    "house-rules#1": {
+     "chunk_id": "house-rules#1",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Guests and visitors\n\n- Only guests named on the booking may stay overnight. The maximum guest count for each villa is\n  in \"Our villas\".\n- Day visitors are welcome between 9:00 am and 9:00 pm, up to 4 visitors at a time, and must be\n  told to the caretaker. More visitors count as an event (see \"Children, pets and events\").",
+     "score": 0.5250972800427444
+    },
+    "check-in-and-check-out#1": {
+     "chunk_id": "check-in-and-check-out#1",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > Early check-in and late check-out\n\n- Early check-in (from 10:00 am) and late check-out (until 2:00 pm) are each ₹1,000 per villa,\n  and only possible when the villa is free the night before or after.\n- We can confirm early check-in or late check-out no earlier than 48 hours before, because it\n  depends on other bookings.\n- Check-out later than 2:00 pm is charged as an extra night at the current nightly rate.",
+     "score": 0.5124031891596955
+    },
+    "pricing-and-rates#3": {
+     "chunk_id": "pricing-and-rates#3",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Minimum stays\n\n- Standard season: 2 nights.\n- Peak season: 3 nights.\n- Festive period (24 Dec – 2 Jan): 5 nights.",
+     "score": 0.5807330385994993
+    },
+    "cancellations-and-refunds#3": {
+     "chunk_id": "cancellations-and-refunds#3",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+     "score": 0.5014562257278948
+    }
+   },
+   "citations": [
+    "pricing-and-rates#1",
+    "pricing-and-rates#3",
+    "pricing-and-rates#4",
+    "pricing-and-rates#2"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-10",
+  "case_id": "inkb-g021",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "How many bedrooms are on the ground floor of Casa Kokum?",
+  "answer": "Casa Kokum has **2 bedrooms on the ground floor**. The villa has 3 bedrooms in total, with the remaining bedroom upstairs.",
+  "kb_excerpts": "[properties-overview#1] Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.\n\n[accessibility#0] Accessibility\n\nWe want every guest to know exactly what to expect before booking.\n\n| Villa | Step-free entrance | Ground-floor bedroom with bathroom | Notes |\n|---|---|---|---|\n| Villa Sol | Yes (ramp at side gate) | Yes, 1 bedroom | Grab rails in that bathroom; other bedrooms upstairs |\n| Casa Kokum | No (3 steps) | Yes, 2 bedrooms | Portable ramp available on request |\n| The Cashew House | No (5 steps) | No | Bedrooms and terrace reached by stairs only |\n| Monsoon Cottage | Yes | Yes | Narrow bathroom door (70 cm) |\n\n- None of the pools have hoists or ramps.\n- Garden paths are gravel at Casa Kokum and Villa Sol.\n- Assistance dogs are welcome at every villa, including those where pets aren't normally allowed,\n  with no cleaning fee.\n\nIf you need a detailed measurement or have a specific requirement, ask to speak to a person\nbefore booking and we'll answer honestly.\n\n[children-pets-and-events#0] Children, pets and events > Children\n\n- Children are welcome at every villa except The Cashew House for children under 5 (open\n  rooftop).\n- Children under 12 can stay on extra mattresses at no charge at Casa Kokum and Villa Sol,\n  up to 2 per booking. Children 12 and over count as adults for the guest limit.\n- A cot and a high chair are available free at every villa; ask at least 3 days before arrival.\n- Pools have no fences or lifeguard. Children must be supervised around water at all times.\n\n[properties-overview#3] Our villas > The Cashew House — Anjuna\n\n- 2 bedrooms, 2 bathrooms, sleeps up to 4 adults.\n- Plunge pool (4m × 2.5m), rooftop terrace.\n- Walking distance (10 minutes) to Anjuna beach and the Wednesday flea market.\n- Best for couples and friends. Not suitable for children under 5 because of the open rooftop.\n\n[children-pets-and-events#1] Children, pets and events > Pets\n\n- Dogs are allowed at **Casa Kokum and Villa Sol only**, up to 2 dogs per booking, with a\n  ₹1,500 per-stay cleaning fee.\n- Please tell us about pets when booking. Pets that weren't declared may lead to the stay being\n  ended without refund.\n- Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.\n- Cats and other animals aren't accepted, because the villas aren't secure for them.\n- Assistance dogs are welcome at every villa with no cleaning fee (see \"Accessibility\").",
+  "data": {
+   "retrieved": {
+    "properties-overview#1": {
+     "chunk_id": "properties-overview#1",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.",
+     "score": 0.6032397309170013
+    },
+    "accessibility#0": {
+     "chunk_id": "accessibility#0",
+     "doc_id": "accessibility",
+     "title": "Accessibility",
+     "text": "Accessibility\n\nWe want every guest to know exactly what to expect before booking.\n\n| Villa | Step-free entrance | Ground-floor bedroom with bathroom | Notes |\n|---|---|---|---|\n| Villa Sol | Yes (ramp at side gate) | Yes, 1 bedroom | Grab rails in that bathroom; other bedrooms upstairs |\n| Casa Kokum | No (3 steps) | Yes, 2 bedrooms | Portable ramp available on request |\n| The Cashew House | No (5 steps) | No | Bedrooms and terrace reached by stairs only |\n| Monsoon Cottage | Yes | Yes | Narrow bathroom door (70 cm) |\n\n- None of the pools have hoists or ramps.\n- Garden paths are gravel at Casa Kokum and Villa Sol.\n- Assistance dogs are welcome at every villa, including those where pets aren't normally allowed,\n  with no cleaning fee.\n\nIf you need a detailed measurement or have a specific requirement, ask to speak to a person\nbefore booking and we'll answer honestly.",
+     "score": 0.4733909658257698
+    },
+    "children-pets-and-events#0": {
+     "chunk_id": "children-pets-and-events#0",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Children\n\n- Children are welcome at every villa except The Cashew House for children under 5 (open\n  rooftop).\n- Children under 12 can stay on extra mattresses at no charge at Casa Kokum and Villa Sol,\n  up to 2 per booking. Children 12 and over count as adults for the guest limit.\n- A cot and a high chair are available free at every villa; ask at least 3 days before arrival.\n- Pools have no fences or lifeguard. Children must be supervised around water at all times.",
+     "score": 0.46368244441954387
+    },
+    "properties-overview#3": {
+     "chunk_id": "properties-overview#3",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > The Cashew House — Anjuna\n\n- 2 bedrooms, 2 bathrooms, sleeps up to 4 adults.\n- Plunge pool (4m × 2.5m), rooftop terrace.\n- Walking distance (10 minutes) to Anjuna beach and the Wednesday flea market.\n- Best for couples and friends. Not suitable for children under 5 because of the open rooftop.",
+     "score": 0.45173248339347527
+    },
+    "children-pets-and-events#1": {
+     "chunk_id": "children-pets-and-events#1",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Pets\n\n- Dogs are allowed at **Casa Kokum and Villa Sol only**, up to 2 dogs per booking, with a\n  ₹1,500 per-stay cleaning fee.\n- Please tell us about pets when booking. Pets that weren't declared may lead to the stay being\n  ended without refund.\n- Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.\n- Cats and other animals aren't accepted, because the villas aren't secure for them.\n- Assistance dogs are welcome at every villa with no cleaning fee (see \"Accessibility\").",
+     "score": 0.43184876728139554
+    }
+   },
+   "citations": [
+    "accessibility#0"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-11",
+  "case_id": "inkb-h012",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "is it safe to keep everything in the villa? laptops, money etc",
+  "answer": "Each villa has a safe in the main bedroom where you can keep passports, laptops, money and other valuables. We recommend using it and locking doors and windows when you go out. \n\nThe villas have CCTV at the gate and driveway only – there are no cameras inside – and our caretakers are on-site. That said, we can't be responsible for valuables left outside the in-room safe, so please do use it for anything important.",
+  "kb_excerpts": "[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[lost-and-found#0] Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.\n\n[long-stays-and-remote-work#1] Long stays and remote work > Working from the villa\n\n- Villa Sol has dedicated work desks in two bedrooms; the other villas have a dining table and a\n  desk in the main bedroom.\n- Fibre broadband with a 4G backup router at every villa. We can't guarantee video-call quality\n  during monsoon storms.\n- Power backup keeps Wi-Fi running for about 6 hours during cuts.\n\n[privacy-and-data#3] Privacy and your data > Cameras\n\nCCTV covers the gate and driveway only. There are no cameras inside any villa.\n\n[kitchen-and-appliances#4] Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+  "data": {
+   "retrieved": {
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.5871801671127086
+    },
+    "lost-and-found#0": {
+     "chunk_id": "lost-and-found#0",
+     "doc_id": "lost-and-found",
+     "title": "Lost and found",
+     "text": "Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.",
+     "score": 0.45573483412425164
+    },
+    "long-stays-and-remote-work#1": {
+     "chunk_id": "long-stays-and-remote-work#1",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Working from the villa\n\n- Villa Sol has dedicated work desks in two bedrooms; the other villas have a dining table and a\n  desk in the main bedroom.\n- Fibre broadband with a 4G backup router at every villa. We can't guarantee video-call quality\n  during monsoon storms.\n- Power backup keeps Wi-Fi running for about 6 hours during cuts.",
+     "score": 0.38879554421313667
+    },
+    "privacy-and-data#3": {
+     "chunk_id": "privacy-and-data#3",
+     "doc_id": "privacy-and-data",
+     "title": "Privacy and your data",
+     "text": "Privacy and your data > Cameras\n\nCCTV covers the gate and driveway only. There are no cameras inside any villa.",
+     "score": 0.3872241999858306
+    },
+    "kitchen-and-appliances#4": {
+     "chunk_id": "kitchen-and-appliances#4",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+     "score": 0.3872079941462844
+    }
+   },
+   "citations": [
+    "pool-and-safety#4",
+    "lost-and-found#0"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-12",
+  "case_id": "inkb-g048",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "I booked for Christmas, but now I have to change my plans. Is there any way I can get my money back?",
+  "answer": "I'd be happy to help you understand your refund options for your Christmas booking. To look up your booking and check what refund applies, I'll need two pieces of information:\n\n1. Your booking reference (format: XX-1234)\n2. The email address you used when booking\n\nOnce you provide those details, I can tell you exactly what refund percentage applies if you cancel now and explain the process.",
+  "kb_excerpts": "",
+  "data": {
+   "retrieved": {},
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-13",
+  "case_id": "inkb-g003",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "if i cancel last min can i get my money back?",
+  "answer": "To check what refund you'd receive for a last-minute cancellation, I need your booking reference and email address to look up your specific booking.\n\nIn general, for direct bookings during standard season (1 March–30 November), cancellations made **less than 14 days before check-in receive no refund**. If you have exceptional circumstances (illness, airline cancellation, family emergency), you can request to speak with a manager who will review your case individually.\n\nPlease share your booking reference (format: XX-1234) and email so I can give you the exact refund amount for your booking.",
+  "kb_excerpts": "[cancellations-and-refunds#0] Cancellations, changes and refunds\n\nThis policy applies to bookings made directly on our website. **Bookings made on a booking\nplatform follow that platform's cancellation terms.**\n\n[cancellations-and-refunds#1] Cancellations, changes and refunds > Standard season (1 March – 30 November)\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 30 or more days before check-in | 100% |\n| 14–29 days before check-in | 50% |\n| Less than 14 days before check-in | No refund |\n\n[cancellations-and-refunds#5] Cancellations, changes and refunds > Exceptions\n\nWe do not make exceptions to this policy over chat. If something serious has happened (illness,\na flight cancelled by the airline, a family emergency), ask to speak to a person — a manager\nreviews each case individually and will reply within one working day.\n\n[cancellations-and-refunds#3] Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.\n\n[monsoon-season#4] Staying during the monsoon (June – September) > Weather and cancellations\n\nThe standard cancellation policy applies in the monsoon. Bad weather alone is not a reason for a\nrefund. If an official weather warning closes roads or airports on your arrival day, ask to speak\nto a person and a manager will review moving your dates.",
+  "data": {
+   "retrieved": {
+    "cancellations-and-refunds#0": {
+     "chunk_id": "cancellations-and-refunds#0",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds\n\nThis policy applies to bookings made directly on our website. **Bookings made on a booking\nplatform follow that platform's cancellation terms.**",
+     "score": 0.5610045622646395
+    },
+    "cancellations-and-refunds#1": {
+     "chunk_id": "cancellations-and-refunds#1",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Standard season (1 March – 30 November)\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 30 or more days before check-in | 100% |\n| 14–29 days before check-in | 50% |\n| Less than 14 days before check-in | No refund |",
+     "score": 0.5499001477506277
+    },
+    "cancellations-and-refunds#5": {
+     "chunk_id": "cancellations-and-refunds#5",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Exceptions\n\nWe do not make exceptions to this policy over chat. If something serious has happened (illness,\na flight cancelled by the airline, a family emergency), ask to speak to a person — a manager\nreviews each case individually and will reply within one working day.",
+     "score": 0.5159750427483277
+    },
+    "cancellations-and-refunds#3": {
+     "chunk_id": "cancellations-and-refunds#3",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+     "score": 0.5142098025263432
+    },
+    "monsoon-season#4": {
+     "chunk_id": "monsoon-season#4",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Weather and cancellations\n\nThe standard cancellation policy applies in the monsoon. Bad weather alone is not a reason for a\nrefund. If an official weather warning closes roads or airports on your arrival day, ask to speak\nto a person and a manager will review moving your dates.",
+     "score": 0.5043546868973094
+    }
+   },
+   "citations": [
+    "cancellations-and-refunds#1",
+    "cancellations-and-refunds#5"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-14",
+  "case_id": "inkb-g034",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "hey, how much is Casa Kokum for new years?",
+  "answer": "Casa Kokum is **₹42,000 per night** during the festive period (24 Dec – 2 Jan), which covers New Year's. There's a **5-night minimum stay** for the festive period, plus a ₹500 processing fee per booking.\n\nSo for the minimum 5 nights over New Year, you'd be looking at ₹2,10,500 total (₹42,000 × 5 + ₹500). Casa Kokum sleeps up to 6 adults and has a private pool – perfect for a group celebration!",
+  "kb_excerpts": "[pricing-and-rates#1] Prices, seasons and minimum stays > Nightly rates\n\n| Villa | Standard (1 Mar – 30 Nov) | Peak (1 Dec – 28 Feb) | Festive (24 Dec – 2 Jan) |\n|---|---|---|---|\n| Villa Sol | ₹22,000 | ₹38,000 | ₹55,000 |\n| Casa Kokum | ₹16,000 | ₹28,000 | ₹42,000 |\n| The Cashew House | ₹9,000 | ₹16,000 | ₹24,000 |\n| Monsoon Cottage | ₹4,500 | ₹7,500 | ₹11,000 |\n\n[properties-overview#1] Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.\n\n[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.\n\n[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[pricing-and-rates#3] Prices, seasons and minimum stays > Minimum stays\n\n- Standard season: 2 nights.\n- Peak season: 3 nights.\n- Festive period (24 Dec – 2 Jan): 5 nights.\n\n[children-pets-and-events#1] Children, pets and events > Pets\n\n- Dogs are allowed at **Casa Kokum and Villa Sol only**, up to 2 dogs per booking, with a\n  ₹1,500 per-stay cleaning fee.\n- Please tell us about pets when booking. Pets that weren't declared may lead to the stay being\n  ended without refund.\n- Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.\n- Cats and other animals aren't accepted, because the villas aren't secure for them.\n- Assistance dogs are welcome at every villa with no cleaning fee (see \"Accessibility\").",
+  "data": {
+   "retrieved": {
+    "pricing-and-rates#1": {
+     "chunk_id": "pricing-and-rates#1",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Nightly rates\n\n| Villa | Standard (1 Mar – 30 Nov) | Peak (1 Dec – 28 Feb) | Festive (24 Dec – 2 Jan) |\n|---|---|---|---|\n| Villa Sol | ₹22,000 | ₹38,000 | ₹55,000 |\n| Casa Kokum | ₹16,000 | ₹28,000 | ₹42,000 |\n| The Cashew House | ₹9,000 | ₹16,000 | ₹24,000 |\n| Monsoon Cottage | ₹4,500 | ₹7,500 | ₹11,000 |",
+     "score": 0.5757049171197963
+    },
+    "properties-overview#1": {
+     "chunk_id": "properties-overview#1",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Casa Kokum — Assagao\n\n- 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).\n- Private pool (8m × 4m), garden, outdoor dining for 8.\n- About 15 minutes by car to Anjuna and Vagator beaches.\n- Best for families and small groups who want a quiet base.",
+     "score": 0.5200856470221461
+    },
+    "pricing-and-rates#4": {
+     "chunk_id": "pricing-and-rates#4",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.",
+     "score": 0.4594425758907372
+    },
+    "pricing-and-rates#0": {
+     "chunk_id": "pricing-and-rates#0",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+     "score": 0.4557041714602603
+    },
+    "long-stays-and-remote-work#0": {
+     "chunk_id": "long-stays-and-remote-work#0",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
+     "score": 0.45513298727739127
+    },
+    "pricing-and-rates#3": {
+     "chunk_id": "pricing-and-rates#3",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Minimum stays\n\n- Standard season: 2 nights.\n- Peak season: 3 nights.\n- Festive period (24 Dec – 2 Jan): 5 nights.",
+     "score": 0.5533752544826464
+    },
+    "children-pets-and-events#1": {
+     "chunk_id": "children-pets-and-events#1",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Pets\n\n- Dogs are allowed at **Casa Kokum and Villa Sol only**, up to 2 dogs per booking, with a\n  ₹1,500 per-stay cleaning fee.\n- Please tell us about pets when booking. Pets that weren't declared may lead to the stay being\n  ended without refund.\n- Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.\n- Cats and other animals aren't accepted, because the villas aren't secure for them.\n- Assistance dogs are welcome at every villa with no cleaning fee (see \"Accessibility\").",
+     "score": 0.45386208934031513
+    }
+   },
+   "citations": [
+    "pricing-and-rates#1",
+    "pricing-and-rates#3",
+    "pricing-and-rates#0"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "gro-15",
+  "case_id": "inkb-g023",
+  "rubric": "groundedness",
+  "metric": "grounded",
+  "question": "What is the refund policy for a booking in peak season if I cancel 30 days before check-in?",
+  "answer": "If you cancel a **peak season** booking (1 December – 28 February) **30 days before check-in**, you'll receive a **50% refund** of the amount paid. Peak season cancellations made 21–44 days before check-in get 50%; you'd need to cancel 45+ days out for a full refund.\n\nThe refund goes back to your original payment method within 7–10 working days, though the ₹500 processing fee is not refunded.\n\n**Note:** If your booking includes 24 December to 2 January, it's non-refundable once confirmed, but can be moved once to other dates.",
+  "kb_excerpts": "[cancellations-and-refunds#2] Cancellations, changes and refunds > Peak season (1 December – 28 February)\n\nIncludes Christmas, New Year and the main winter season.\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 45 or more days before check-in | 100% |\n| 21–44 days before check-in | 50% |\n| Less than 21 days before check-in | No refund |\n\nBookings that include **24 December to 2 January** are non-refundable once confirmed, but can\nbe moved once to other dates (see below).\n\n[cancellations-and-refunds#1] Cancellations, changes and refunds > Standard season (1 March – 30 November)\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 30 or more days before check-in | 100% |\n| 14–29 days before check-in | 50% |\n| Less than 14 days before check-in | No refund |\n\n[cancellations-and-refunds#3] Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.\n\n[monsoon-season#4] Staying during the monsoon (June – September) > Weather and cancellations\n\nThe standard cancellation policy applies in the monsoon. Bad weather alone is not a reason for a\nrefund. If an official weather warning closes roads or airports on your arrival day, ask to speak\nto a person and a manager will review moving your dates.\n\n[payments-and-deposits#0] Payments and the security deposit > Paying for your booking (direct bookings)\n\n- **30% deposit** when you book, to confirm the dates.\n- **Balance** due 14 days before check-in (21 days in peak season, 1 December – 28 February).\n  If the balance isn't paid on time we send a reminder; after 3 days the booking may be cancelled\n  under the cancellation policy.\n- Bookings made less than 14 days before check-in are paid in full when booked.\n- We accept UPI, Indian and international cards, and bank transfer. A ₹500 processing fee applies\n  to each booking. We do not accept cash for booking payments.\n\n[cancellations-and-refunds#4] Cancellations, changes and refunds > How refunds are paid\n\n- Refunds go back to the original payment method within 7–10 working days.\n- The ₹500 payment-processing fee is not refunded on cancellations.\n\n[payments-and-deposits#1] Payments and the security deposit > Security deposit\n\n| Villa | Deposit |\n|---|---|\n| Villa Sol | ₹20,000 |\n| Casa Kokum | ₹15,000 |\n| The Cashew House | ₹10,000 |\n| Monsoon Cottage | ₹5,000 |\n\n- The deposit is taken as a card pre-authorisation or a UPI payment on arrival.\n- It is released or refunded within **5 working days** after the caretaker's check-out check.\n- Deductions are only made for damage beyond normal wear, missing items, indoor smoking\n  (₹5,000), or late check-out beyond 2:00 pm (one night). We send photos and an itemised list\n  before deducting anything.\n\n[cancellations-and-refunds#5] Cancellations, changes and refunds > Exceptions\n\nWe do not make exceptions to this policy over chat. If something serious has happened (illness,\na flight cancelled by the airline, a family emergency), ask to speak to a person — a manager\nreviews each case individually and will reply within one working day.",
+  "data": {
+   "retrieved": {
+    "cancellations-and-refunds#2": {
+     "chunk_id": "cancellations-and-refunds#2",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Peak season (1 December – 28 February)\n\nIncludes Christmas, New Year and the main winter season.\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 45 or more days before check-in | 100% |\n| 21–44 days before check-in | 50% |\n| Less than 21 days before check-in | No refund |\n\nBookings that include **24 December to 2 January** are non-refundable once confirmed, but can\nbe moved once to other dates (see below).",
+     "score": 0.666760648967707
+    },
+    "cancellations-and-refunds#1": {
+     "chunk_id": "cancellations-and-refunds#1",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Standard season (1 March – 30 November)\n\n| When you cancel | Refund of amount paid |\n|---|---|\n| 30 or more days before check-in | 100% |\n| 14–29 days before check-in | 50% |\n| Less than 14 days before check-in | No refund |",
+     "score": 0.42002459184067553
+    },
+    "cancellations-and-refunds#3": {
+     "chunk_id": "cancellations-and-refunds#3",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Changing dates\n\n- You can move your dates **once** at no charge if you ask at least 14 days before check-in and\n  the new dates are within 6 months. Any price difference for the new dates is payable.\n- Shortening a stay after check-in is treated as a cancellation of the unused nights, with no\n  refund for those nights.",
+     "score": 0.533543876366535
+    },
+    "monsoon-season#4": {
+     "chunk_id": "monsoon-season#4",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Weather and cancellations\n\nThe standard cancellation policy applies in the monsoon. Bad weather alone is not a reason for a\nrefund. If an official weather warning closes roads or airports on your arrival day, ask to speak\nto a person and a manager will review moving your dates.",
+     "score": 0.5156431398957746
+    },
+    "payments-and-deposits#0": {
+     "chunk_id": "payments-and-deposits#0",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Paying for your booking (direct bookings)\n\n- **30% deposit** when you book, to confirm the dates.\n- **Balance** due 14 days before check-in (21 days in peak season, 1 December – 28 February).\n  If the balance isn't paid on time we send a reminder; after 3 days the booking may be cancelled\n  under the cancellation policy.\n- Bookings made less than 14 days before check-in are paid in full when booked.\n- We accept UPI, Indian and international cards, and bank transfer. A ₹500 processing fee applies\n  to each booking. We do not accept cash for booking payments.",
+     "score": 0.42125522284310146
+    },
+    "cancellations-and-refunds#4": {
+     "chunk_id": "cancellations-and-refunds#4",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > How refunds are paid\n\n- Refunds go back to the original payment method within 7–10 working days.\n- The ₹500 payment-processing fee is not refunded on cancellations.",
+     "score": 0.6649404708617471
+    },
+    "payments-and-deposits#1": {
+     "chunk_id": "payments-and-deposits#1",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Security deposit\n\n| Villa | Deposit |\n|---|---|\n| Villa Sol | ₹20,000 |\n| Casa Kokum | ₹15,000 |\n| The Cashew House | ₹10,000 |\n| Monsoon Cottage | ₹5,000 |\n\n- The deposit is taken as a card pre-authorisation or a UPI payment on arrival.\n- It is released or refunded within **5 working days** after the caretaker's check-out check.\n- Deductions are only made for damage beyond normal wear, missing items, indoor smoking\n  (₹5,000), or late check-out beyond 2:00 pm (one night). We send photos and an itemised list\n  before deducting anything.",
+     "score": 0.3872890388917396
+    },
+    "cancellations-and-refunds#5": {
+     "chunk_id": "cancellations-and-refunds#5",
+     "doc_id": "cancellations-and-refunds",
+     "title": "Cancellations, changes and refunds",
+     "text": "Cancellations, changes and refunds > Exceptions\n\nWe do not make exceptions to this policy over chat. If something serious has happened (illness,\na flight cancelled by the airline, a family emergency), ask to speak to a person — a manager\nreviews each case individually and will reply within one working day.",
+     "score": 0.3837753030312627
+    }
+   },
+   "citations": [
+    "cancellations-and-refunds#2",
+    "cancellations-and-refunds#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-16",
+  "case_id": "ookb-g009",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "What is the weather forecast for Goa next week?",
+  "answer": "I don't have access to weather forecasts in my knowledge base. My information covers Palmgrove Stays' villas, policies, and booking details, but not real-time or forecast weather data.\n\nFor an accurate weather forecast for Goa next week, I'd recommend checking weather websites like weather.com or accuweather.com, the India Meteorological Department (IMD) website, or weather apps on your phone.\n\nIs there anything else I can help you with regarding your stay at Palmgrove Stays?",
+  "kb_excerpts": "",
+  "data": {
+   "retrieved": {},
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-17",
+  "case_id": "ookb-h011",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Could you please suggest us a place for holi celebrations?",
+  "answer": "I don't have specific information about Holi celebration venues in our knowledge base. Our local guide covers beaches, markets, day trips and general activities in North Goa, but doesn't include festival-specific recommendations.\n\nI'd recommend asking our caretaker team when you arrive – they're locals and will know the best spots for Holi celebrations happening during your stay. You can also reach out to our guest-relations team (available 8am–10pm IST daily) closer to your dates for current recommendations, as the best venues can change from year to year!",
+  "kb_excerpts": "[children-pets-and-events#3] Children, pets and events > Celebrations\n\nSmall celebrations for the booked guests are welcome. We can arrange a cake, flowers or\ndecorations with 48 hours' notice; prices on request.\n\n[monsoon-season#5] Staying during the monsoon (June – September) > Things to do in the monsoon\n\nWaterfall visits (with a local guide), spice farm tours, Old Goa churches, cooking classes and\nmonsoon festivals such as São João in late June. See \"Local guide: North Goa\".\n\n[extras-chef-groceries-experiences#4] Extras: chef, groceries and experiences > Experiences\n\n- Spice farm tour with lunch: ₹2,200 per adult, including transport.\n- Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).\n- Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.\n- Yoga session at the villa: ₹1,500 per session for up to 4 people.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.\n\n[local-guide-north-goa#2] Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.\n\n[local-guide-north-goa#5] Local guide — North Goa > Getting around\n\nSee \"Getting here and airport transfers\" for taxis, scooter rental and parking.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.\n\n[local-guide-north-goa#4] Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.\n\n[local-guide-north-goa#3] Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.\n\n[local-guide-north-goa#1] Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+  "data": {
+   "retrieved": {
+    "children-pets-and-events#3": {
+     "chunk_id": "children-pets-and-events#3",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Celebrations\n\nSmall celebrations for the booked guests are welcome. We can arrange a cake, flowers or\ndecorations with 48 hours' notice; prices on request.",
+     "score": 0.3288515999918038
+    },
+    "monsoon-season#5": {
+     "chunk_id": "monsoon-season#5",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Things to do in the monsoon\n\nWaterfall visits (with a local guide), spice farm tours, Old Goa churches, cooking classes and\nmonsoon festivals such as São João in late June. See \"Local guide: North Goa\".",
+     "score": 0.286682847883581
+    },
+    "extras-chef-groceries-experiences#4": {
+     "chunk_id": "extras-chef-groceries-experiences#4",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Experiences\n\n- Spice farm tour with lunch: ₹2,200 per adult, including transport.\n- Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).\n- Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.\n- Yoga session at the villa: ₹1,500 per session for up to 4 people.",
+     "score": 0.266252809603468
+    },
+    "pricing-and-rates#0": {
+     "chunk_id": "pricing-and-rates#0",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+     "score": 0.2562574076828523
+    },
+    "local-guide-north-goa#2": {
+     "chunk_id": "local-guide-north-goa#2",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.",
+     "score": 0.2555663870905469
+    },
+    "local-guide-north-goa#5": {
+     "chunk_id": "local-guide-north-goa#5",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Getting around\n\nSee \"Getting here and airport transfers\" for taxis, scooter rental and parking.",
+     "score": 0.7459408493908777
+    },
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.7201310949331423
+    },
+    "local-guide-north-goa#4": {
+     "chunk_id": "local-guide-north-goa#4",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.",
+     "score": 0.7125755748721975
+    },
+    "local-guide-north-goa#3": {
+     "chunk_id": "local-guide-north-goa#3",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.",
+     "score": 0.7020180007912473
+    },
+    "local-guide-north-goa#1": {
+     "chunk_id": "local-guide-north-goa#1",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+     "score": 0.7012555467698669
+    }
+   },
+   "citations": [
+    "local-guide-north-goa#0",
+    "local-guide-north-goa#3"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-18",
+  "case_id": "ookb-h004",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Can you provide a dental kit?",
+  "answer": "I don't have information in our policies about dental kits or toiletries being provided at the villas. I'd recommend bringing your own toothbrush, toothpaste, and other personal toiletries. If you need anything during your stay, the caretaker can help you purchase items locally.",
+  "kb_excerpts": "[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.\n\n[wifi-power-and-utilities#4] Wi-Fi, power and utilities > Drinking water\n\nFiltered drinking water is available from the kitchen purifier. Bottled water is not provided,\nbut the caretaker can buy it for you at cost.\n\n[extras-chef-groceries-experiences#2] Extras: chef, groceries and experiences > Grocery stocking\n\nWe can stock the kitchen before you arrive: send a list at least 48 hours before check-in. You\npay the shop price plus a ₹500 service charge.\n\n[kitchen-and-appliances#4] Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[housekeeping-and-linen#1] Housekeeping, linen and laundry > Linen and towels\n\n- Bed linen and bath towels are changed every 3 days, or between guests on a booking.\n- Pool and beach towels are provided (2 per guest) and swapped daily on request.\n- Extra linen or towels are free; ask the caretaker.\n\n[wifi-power-and-utilities#3] Wi-Fi, power and utilities > Hot water\n\nEach bathroom has a water heater. Switch it on about 20 minutes before a shower; the switch is\noutside the bathroom door.\n\n[housekeeping-and-linen#0] Housekeeping, linen and laundry > Housekeeping\n\n- Daily housekeeping between 10:00 am and 1:00 pm, **except Sundays**.\n- Tell the caretaker if you'd like a different time that day or no cleaning at all.\n- Housekeeping covers sweeping, mopping, bathrooms, bins and washing up left in the sink.\n\n[booking-direct#2] How to book and change a booking > Adding guests\n\nYou can add guests up to the villa's maximum (see \"Our villas\") at no extra charge. Tell us their\nnames before arrival; every adult needs ID at check-in.\n\n[house-rules#1] House rules > Guests and visitors\n\n- Only guests named on the booking may stay overnight. The maximum guest count for each villa is\n  in \"Our villas\".\n- Day visitors are welcome between 9:00 am and 9:00 pm, up to 4 visitors at a time, and must be\n  told to the caretaker. More visitors count as an event (see \"Children, pets and events\").\n\n[children-pets-and-events#3] Children, pets and events > Celebrations\n\nSmall celebrations for the booked guests are welcome. We can arrange a cake, flowers or\ndecorations with 48 hours' notice; prices on request.",
+  "data": {
+   "retrieved": {
+    "kitchen-and-appliances#0": {
+     "chunk_id": "kitchen-and-appliances#0",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.",
+     "score": 0.37703048818308993
+    },
+    "wifi-power-and-utilities#4": {
+     "chunk_id": "wifi-power-and-utilities#4",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Drinking water\n\nFiltered drinking water is available from the kitchen purifier. Bottled water is not provided,\nbut the caretaker can buy it for you at cost.",
+     "score": 0.3569323891554006
+    },
+    "extras-chef-groceries-experiences#2": {
+     "chunk_id": "extras-chef-groceries-experiences#2",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Grocery stocking\n\nWe can stock the kitchen before you arrive: send a list at least 48 hours before check-in. You\npay the shop price plus a ₹500 service charge.",
+     "score": 0.3164066644943987
+    },
+    "kitchen-and-appliances#4": {
+     "chunk_id": "kitchen-and-appliances#4",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+     "score": 0.37666696241257824
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.3785240652499955
+    },
+    "housekeeping-and-linen#1": {
+     "chunk_id": "housekeeping-and-linen#1",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Linen and towels\n\n- Bed linen and bath towels are changed every 3 days, or between guests on a booking.\n- Pool and beach towels are provided (2 per guest) and swapped daily on request.\n- Extra linen or towels are free; ask the caretaker.",
+     "score": 0.361627225759922
+    },
+    "wifi-power-and-utilities#3": {
+     "chunk_id": "wifi-power-and-utilities#3",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Hot water\n\nEach bathroom has a water heater. Switch it on about 20 minutes before a shower; the switch is\noutside the bathroom door.",
+     "score": 0.35938638713826787
+    },
+    "housekeeping-and-linen#0": {
+     "chunk_id": "housekeeping-and-linen#0",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Housekeeping\n\n- Daily housekeeping between 10:00 am and 1:00 pm, **except Sundays**.\n- Tell the caretaker if you'd like a different time that day or no cleaning at all.\n- Housekeeping covers sweeping, mopping, bathrooms, bins and washing up left in the sink.",
+     "score": 0.33434978503544843
+    },
+    "booking-direct#2": {
+     "chunk_id": "booking-direct#2",
+     "doc_id": "booking-direct",
+     "title": "How to book and change a booking",
+     "text": "How to book and change a booking > Adding guests\n\nYou can add guests up to the villa's maximum (see \"Our villas\") at no extra charge. Tell us their\nnames before arrival; every adult needs ID at check-in.",
+     "score": 0.40771930850885196
+    },
+    "house-rules#1": {
+     "chunk_id": "house-rules#1",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Guests and visitors\n\n- Only guests named on the booking may stay overnight. The maximum guest count for each villa is\n  in \"Our villas\".\n- Day visitors are welcome between 9:00 am and 9:00 pm, up to 4 visitors at a time, and must be\n  told to the caretaker. More visitors count as an event (see \"Children, pets and events\").",
+     "score": 0.39355508391713356
+    },
+    "children-pets-and-events#3": {
+     "chunk_id": "children-pets-and-events#3",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Celebrations\n\nSmall celebrations for the booked guests are welcome. We can arrange a cake, flowers or\ndecorations with 48 hours' notice; prices on request.",
+     "score": 0.375950235296713
+    }
+   },
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-19",
+  "case_id": "ookb-g003",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "What are the flight prices from Mumbai to Goa?",
+  "answer": "I don't have information about flight prices from Mumbai to Goa – that's something you'd need to check with airlines or travel booking sites directly.\n\nWhat I can help with is arranging your airport transfer once you arrive in Goa! We offer pickups from both Mopa Airport (₹2,200 for a sedan, ₹3,000 for an SUV) and Dabolim Airport (₹2,800 for a sedan, ₹3,800 for an SUV). Just let us know your flight details at least 24 hours in advance.",
+  "kb_excerpts": "[getting-here-and-transfers#1] Getting here and airport transfers > Airport transfers we arrange\n\n| Route | Sedan (up to 3 guests) | SUV (up to 6 guests) |\n| Mopa (GOX) to any villa | ₹2,200 | ₹3,000 |\n| Dabolim (GOI) to any villa | ₹2,800 | ₹3,800 |\n- Book at least 24 hours before your flight; we need the flight number.\n- The driver tracks your flight and waits up to 60 minutes after landing at no charge.\n- Night transfers between 11:00 pm and 6:00 am cost ₹500 extra.\n- Transfers are added to your bill and paid before check-out.\n\n[getting-here-and-transfers#0] Getting here and airport transfers > Airports\n\nGoa has two airports:\n- Manohar International Airport, Mopa (GOX) in North Goa — the closest to our villas: about 35–45 minutes to Siolim and Assagao, 50 minutes to Anjuna and Candolim.\n- Dabolim Airport (GOI) in South Goa — about 75–90 minutes to our villas, longer in evening traffic.\nCheck which airport your flight uses before booking a transfer.\n\n[local-guide-north-goa#5] Local guide — North Goa > Getting around\n\nSee \"Getting here and airport transfers\" for taxis, scooter rental and parking.\n\n[getting-here-and-transfers#2] Getting here and airport transfers > Trains\n\nThe closest railway stations are Thivim (about 25 minutes from Assagao and Siolim) and Karmali. We can arrange a pickup from Thivim for ₹1,200.\n\n[extras-chef-groceries-experiences#4] Extras: chef, groceries and experiences > Experiences\n\n- Spice farm tour with lunch: ₹2,200 per adult, including transport.\n- Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).\n- Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.\n- Yoga session at the villa: ₹1,500 per session for up to 4 people.",
+  "data": {
+   "retrieved": {
+    "getting-here-and-transfers#1": {
+     "chunk_id": "getting-here-and-transfers#1",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Airport transfers we arrange\n\n| Route | Sedan (up to 3 guests) | SUV (up to 6 guests) |\n| Mopa (GOX) to any villa | ₹2,200 | ₹3,000 |\n| Dabolim (GOI) to any villa | ₹2,800 | ₹3,800 |\n- Book at least 24 hours before your flight; we need the flight number.\n- The driver tracks your flight and waits up to 60 minutes after landing at no charge.\n- Night transfers between 11:00 pm and 6:00 am cost ₹500 extra.\n- Transfers are added to your bill and paid before check-out.",
+     "score": 0.5087526067228879
+    },
+    "getting-here-and-transfers#0": {
+     "chunk_id": "getting-here-and-transfers#0",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Airports\n\nGoa has two airports:\n- Manohar International Airport, Mopa (GOX) in North Goa — the closest to our villas: about 35–45 minutes to Siolim and Assagao, 50 minutes to Anjuna and Candolim.\n- Dabolim Airport (GOI) in South Goa — about 75–90 minutes to our villas, longer in evening traffic.\nCheck which airport your flight uses before booking a transfer.",
+     "score": 0.49799326404473043
+    },
+    "local-guide-north-goa#5": {
+     "chunk_id": "local-guide-north-goa#5",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Getting around\n\nSee \"Getting here and airport transfers\" for taxis, scooter rental and parking.",
+     "score": 0.4392999453847115
+    },
+    "getting-here-and-transfers#2": {
+     "chunk_id": "getting-here-and-transfers#2",
+     "doc_id": "getting-here-and-transfers",
+     "title": "Getting here and airport transfers",
+     "text": "Getting here and airport transfers > Trains\n\nThe closest railway stations are Thivim (about 25 minutes from Assagao and Siolim) and Karmali. We can arrange a pickup from Thivim for ₹1,200.",
+     "score": 0.4227221339062972
+    },
+    "extras-chef-groceries-experiences#4": {
+     "chunk_id": "extras-chef-groceries-experiences#4",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Experiences\n\n- Spice farm tour with lunch: ₹2,200 per adult, including transport.\n- Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).\n- Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.\n- Yoga session at the villa: ₹1,500 per session for up to 4 people.",
+     "score": 0.4216381307957062
+    }
+   },
+   "citations": [
+    "getting-here-and-transfers#1",
+    "getting-here-and-transfers#0"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-20",
+  "case_id": "ookb-g008",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Can you recommend a good tailor in Mapusa for a quick suit alteration?",
+  "answer": "I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.\n\nIf you have any questions about our villas, your booking, or what to expect during your stay with us, I'm happy to help with those!",
+  "kb_excerpts": "[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration\n\nForeign guests on long stays still need Form C registration (see \"Guest ID and registration\").\nWe can't advise on visa rules; please check with the Indian authorities.\n\n[guest-id-and-registration#2] Guest ID and registration > Foreign nationals\n\n- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on\n  arrival.\n- We are required to submit a **Form C** registration to the immigration authorities within\n  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page\n  for this.\n- Overseas Citizens of India (OCI) cardholders still need Form C registration.\n\n[guest-id-and-registration#1] Guest ID and registration > Indian citizens\n\n- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,\n  driving licence or voter ID.\n- PAN cards are not accepted as ID for check-in.\n- You can upload ID copies through the link in your confirmation email before arrival to make\n  check-in faster.\n\n[lost-and-found#0] Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.\n\n[guest-id-and-registration#0] Guest ID and registration\n\nIndian law requires accommodation providers to check and record the identity of every adult\nguest. We can't check anyone in without valid ID.\n\n[pricing-and-rates#0] Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.\n\n[payments-and-deposits#3] Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.",
+  "data": {
+   "retrieved": {
+    "long-stays-and-remote-work#4": {
+     "chunk_id": "long-stays-and-remote-work#4",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Visas and registration\n\nForeign guests on long stays still need Form C registration (see \"Guest ID and registration\").\nWe can't advise on visa rules; please check with the Indian authorities.",
+     "score": 0.465688874182818
+    },
+    "guest-id-and-registration#2": {
+     "chunk_id": "guest-id-and-registration#2",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration > Foreign nationals\n\n- Every foreign guest (any age) shows their **passport and valid Indian visa** (or OCI card) on\n  arrival.\n- We are required to submit a **Form C** registration to the immigration authorities within\n  24 hours of your arrival. The caretaker takes photos of the passport photo page and visa page\n  for this.\n- Overseas Citizens of India (OCI) cardholders still need Form C registration.",
+     "score": 0.3306879071788784
+    },
+    "guest-id-and-registration#1": {
+     "chunk_id": "guest-id-and-registration#1",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration > Indian citizens\n\n- Every guest aged 18 or over shows a government photo ID on arrival: Aadhaar card, passport,\n  driving licence or voter ID.\n- PAN cards are not accepted as ID for check-in.\n- You can upload ID copies through the link in your confirmation email before arrival to make\n  check-in faster.",
+     "score": 0.32381181753113986
+    },
+    "lost-and-found#0": {
+     "chunk_id": "lost-and-found#0",
+     "doc_id": "lost-and-found",
+     "title": "Lost and found",
+     "text": "Lost and found\n\n- The caretaker checks the villa after every check-out and logs anything left behind.\n- Tell us as soon as possible what you left and where. We keep items for **30 days**.\n- We can courier items within India at cost plus a ₹300 handling fee, paid in advance by UPI or\n  card. International shipping is at cost plus ₹1,000 handling; we can't ship liquids, food,\n  medicines or valuables over ₹20,000 internationally.\n- Unclaimed items after 30 days are donated, except passports and ID documents, which are handed\n  to the local police station.\n- We're not responsible for valuables left outside the in-room safe.",
+     "score": 0.3181008410906746
+    },
+    "guest-id-and-registration#0": {
+     "chunk_id": "guest-id-and-registration#0",
+     "doc_id": "guest-id-and-registration",
+     "title": "Guest ID and registration",
+     "text": "Guest ID and registration\n\nIndian law requires accommodation providers to check and record the identity of every adult\nguest. We can't check anyone in without valid ID.",
+     "score": 0.34641316801330246
+    },
+    "pricing-and-rates#0": {
+     "chunk_id": "pricing-and-rates#0",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays\n\nAll prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is\nadded once per booking.",
+     "score": 0.300741609803893
+    },
+    "payments-and-deposits#3": {
+     "chunk_id": "payments-and-deposits#3",
+     "doc_id": "payments-and-deposits",
+     "title": "Payments and the security deposit",
+     "text": "Payments and the security deposit > Extra charges during the stay\n\nItems like early check-in, airport transfers or a private chef are added to a running bill and\nsettled by UPI or card before check-out.",
+     "score": 0.2989148311968456
+    }
+   },
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-21",
+  "case_id": "ookb-h007",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "What is the weather like in Morjim this weekend?",
+  "answer": "I don't have access to weather information in my knowledge base. My role is to help with questions about Palmgrove Stays' villas, bookings, policies, and guest services.\n\nFor the current weather forecast in Morjim, I'd recommend checking a weather service like weather.com, the Weather Channel app, or the India Meteorological Department (IMD).\n\nIs there anything else I can help you with regarding your stay or our villas?",
+  "kb_excerpts": "",
+  "data": {
+   "retrieved": {},
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-22",
+  "case_id": "ookb-g007",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "What are the customs regulations for bringing items into India?",
+  "answer": "I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).\n\nFor local grocery stores and delivery options, your villa caretaker will be the best resource – they can recommend nearby shops and delivery services when you arrive or you can message them ahead of your stay.",
+  "kb_excerpts": "[extras-chef-groceries-experiences#2] Extras: chef, groceries and experiences > Grocery stocking\n\nWe can stock the kitchen before you arrive: send a list at least 48 hours before check-in. You\npay the shop price plus a ₹500 service charge.\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[extras-chef-groceries-experiences#0] Extras: chef, groceries and experiences\n\nExtras are added to your running bill and paid by UPI or card before check-out.\n\n[housekeeping-and-linen#3] Housekeeping, linen and laundry > Rubbish and recycling\n\nNorth Goa villages separate wet and dry waste. Please use the green bin for food waste and the\nblue bin for dry waste; the caretaker handles collection.\n\n[extras-chef-groceries-experiences#3] Extras: chef, groceries and experiences > Breakfast hamper\n\nA breakfast hamper (bread, eggs, fruit, butter, jam, coffee, tea, milk) is ₹800 for 2 people,\n₹1,500 for up to 6.\n\n[health-and-comfort#3] Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.\n\n[local-guide-north-goa#2] Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+  "data": {
+   "retrieved": {
+    "extras-chef-groceries-experiences#2": {
+     "chunk_id": "extras-chef-groceries-experiences#2",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Grocery stocking\n\nWe can stock the kitchen before you arrive: send a list at least 48 hours before check-in. You\npay the shop price plus a ₹500 service charge.",
+     "score": 0.36402357615482406
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.3646850628376319
+    },
+    "extras-chef-groceries-experiences#0": {
+     "chunk_id": "extras-chef-groceries-experiences#0",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences\n\nExtras are added to your running bill and paid by UPI or card before check-out.",
+     "score": 0.320335306894312
+    },
+    "housekeeping-and-linen#3": {
+     "chunk_id": "housekeeping-and-linen#3",
+     "doc_id": "housekeeping-and-linen",
+     "title": "Housekeeping, linen and laundry",
+     "text": "Housekeeping, linen and laundry > Rubbish and recycling\n\nNorth Goa villages separate wet and dry waste. Please use the green bin for food waste and the\nblue bin for dry waste; the caretaker handles collection.",
+     "score": 0.28943467115571386
+    },
+    "extras-chef-groceries-experiences#3": {
+     "chunk_id": "extras-chef-groceries-experiences#3",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Breakfast hamper\n\nA breakfast hamper (bread, eggs, fruit, butter, jam, coffee, tea, milk) is ₹800 for 2 people,\n₹1,500 for up to 6.",
+     "score": 0.28694375635458647
+    },
+    "health-and-comfort#3": {
+     "chunk_id": "health-and-comfort#3",
+     "doc_id": "health-and-comfort",
+     "title": "Mosquitoes, sun and staying comfortable",
+     "text": "Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.",
+     "score": 0.3814583581746054
+    },
+    "local-guide-north-goa#2": {
+     "chunk_id": "local-guide-north-goa#2",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.",
+     "score": 0.33418150999511775
+    },
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.33284331717807314
+    }
+   },
+   "citations": [
+    "extras-chef-groceries-experiences#2"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-23",
+  "case_id": "ookb-h005",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "is it safe around the area to walk to dinner at night?",
+  "answer": "I don't have specific safety information about walking to dinner at night in the knowledge base. North Goa is generally a popular tourist area, but local conditions can vary by villa location and season.\n\nI'd recommend asking your caretaker when you arrive – they know the immediate neighborhood best and can point you to nearby restaurants and advise on the safest routes. They're also a great resource for current restaurant recommendations, as places change often in the area.",
+  "kb_excerpts": "[pool-and-safety#0] Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.\n\n[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[contact-and-support-hours#2] Contact and support hours > Emergencies\n\nFor fire, medical or police emergencies, call **112** first, then the duty manager.\n\n[children-pets-and-events#2] Children, pets and events > Events and parties\n\n- Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need\n  written approval from a manager **before booking**, and are only possible at Villa Sol.\n- Approved events carry an event fee and a higher security deposit, set case by case.\n- Events must end by 10:00 pm (see quiet hours in \"House rules\").\n- Unapproved events may lead to the stay being ended without refund.\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.\n\n[health-and-comfort#3] Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.\n\n[local-guide-north-goa#2] Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.\n\n[local-guide-north-goa#1] Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.\n\n[local-guide-north-goa#3] Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.\n\n[pool-and-safety#2] Pool use and safety > Emergencies\n\n- For a medical emergency, call **112** (India's national emergency number) first, then the duty\n  manager.\n- The nearest 24-hour hospitals are listed on the card on the fridge in every villa.\n- Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door.",
+  "data": {
+   "retrieved": {
+    "pool-and-safety#0": {
+     "chunk_id": "pool-and-safety#0",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.",
+     "score": 0.33747427633600746
+    },
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.35314632514075095
+    },
+    "contact-and-support-hours#2": {
+     "chunk_id": "contact-and-support-hours#2",
+     "doc_id": "contact-and-support-hours",
+     "title": "Contact and support hours",
+     "text": "Contact and support hours > Emergencies\n\nFor fire, medical or police emergencies, call **112** first, then the duty manager.",
+     "score": 0.3361234238956661
+    },
+    "children-pets-and-events#2": {
+     "chunk_id": "children-pets-and-events#2",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Events and parties\n\n- Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need\n  written approval from a manager **before booking**, and are only possible at Villa Sol.\n- Approved events carry an event fee and a higher security deposit, set case by case.\n- Events must end by 10:00 pm (see quiet hours in \"House rules\").\n- Unapproved events may lead to the stay being ended without refund.",
+     "score": 0.27915067600107313
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.2764947572002301
+    },
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.29899423527436353
+    },
+    "health-and-comfort#3": {
+     "chunk_id": "health-and-comfort#3",
+     "doc_id": "health-and-comfort",
+     "title": "Mosquitoes, sun and staying comfortable",
+     "text": "Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.",
+     "score": 0.2858035196008123
+    },
+    "local-guide-north-goa#2": {
+     "chunk_id": "local-guide-north-goa#2",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Markets\n\n- **Anjuna flea market** — Wednesdays, from late October to April, 9am to sunset.\n- **Mapusa market** — Fridays are the big day; best for spices, cashews and local sausages.\n- **Saturday night markets** in Arpora — in peak season only.",
+     "score": 0.2886375029697621
+    },
+    "local-guide-north-goa#1": {
+     "chunk_id": "local-guide-north-goa#1",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+     "score": 0.258584355091952
+    },
+    "local-guide-north-goa#3": {
+     "chunk_id": "local-guide-north-goa#3",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.",
+     "score": 0.25767120485764705
+    },
+    "pool-and-safety#2": {
+     "chunk_id": "pool-and-safety#2",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Emergencies\n\n- For a medical emergency, call **112** (India's national emergency number) first, then the duty\n  manager.\n- The nearest 24-hour hospitals are listed on the card on the fridge in every villa.\n- Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door.",
+     "score": 0.28832867402620765
+    }
+   },
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-24",
+  "case_id": "ookb-g005",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Where can I find grocery stores that deliver in the area?",
+  "answer": "I can see you're asking about amenities beyond those already listed, but I'm not sure which list you're referring to. Let me share the complete overview of what we offer at all our villas:\n\n**Standard amenities at every villa:**\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days\n- On-site caretaker (8am–8pm)\n- Fully equipped kitchen with gas hob, microwave, toaster, kettle, fridge-freezer, mixer-grinder\n- Kitchen basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap\n- Filtered drinking water and washing machine\n- Wi-Fi and power backup\n- Air conditioning in all bedrooms (ceiling fans in living rooms)\n- Swimming pool (open 7am–10pm)\n- Safe in the main bedroom\n- CCTV at gate and driveway\n\nCould you let me know which specific list you saw, or what particular amenities you're interested in? That way I can tell you if we offer them or suggest alternatives!",
+  "kb_excerpts": "[properties-overview#5] Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".\n\n[properties-overview#0] Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.\n\n[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.\n\n[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.\n\n[pool-and-safety#1] Pool use and safety > Monsoon pool closures\n\nDuring heavy rain or lightning, please leave the pool. The caretaker may close the pool for up\nto 24 hours after a storm to clear debris and rebalance the water.\n\n[pool-and-safety#0] Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.\n\n[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[wifi-power-and-utilities#2] Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.\n\n[pool-and-safety#3] Pool use and safety > Beach safety\n\n- Many North Goa beaches have strong currents, especially from June to September, when swimming\n  in the sea is banned by local authorities. Only swim at beaches with lifeguards and between\n  their flags.\n\n[pricing-and-rates#5] Prices, seasons and minimum stays > What's included\n\nDaily housekeeping (except Sundays), linen and towels, Wi-Fi, utilities and the caretaker. Meals,\nairport transfers and extras are not included (see \"Extras: chef, groceries and experiences\").\n\n[house-rules#0] House rules\n\nThese rules apply at every Palmgrove Stays villa. They are part of the booking terms.\n\n[check-in-and-check-out#2] Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.",
+  "data": {
+   "retrieved": {
+    "properties-overview#5": {
+     "chunk_id": "properties-overview#5",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
+     "score": 0.5834371350376304
+    },
+    "properties-overview#0": {
+     "chunk_id": "properties-overview#0",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.",
+     "score": 0.4925417669134401
+    },
+    "kitchen-and-appliances#0": {
+     "chunk_id": "kitchen-and-appliances#0",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Every villa kitchen has\n\n- Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.\n- Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.\n- Basics: salt, pepper, sugar, cooking oil, tea, coffee and dish soap.\n- A water purifier for drinking water.",
+     "score": 0.5139026047234244
+    },
+    "long-stays-and-remote-work#0": {
+     "chunk_id": "long-stays-and-remote-work#0",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
+     "score": 0.4659659615304308
+    },
+    "pricing-and-rates#4": {
+     "chunk_id": "pricing-and-rates#4",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > Longer stays\n\n- 14 nights or more: 15% off the nightly rate at any villa.\n- Monsoon Cottage monthly rate: ₹85,000 for 28 nights or more in the standard season. Not\n  available in peak or festive periods.\n- Long-stay and monthly discounts don't combine with the monsoon discount; the larger discount\n  applies.",
+     "score": 0.4614577952611576
+    },
+    "pool-and-safety#1": {
+     "chunk_id": "pool-and-safety#1",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Monsoon pool closures\n\nDuring heavy rain or lightning, please leave the pool. The caretaker may close the pool for up\nto 24 hours after a storm to clear debris and rebalance the water.",
+     "score": 0.42555386600277867
+    },
+    "pool-and-safety#0": {
+     "chunk_id": "pool-and-safety#0",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Pool hours and rules\n\n- Pools are open from 7:00 am to 10:00 pm. Pool lights switch off at 10:00 pm.\n- There is no lifeguard. Children under 12 must be supervised by an adult at all times in and\n  around the pool.\n- No glass in or next to the pool — use the plastic cups provided.\n- No diving: the pools are 1.4m deep at most.\n- Pools are cleaned every morning between 7:00 and 8:00 am; please stay out while the caretaker\n  is cleaning.",
+     "score": 0.4249807340211531
+    },
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.40501049709254433
+    },
+    "wifi-power-and-utilities#2": {
+     "chunk_id": "wifi-power-and-utilities#2",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.",
+     "score": 0.40117438641022485
+    },
+    "pool-and-safety#3": {
+     "chunk_id": "pool-and-safety#3",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Beach safety\n\n- Many North Goa beaches have strong currents, especially from June to September, when swimming\n  in the sea is banned by local authorities. Only swim at beaches with lifeguards and between\n  their flags.",
+     "score": 0.3629639320693676
+    },
+    "pricing-and-rates#5": {
+     "chunk_id": "pricing-and-rates#5",
+     "doc_id": "pricing-and-rates",
+     "title": "Prices, seasons and minimum stays",
+     "text": "Prices, seasons and minimum stays > What's included\n\nDaily housekeeping (except Sundays), linen and towels, Wi-Fi, utilities and the caretaker. Meals,\nairport transfers and extras are not included (see \"Extras: chef, groceries and experiences\").",
+     "score": 0.5081854032623773
+    },
+    "house-rules#0": {
+     "chunk_id": "house-rules#0",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules\n\nThese rules apply at every Palmgrove Stays villa. They are part of the booking terms.",
+     "score": 0.48645486107344627
+    },
+    "check-in-and-check-out#2": {
+     "chunk_id": "check-in-and-check-out#2",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.",
+     "score": 0.47227920473735907
+    }
+   },
+   "citations": [
+    "properties-overview#5",
+    "kitchen-and-appliances#0",
+    "pricing-and-rates#5",
+    "wifi-power-and-utilities#2",
+    "pool-and-safety#0",
+    "pool-and-safety#4"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-25",
+  "case_id": "ookb-h013",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "where do we get pork sorpotel nearby",
+  "answer": "I don't have specific restaurant recommendations for pork sorpotel in our knowledge base. However, the best thing to do is **ask your villa caretaker for current recommendations** – they'll know the local spots and which restaurants are good right now, as places change often in Goa.\n\nSorpotel is a classic Goan dish, so you should find it at traditional Goan restaurants nearby!",
+  "kb_excerpts": "[kitchen-and-appliances#2] Kitchen and appliances > Barbecue\n\nVilla Sol and Casa Kokum have a charcoal grill. Charcoal is ₹400 per bag from the caretaker.\nOpen fires elsewhere are not allowed (see \"House rules\").\n\n[local-guide-north-goa#3] Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.\n\n[kitchen-and-appliances#1] Kitchen and appliances > Villa-specific\n\n- Villa Sol and Casa Kokum also have an oven, a dishwasher and a coffee machine.\n- The Cashew House and Monsoon Cottage have a two-burner hob; no oven or dishwasher.\n\n[extras-chef-groceries-experiences#1] Extras: chef, groceries and experiences > Private chef\n\n- A local cook can prepare Goan or Indian home-style meals in the villa.\n- ₹2,500 per meal for up to 6 people, ₹3,500 for 7–10 people, plus the cost of ingredients.\n- Book at least 24 hours ahead; breakfast must be booked by 6:00 pm the day before.\n- Tell us about dietary needs when booking the chef.\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+  "data": {
+   "retrieved": {
+    "kitchen-and-appliances#2": {
+     "chunk_id": "kitchen-and-appliances#2",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Barbecue\n\nVilla Sol and Casa Kokum have a charcoal grill. Charcoal is ₹400 per bag from the caretaker.\nOpen fires elsewhere are not allowed (see \"House rules\").",
+     "score": 0.3126805523083751
+    },
+    "local-guide-north-goa#3": {
+     "chunk_id": "local-guide-north-goa#3",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.",
+     "score": 0.28334869746100044
+    },
+    "kitchen-and-appliances#1": {
+     "chunk_id": "kitchen-and-appliances#1",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Villa-specific\n\n- Villa Sol and Casa Kokum also have an oven, a dishwasher and a coffee machine.\n- The Cashew House and Monsoon Cottage have a two-burner hob; no oven or dishwasher.",
+     "score": 0.2758265424320451
+    },
+    "extras-chef-groceries-experiences#1": {
+     "chunk_id": "extras-chef-groceries-experiences#1",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Private chef\n\n- A local cook can prepare Goan or Indian home-style meals in the villa.\n- ₹2,500 per meal for up to 6 people, ₹3,500 for 7–10 people, plus the cost of ingredients.\n- Book at least 24 hours ahead; breakfast must be booked by 6:00 pm the day before.\n- Tell us about dietary needs when booking the chef.",
+     "score": 0.25127109611036524
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.24213938494236853
+    }
+   },
+   "citations": [
+    "local-guide-north-goa#3"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-26",
+  "case_id": "ookb-h001",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Hello, is there a switch or something to turn on the ac? The remote doesn't seem to be working",
+  "answer": "I don't have specific troubleshooting steps for the AC remote in our knowledge base, but I can help you get this sorted quickly.\n\n**The best next step:** Contact the caretaker right away – they can usually fix AC issues the same day, whether it's replacing remote batteries, showing you a manual switch, or checking the unit itself. If it's outside regular hours (8am–8pm), you can reach the duty manager on the emergency number in your arrival message.\n\nWould you like me to create a maintenance ticket for the team to follow up on this?",
+  "kb_excerpts": "[wifi-power-and-utilities#2] Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.\n\n[house-rules#5] House rules > Saving water and power\n\nGoa has water and power shortages in April and May. Please switch off the AC when you leave the\nvilla and avoid running hoses in the garden.\n\n[wifi-power-and-utilities#3] Wi-Fi, power and utilities > Hot water\n\nEach bathroom has a water heater. Switch it on about 20 minutes before a shower; the switch is\noutside the bathroom door.\n\n[complaints-and-feedback#0] Problems during your stay, complaints and feedback > Something isn't working\n\n- Tell the caretaker first — most things (Wi-Fi, AC, hot water, a blocked drain) are fixed the\n  same day.\n- If it's urgent outside 8:00 am – 8:00 pm, contact the duty manager on the emergency number in\n  your arrival message.\n- If something essential (water, power, AC in all bedrooms) can't be fixed within 24 hours, a\n  manager will offer options, which may include moving you to another villa or a partial refund\n  for the affected nights.\n\n[check-in-and-check-out#2] Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.\n\n[wifi-power-and-utilities#1] Wi-Fi, power and utilities > Power cuts\n\n- Short power cuts are common in Goa, especially in the monsoon.\n- Every villa has an inverter that keeps lights, fans, Wi-Fi and the fridge running for about\n  6 hours. Air conditioners, the water heater and the pool pump do **not** run on backup.\n- Villa Sol and Casa Kokum also have a generator that starts automatically for longer cuts and\n  runs everything except one AC per villa.\n\n[kitchen-and-appliances#4] Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+  "data": {
+   "retrieved": {
+    "wifi-power-and-utilities#2": {
+     "chunk_id": "wifi-power-and-utilities#2",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Air conditioning\n\n- All bedrooms have AC; living rooms have ceiling fans.\n- Please keep doors and windows closed when the AC is on.",
+     "score": 0.22150577464235166
+    },
+    "house-rules#5": {
+     "chunk_id": "house-rules#5",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Saving water and power\n\nGoa has water and power shortages in April and May. Please switch off the AC when you leave the\nvilla and avoid running hoses in the garden.",
+     "score": 0.20218434727151635
+    },
+    "wifi-power-and-utilities#3": {
+     "chunk_id": "wifi-power-and-utilities#3",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Hot water\n\nEach bathroom has a water heater. Switch it on about 20 minutes before a shower; the switch is\noutside the bathroom door.",
+     "score": 0.328894216867174
+    },
+    "complaints-and-feedback#0": {
+     "chunk_id": "complaints-and-feedback#0",
+     "doc_id": "complaints-and-feedback",
+     "title": "Problems during your stay, complaints and feedback",
+     "text": "Problems during your stay, complaints and feedback > Something isn't working\n\n- Tell the caretaker first — most things (Wi-Fi, AC, hot water, a blocked drain) are fixed the\n  same day.\n- If it's urgent outside 8:00 am – 8:00 pm, contact the duty manager on the emergency number in\n  your arrival message.\n- If something essential (water, power, AC in all bedrooms) can't be fixed within 24 hours, a\n  manager will offer options, which may include moving you to another villa or a partial refund\n  for the affected nights.",
+     "score": 0.2671729147326871
+    },
+    "check-in-and-check-out#2": {
+     "chunk_id": "check-in-and-check-out#2",
+     "doc_id": "check-in-and-check-out",
+     "title": "Check-in and check-out",
+     "text": "Check-in and check-out > On arrival\n\n1. The caretaker meets you at the villa, checks ID for every adult guest (see \"Guest ID and\n   registration\") and walks you through the house.\n2. The security deposit is collected or confirmed (see \"Payments and deposits\").\n3. You receive the Wi-Fi details, the caretaker's number and the duty manager's emergency number.",
+     "score": 0.23627158589914077
+    },
+    "wifi-power-and-utilities#1": {
+     "chunk_id": "wifi-power-and-utilities#1",
+     "doc_id": "wifi-power-and-utilities",
+     "title": "Wi-Fi, power and utilities",
+     "text": "Wi-Fi, power and utilities > Power cuts\n\n- Short power cuts are common in Goa, especially in the monsoon.\n- Every villa has an inverter that keeps lights, fans, Wi-Fi and the fridge running for about\n  6 hours. Air conditioners, the water heater and the pool pump do **not** run on backup.\n- Villa Sol and Casa Kokum also have a generator that starts automatically for longer cuts and\n  runs everything except one AC per villa.",
+     "score": 0.21018196075489426
+    },
+    "kitchen-and-appliances#4": {
+     "chunk_id": "kitchen-and-appliances#4",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+     "score": 0.1872809630305564
+    }
+   },
+   "citations": [
+    "complaints-and-feedback#0",
+    "wifi-power-and-utilities#2"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-27",
+  "case_id": "ookb-h012",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Is the lake nearby worth visiting in the morning?",
+  "answer": "I don't have information about a lake near our villas in the knowledge base. Our local guide covers beaches (Ashwem, Morjim, Anjuna, Vagator, Candolim), forts, Old Goa churches, spice farms and waterfalls, but doesn't mention a lake.\n\nIf you'd like recommendations for morning outings, I'd be happy to share what's in our area guide, or our caretaker team can suggest local spots when you arrive!",
+  "kb_excerpts": "[local-guide-north-goa#4] Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.\n\n[local-guide-north-goa#1] Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.\n\n[monsoon-season#5] Staying during the monsoon (June – September) > Things to do in the monsoon\n\nWaterfall visits (with a local guide), spice farm tours, Old Goa churches, cooking classes and\nmonsoon festivals such as São João in late June. See \"Local guide: North Goa\".\n\n[monsoon-season#0] Staying during the monsoon (June – September)\n\nThe monsoon brings heavy rain, green landscapes and fewer crowds. It's a lovely time for a quiet\nstay if you know what to expect.\n\n[pool-and-safety#4] Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.\n\n[properties-overview#5] Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".\n\n[properties-overview#4] Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).\n\n[pool-and-safety#2] Pool use and safety > Emergencies\n\n- For a medical emergency, call **112** (India's national emergency number) first, then the duty\n  manager.\n- The nearest 24-hour hospitals are listed on the card on the fridge in every villa.\n- Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door.\n\n[properties-overview#0] Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.",
+  "data": {
+   "retrieved": {
+    "local-guide-north-goa#4": {
+     "chunk_id": "local-guide-north-goa#4",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.",
+     "score": 0.3006370567022454
+    },
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.2933048057310861
+    },
+    "local-guide-north-goa#1": {
+     "chunk_id": "local-guide-north-goa#1",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+     "score": 0.27575005792918517
+    },
+    "monsoon-season#5": {
+     "chunk_id": "monsoon-season#5",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September) > Things to do in the monsoon\n\nWaterfall visits (with a local guide), spice farm tours, Old Goa churches, cooking classes and\nmonsoon festivals such as São João in late June. See \"Local guide: North Goa\".",
+     "score": 0.26198667425540934
+    },
+    "monsoon-season#0": {
+     "chunk_id": "monsoon-season#0",
+     "doc_id": "monsoon-season",
+     "title": "Staying during the monsoon",
+     "text": "Staying during the monsoon (June – September)\n\nThe monsoon brings heavy rain, green landscapes and fewer crowds. It's a lovely time for a quiet\nstay if you know what to expect.",
+     "score": 0.26128931743254546
+    },
+    "pool-and-safety#4": {
+     "chunk_id": "pool-and-safety#4",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Security\n\n- Lock doors and close windows when you go out. Use the safe in the main bedroom for passports\n  and valuables.\n- Villas have CCTV at the gate and driveway only. There are no cameras inside the villas.",
+     "score": 0.4421691398008982
+    },
+    "properties-overview#5": {
+     "chunk_id": "properties-overview#5",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > What every villa has\n\n- Daily housekeeping (except Sundays), fresh linen and towels every 3 days.\n- A caretaker on site or within 5 minutes, 8am–8pm.\n- Fully equipped kitchen, filtered drinking water, washing machine.\n- Wi-Fi and power backup — see \"Wi-Fi, power and utilities\".",
+     "score": 0.43075518555433123
+    },
+    "properties-overview#4": {
+     "chunk_id": "properties-overview#4",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).",
+     "score": 0.4169600973984866
+    },
+    "pool-and-safety#2": {
+     "chunk_id": "pool-and-safety#2",
+     "doc_id": "pool-and-safety",
+     "title": "Pool use and safety",
+     "text": "Pool use and safety > Emergencies\n\n- For a medical emergency, call **112** (India's national emergency number) first, then the duty\n  manager.\n- The nearest 24-hour hospitals are listed on the card on the fridge in every villa.\n- Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door.",
+     "score": 0.4071500660407614
+    },
+    "properties-overview#0": {
+     "chunk_id": "properties-overview#0",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas\n\nPalmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never\nshare a villa between separate bookings.",
+     "score": 0.40581295162063524
+    }
+   },
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-28",
+  "case_id": "ookb-g012",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Can you suggest any bars with live music in the area?",
+  "answer": "I don't have specific information about bars with live music in our knowledge base. For current recommendations on nightlife and live music venues, I'd suggest asking the caretaker at your villa – they'll have up-to-date local tips and can point you to the best spots nearby. Restaurants and entertainment venues in Goa change quite often, so they're your best source for what's happening right now!",
+  "kb_excerpts": "[house-rules#2] House rules > Noise\n\n- Quiet hours are **10:00 pm to 7:00 am**. Goa's rules restrict loudspeakers and amplified music\n  outdoors after 10:00 pm, and our villas are in residential neighbourhoods.\n- Music indoors at a conversational volume is fine at any time.\n- After two noise complaints from neighbours, the duty manager may end the stay without refund.\n\n[kitchen-and-appliances#4] Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).\n\n[house-rules#3] House rules > Smoking\n\n- No smoking indoors, including e-cigarettes. Smoking is allowed on outdoor terraces and in the\n  garden; please use the ashtrays provided.\n- A ₹5,000 deep-cleaning charge applies if anyone smokes indoors.\n\n[house-rules#6] House rules > Things that are not allowed\n\n- Fireworks or open fires (barbecues in the provided grill are fine).\n- Illegal drugs anywhere on the property. We will end the stay without refund.\n- Moving furniture between rooms or outdoors.\n\n[children-pets-and-events#2] Children, pets and events > Events and parties\n\n- Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need\n  written approval from a manager **before booking**, and are only possible at Villa Sol.\n- Approved events carry an event fee and a higher security deposit, set case by case.\n- Events must end by 10:00 pm (see quiet hours in \"House rules\").\n- Unapproved events may lead to the stay being ended without refund.\n\n[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.\n\n[local-guide-north-goa#3] Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[local-guide-north-goa#1] Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.\n\n[local-guide-north-goa#4] Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.",
+  "data": {
+   "retrieved": {
+    "house-rules#2": {
+     "chunk_id": "house-rules#2",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Noise\n\n- Quiet hours are **10:00 pm to 7:00 am**. Goa's rules restrict loudspeakers and amplified music\n  outdoors after 10:00 pm, and our villas are in residential neighbourhoods.\n- Music indoors at a conversational volume is fine at any time.\n- After two noise complaints from neighbours, the duty manager may end the stay without refund.",
+     "score": 0.31587476698771244
+    },
+    "kitchen-and-appliances#4": {
+     "chunk_id": "kitchen-and-appliances#4",
+     "doc_id": "kitchen-and-appliances",
+     "title": "Kitchen and appliances",
+     "text": "Kitchen and appliances > Other appliances\n\n- TV with streaming apps in every living room (sign in with your own accounts and sign out before\n  you leave).\n- Hair dryer and iron with ironing board in every villa.\n- Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm).",
+     "score": 0.2982688316979163
+    },
+    "house-rules#3": {
+     "chunk_id": "house-rules#3",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Smoking\n\n- No smoking indoors, including e-cigarettes. Smoking is allowed on outdoor terraces and in the\n  garden; please use the ashtrays provided.\n- A ₹5,000 deep-cleaning charge applies if anyone smokes indoors.",
+     "score": 0.25084269199564857
+    },
+    "house-rules#6": {
+     "chunk_id": "house-rules#6",
+     "doc_id": "house-rules",
+     "title": "House rules",
+     "text": "House rules > Things that are not allowed\n\n- Fireworks or open fires (barbecues in the provided grill are fine).\n- Illegal drugs anywhere on the property. We will end the stay without refund.\n- Moving furniture between rooms or outdoors.",
+     "score": 0.24794805957991917
+    },
+    "children-pets-and-events#2": {
+     "chunk_id": "children-pets-and-events#2",
+     "doc_id": "children-pets-and-events",
+     "title": "Children, pets and events",
+     "text": "Children, pets and events > Events and parties\n\n- Events of any kind (birthdays, wedding functions, parties) with more than 4 visitors need\n  written approval from a manager **before booking**, and are only possible at Villa Sol.\n- Approved events carry an event fee and a higher security deposit, set case by case.\n- Events must end by 10:00 pm (see quiet hours in \"House rules\").\n- Unapproved events may lead to the stay being ended without refund.",
+     "score": 0.23465754495486435
+    },
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.42176508136851887
+    },
+    "local-guide-north-goa#3": {
+     "chunk_id": "local-guide-north-goa#3",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Food and drink\n\nAsk the caretaker for current recommendations; restaurants change often. Try Goan dishes like\nfish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.",
+     "score": 0.38613986512190634
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.3503722015328319
+    },
+    "local-guide-north-goa#1": {
+     "chunk_id": "local-guide-north-goa#1",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Beaches\n\n- **Ashwem and Morjim** — quieter, wide beaches; Morjim is an olive ridley turtle nesting site\n  from November to March, so keep away from marked nests.\n- **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.\n- **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage.",
+     "score": 0.33860637657899284
+    },
+    "local-guide-north-goa#4": {
+     "chunk_id": "local-guide-north-goa#4",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa > Day trips\n\n- **Fort Aguada and Chapora Fort** — 20–30 minutes from most villas.\n- **Old Goa churches** (a UNESCO World Heritage Site) — about 45 minutes.\n- **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.\n- **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check\n  before planning.",
+     "score": 0.3336918588178408
+    }
+   },
+   "citations": [
+    "local-guide-north-goa#3"
+   ],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-29",
+  "case_id": "ookb-h002",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Hey, can we extend our stay for another day?",
+  "answer": "I'd be happy to help you with extending your stay! To look into this for you, I'll need your booking reference (format: XX-1234) and the email address you used when booking.\n\nCould you please provide those details?",
+  "kb_excerpts": "",
+  "data": {
+   "retrieved": {},
+   "citations": [],
+   "escalated": false
+  }
+ },
+ {
+  "item": "inv-30",
+  "case_id": "ookb-g010",
+  "rubric": "invented_policy",
+  "metric": "no_invented_policy",
+  "question": "Are there any other hotels nearby that you recommend?",
+  "answer": "We're Palmgrove Stays, a holiday-rental company managing four private villas in North Goa – we're not a hotel. We don't have information about other hotels or accommodations to recommend, as we focus on our own properties.\n\nIf you're looking for a place to stay in North Goa, I'd be happy to tell you about our villas and help you find one that suits your needs!",
+  "kb_excerpts": "[local-guide-north-goa#0] Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.\n\n[properties-overview#4] Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).\n\n[extras-chef-groceries-experiences#5] Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.\n\n[long-stays-and-remote-work#0] Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".\n\n[health-and-comfort#3] Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.",
+  "data": {
+   "retrieved": {
+    "local-guide-north-goa#0": {
+     "chunk_id": "local-guide-north-goa#0",
+     "doc_id": "local-guide-north-goa",
+     "title": "Local guide — North Goa",
+     "text": "Local guide — North Goa\n\nOur caretakers' favourite things near the villas. We don't take commissions from any of these.",
+     "score": 0.3548776846324677
+    },
+    "properties-overview#4": {
+     "chunk_id": "properties-overview#4",
+     "doc_id": "properties-overview",
+     "title": "Our villas",
+     "text": "Our villas > Monsoon Cottage — Candolim\n\n- 1 bedroom, 1 bathroom, sleeps up to 2 adults.\n- No pool; guests can use the pool at our partner hotel 300m away, 8am–7pm, at no charge.\n- 5 minutes' walk to Candolim beach.\n- Best for couples and solo remote workers; discounted monthly rates (see pricing).",
+     "score": 0.3172239468316931
+    },
+    "extras-chef-groceries-experiences#5": {
+     "chunk_id": "extras-chef-groceries-experiences#5",
+     "doc_id": "extras-chef-groceries-experiences",
+     "title": "Extras: chef, groceries and experiences",
+     "text": "Extras: chef, groceries and experiences > Not offered\n\nWe don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker\ncan recommend licensed providers.",
+     "score": 0.31044626663816155
+    },
+    "long-stays-and-remote-work#0": {
+     "chunk_id": "long-stays-and-remote-work#0",
+     "doc_id": "long-stays-and-remote-work",
+     "title": "Long stays and remote work",
+     "text": "Long stays and remote work > Discounts\n\n- 14 nights or more: 15% off at any villa.\n- Monsoon Cottage: ₹85,000 for 28 nights or more in the standard season (1 March – 30 November).\n  See \"Prices, seasons and minimum stays\".",
+     "score": 0.3090532570876564
+    },
+    "health-and-comfort#3": {
+     "chunk_id": "health-and-comfort#3",
+     "doc_id": "health-and-comfort",
+     "title": "Mosquitoes, sun and staying comfortable",
+     "text": "Mosquitoes, sun and staying comfortable > Pharmacies and doctors\n\n- The caretaker can direct you to the nearest pharmacy, usually within 10 minutes.\n- A list of nearby 24-hour hospitals is on the fridge in every villa.\n- In an emergency, call 112.",
+     "score": 0.30544261072380996
+    }
+   },
+   "citations": [],
+   "escalated": false
+  }
+ }
+]

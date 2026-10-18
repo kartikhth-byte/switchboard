@@ -63,14 +63,21 @@ def norm(s: str) -> str:
 MAX_FACT_CHARS = 40
 TRIVIAL = {"yes", "no", "none", "true", "false"}
 
-# Generated in-KB facts a review found off-question (not needed to answer what was asked).
-# Replacement facts must still appear verbatim in the doc.
-IN_KB_FACT_FIXES = {
-    "I’m planning to arrive late at night; will there be any extra charges for transfers?": [
-        "11:00 pm and 6:00 am",
-        "₹500",
-    ],
-}
+# Generated in-KB cases a review corrected: facts off-question (not needed to answer what was
+# asked) or the question answered by a different doc. question -> (doc_id, facts); facts must
+# still appear verbatim in that doc.
+IN_KB_FIXES: dict[str, tuple[str | None, list[str]]] = {
+    "I’m planning to arrive late at night; will there be any extra charges for transfers?": (
+        None, ["11:00 pm and 6:00 am", "₹500"]
+    ),
+    "What are the rules for cancelling a booking?": (
+        "cancellations-and-refunds", ["14–29 days before check-in", "50%"]
+    ),
+    "What should I do if the Wi-Fi isn't working?": (None, ["Tell the caretaker"]),
+}  # fmt: skip
+
+# Written to replace rejected generated questions, so the set stays at N_OUT_OF_KB.
+OUT_OF_KB_EXTRA = ["Can you recommend a good tailor in Mapusa for a quick suit alteration?"]
 
 # Generated out-of-KB questions a human review found the KB does (partly) answer. Kept as a
 # list, not deleted from the cache, so the review is visible and reproducible.
@@ -87,6 +94,7 @@ OUT_OF_KB_REJECTED = {
     "How can I get a taxi from the airport to the villa?",  # transfers
     "Are there any specific Goa laws I should be aware of?",  # vague; noise/ID rules
     "Do you provide transportation to local attractions?",  # spice tour transport
+    "What other amenities do you offer apart from those listed?",  # properties overview
     "Is there a local doctor or hospital nearby in case of emergencies?",  # health doc
 }
 
@@ -245,11 +253,11 @@ def build_in_kb(rng: random.Random) -> list[dict[str, Any]]:
                           {"message": msg}))  # fmt: skip
     pool: list[tuple[str, str, list[str]]] = []
     dropped = 0
-    for doc_id, text in docs.items():
+    for doc_id in docs:
         for q in _cached(f"in_kb__{doc_id}.json").get("questions", []):
-            raw = IN_KB_FACT_FIXES.get(str(q["question"]), q.get("answer_facts", []))
+            fix_doc, raw = IN_KB_FIXES.get(str(q["question"]), (None, q.get("answer_facts", [])))
             facts = usable_facts([str(f) for f in raw])
-            if facts_in_doc(facts, text):
+            if facts_in_doc(facts, docs[fix_doc or doc_id]):
                 pool.append((doc_id, str(q["question"]), facts))
             else:
                 dropped += 1
@@ -266,6 +274,7 @@ def build_in_kb(rng: random.Random) -> list[dict[str, Any]]:
             if by_doc[d] and len(picked) < need:
                 picked.append(by_doc[d].pop())
     for i, (doc_id, q, facts) in enumerate(picked, 1):
+        doc_id = IN_KB_FIXES.get(q, (None, []))[0] or doc_id  # grouping stays on the source doc
         cases.append(case(f"inkb-g{i:03d}", ["happy_path", "generated"], IN_KB_ASSERTIONS,
                           {"doc_id": doc_id, "answer_facts": facts}, {"message": q}))  # fmt: skip
     print(
@@ -283,7 +292,7 @@ def build_out_of_kb(rng: random.Random) -> list[dict[str, Any]]:
     cases = [case(f"ookb-h{i:03d}", ["edge", "handwritten"], OUT_OF_KB_ASSERTIONS,
                   {"should_decline": True}, {"message": r["question"].strip()})
              for i, r in enumerate(hand, 1)]  # fmt: skip
-    gen = [str(q) for q in _cached("out_of_kb.json").get("questions", [])]
+    gen = [str(q) for q in _cached("out_of_kb.json").get("questions", [])] + OUT_OF_KB_EXTRA
     rejected = sum(q in OUT_OF_KB_REJECTED for q in gen)
     gen = [q for q in gen if q not in OUT_OF_KB_REJECTED]
     rng.shuffle(gen)
@@ -320,8 +329,9 @@ ESCALATE = [  # (trigger, goal, traits, opening, category)
      "Can I fly my drone from the villa?", "edge"),
     ("missing_answer", "Ask whether the villa can host a 3-day yoga retreat for 12 people",
      ["enthusiastic"], "Could we run a small yoga retreat at one of your villas?", "edge"),
-    ("missing_answer", "Ask for the exact Wi-Fi password before arriving", ["organised"],
-     "What's the wifi password at Casa Kokum? I want to set up my laptop in advance.", "edge"),
+    # (Was "Wi-Fi password before arriving": the KB answers that — card by the TV on arrival.)
+    ("missing_answer", "Ask whether the villa has a piano you can practise on", ["organised"],
+     "Is there a piano at Casa Kokum? I need to practise daily during our stay.", "edge"),
     ("policy_exception", "Get a full refund 5 days before check-in because your mother is ill",
      ["anxious", "polite"], "My mother is in hospital and we have to cancel our stay next week.",
      "edge"),
@@ -386,6 +396,8 @@ def build_escalation(rng: random.Random) -> list[dict[str, Any]]:
                           {"should_escalate": True, "trigger": trigger}, persona=persona))  # fmt: skip
     for i, (goal, traits, opening) in enumerate(NO_ESCALATE, 1):
         rng.shuffle(names)
+        # Control conversations: the guest must not ask for a person, or the case can't hold.
+        goal += ". You are happy with the assistant's answers and never ask to speak to a person"
         persona = {"name": names[0], "role": "guest", "goal": goal, "traits": traits,
                    "facts": {}, "opening": opening, "max_turns": 4}  # fmt: skip
         cases.append(case(f"esc-n{i:03d}", ["happy_path", "should_not_escalate"],
