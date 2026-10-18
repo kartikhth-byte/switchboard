@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate data ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check data ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -45,6 +45,9 @@ eval:             ## make eval AGENT=<name> [ARGS="--smoke --repeat 3 --max-usd 
 
 calib-export:     ## pick 30 judged answers to hand-label: make calib-export RESULTS=<run>.json
 	PYTHONPATH=. uv run python scripts/judge_calibration.py export $(RESULTS)
+
+canary-check:     ## SHR-019: planted PII canaries absent from >=100 exported eval traces
+	PYTHONPATH=. uv run python scripts/check_canaries.py
 
 calibrate:        ## re-judge the hand-labelled answers and report agreement (target 85%)
 	PYTHONPATH=. uv run python scripts/judge_calibration.py
