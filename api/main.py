@@ -1,4 +1,4 @@
-"""Switchboard API. M0: health only; agent routes arrive with their milestones."""
+"""Switchboard API: health, approvals queue, and the agents' demo endpoints."""
 
 import logging
 from collections.abc import AsyncIterator
@@ -8,8 +8,9 @@ from uuid import UUID
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from agents.concierge.service import ChatService, UnknownConversation
 from core.approvals import ApprovalError, ApprovalRequest, ApprovalStore
 from core.config.settings import get_settings
 from core.db import migrate
@@ -74,6 +75,33 @@ def health(response: Response) -> dict[str, Any]:
         "integrations": settings.demo_integrations,
         "outbound_mode": settings.outbound_mode,
     }
+
+
+# ---- Concierge demo chat (SUPP-001..003, SUPP-009) ----
+
+
+class ChatIn(BaseModel):
+    conversation_id: str | None = None  # omit to start a conversation; the reply carries one
+    message: str = Field(min_length=1, max_length=1000)
+
+
+_chat: ChatService | None = None
+
+
+def _chat_service() -> ChatService:
+    global _chat
+    if _chat is None:
+        _chat = ChatService(get_settings())
+    return _chat
+
+
+@app.post("/concierge/chat", dependencies=[Depends(public_rate_limit)])
+def concierge_chat(body: ChatIn) -> dict[str, Any]:
+    try:
+        reply = _chat_service().chat(body.conversation_id, body.message.strip())
+    except UnknownConversation:
+        raise HTTPException(404, "Conversation not found; start a new one.") from None
+    return reply.__dict__
 
 
 # ---- Approvals (SHR-008): the queue behind the demo's approve/reject buttons ----
