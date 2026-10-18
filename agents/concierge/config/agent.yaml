@@ -6,11 +6,11 @@ business: config/business.md
 kb_path: data/fixtures/support/kb/
 limits: {max_steps: 8, run_token_budget: 30000}
 memory: {window_turns: 8, summarize_over_tokens: 6000, model: openai/gpt-4o-mini}
-escalation:
-  on_explicit_request: true
-  on_frustration: true
-  on_missing_answer: true
-  channel: slack            # mock in CI
+escalation:                  # SUPP-010: whether to hand off is decided in code, not by the agent
+  check: true                # classify every guest message (prompts/escalation.md, memory model)
+  triggers: [requested, frustrated, policy_exception, damage, safety, emergency]
+  channel: slack             # mock in CI
+  # Missing answers escalate via final_answer (escalate: true or confidence < min_confidence).
 rules:
   min_confidence: 0.5          # below this, final answers are escalated (SUPP-014)
   max_identity_attempts: 3     # failed lookup_booking attempts before a person takes over

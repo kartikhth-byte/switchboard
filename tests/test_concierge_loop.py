@@ -75,16 +75,21 @@ class Scripted(ModelClient):
 class FakeMemoryModel(ModelClient):
     """Stands in for the cheap memory model: canned facts JSON or summary text."""
 
-    def __init__(self, facts: dict[str, str] | None = None) -> None:
+    def __init__(self, facts: dict[str, str] | None = None, trigger: str = "none") -> None:
         super().__init__(ModelSpec(provider="openai", name="gpt-4o-mini"))
         self.facts = facts or {}
+        self.trigger = trigger  # what the escalation check answers
         self.calls: list[str] = []
 
     def complete(self, messages: Any, tools: Any = None, **_: Any) -> ModelResponse:
         prompt = messages[-1]["content"]
-        kind = "facts" if prompt.startswith("Extract facts") else "summary"
+        if prompt.startswith("You decide whether"):
+            kind, content = "escalation", json.dumps({"trigger": self.trigger, "why": "test"})
+        elif prompt.startswith("Extract facts"):
+            kind, content = "facts", json.dumps(self.facts)
+        else:
+            kind, content = "summary", "Guest asked about their stay."
         self.calls.append(kind)
-        content = json.dumps(self.facts) if kind == "facts" else "Guest asked about their stay."
         return ModelResponse(content=content, model=self.spec.model_id, tokens_in=20, tokens_out=5)
 
 
@@ -125,7 +130,8 @@ def test_kb_answer_with_valid_citations() -> None:
     assert r.answer == "Check-out is by 11:00 am." and r.tool_calls == ["search_kb", "final_answer"]
     assert deps.tools.state.transcript[-1] == {"role": "assistant", "content": r.answer}
     rec = deps.run_store.runs[next(iter(deps.run_store.runs))]  # type: ignore[attr-defined]
-    assert rec.status == "done" and rec.tokens_in == 120  # 2 steps x 50 + 20 fact extraction
+    # 2 steps x 50 + 20 escalation check + 20 fact extraction
+    assert rec.status == "done" and rec.tokens_in == 140
 
 
 def test_invented_citation_rejected_then_corrected() -> None:
@@ -403,3 +409,35 @@ def test_facts_from_earlier_turns_are_shown_so_guest_is_not_asked_again() -> Non
         "booking_ref": "PG-1002",
         "email": "rohan.fernandes@example.com",
     }
+
+
+def _with_trigger(trigger: str, steps: list[Any]) -> tuple[Deps, MockSlack]:
+    deps, _, slack, _ = make(steps)
+    deps.memory_client = FakeMemoryModel(trigger=trigger)
+    return deps, slack
+
+
+def test_trigger_forces_handoff_and_keeps_the_answer() -> None:
+    """SUPP-010: damage reported, agent only answers from the KB -> code hands off anyway."""
+    deps, slack = _with_trigger("damage", [[final("Please tell the caretaker straight away.", [])]])
+    r = respond(deps, "We cracked the glass coffee table, what now?")
+    assert r.escalated and r.status == "escalated"
+    assert r.answer.startswith("Please tell the caretaker") and HANDOFF_ANSWER in r.answer
+    (msg,) = slack.messages
+    assert msg["payload"]["reason"] == "damage" and msg["payload"]["transcript"]
+
+
+def test_no_trigger_no_handoff_and_only_once_per_conversation() -> None:
+    deps, slack = _with_trigger("none", [[final("Check-out is by 11:00 am.", [])]])
+    assert not respond(deps, "What time is check-out?").escalated and not slack.messages
+    deps2, slack2 = _with_trigger(
+        "frustrated", [[final("I'm sorry.", [])], [final("The team has your message.", [])]]
+    )
+    assert respond(deps2, "This is ridiculous!").escalated
+    second = respond(deps2, "Still waiting!!")
+    assert not second.escalated and len(slack2.messages) == 1
+
+
+def test_unknown_or_malformed_trigger_is_ignored() -> None:
+    deps, slack = _with_trigger("pizza", [[final("Hello!", [])]])
+    assert not respond(deps, "hi").escalated and not slack.messages

@@ -3,6 +3,10 @@
 One `respond()` call = one guest turn = one run (SHR-004). Each step is one model call
 plus its tool calls, each traced as its own observation (SHR-006).
 
+Escalation is decided in code (SUPP-010): every guest message is classified by a small helper
+call (prompts/escalation.md). If it hits a configured trigger and the agent's reply didn't hand
+off, the loop hands off anyway, once per conversation, keeping the agent's answer.
+
 Stop conditions, all explicit:
   final_answer        -> reply (citations validated against this turn's retrieved chunks)
   step limit          -> escalate (reason: step_limit)
@@ -16,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Literal
@@ -75,6 +80,46 @@ class TurnResult:
     tool_calls: list[str] = field(default_factory=list)
 
 
+TRIGGER_REASON = {  # escalation trigger -> handoff_to_human reason
+    "requested": "requested",
+    "frustrated": "frustrated",
+    "policy_exception": "policy_exception",
+    "damage": "damage",
+    "safety": "safety",
+    "emergency": "emergency",
+}
+
+
+def _helper_client(deps: Deps) -> ModelClient:
+    return deps.memory_client or ModelClient(deps.cfg.memory.model_spec(deps.cfg.model))
+
+
+def _escalation_trigger(run: RunHandle, deps: Deps, message: str) -> str | None:
+    """Classify the guest's message against the configured triggers. Any failure -> None:
+    the agent's own judgement still applies."""
+    esc = deps.cfg.escalation
+    if not esc.get("check") or "escalation" not in deps.cfg.prompts:
+        return None
+    recent = [t for t in deps.tools.state.transcript[:-1] if t["role"] == "user"][-3:]
+    prompt = deps.cfg.prompt(
+        "escalation",
+        message=message,
+        recent="\n".join(f"- {t['content'][:300]}" for t in recent) or "(none)",
+    )
+    try:
+        resp = run.model(_helper_client(deps), [{"role": "user", "content": prompt}],
+                         name="escalation-check")  # fmt: skip
+        m = re.search(r"\{.*\}", resp.content or "", re.DOTALL)
+        trigger = json.loads(m.group()).get("trigger") if m else None
+    except BudgetExceeded:
+        raise
+    except Exception as exc:  # noqa: BLE001 — a failed check never costs the guest their answer
+        log.warning("escalation check failed: %s", type(exc).__name__)
+        return None
+    allowed = set(esc.get("triggers", TRIGGER_REASON))
+    return trigger if trigger in allowed and trigger in TRIGGER_REASON else None
+
+
 def respond(deps: Deps, user_message: str) -> TurnResult:
     state = deps.tools.state
     state.transcript.append({"role": "user", "content": user_message})
@@ -94,7 +139,8 @@ def respond(deps: Deps, user_message: str) -> TurnResult:
             settings.daily_usd_cap if deps.daily_cap == "settings" else deps.daily_cap
         ),
     ) as run:
-        result = _loop(run, deps)
+        trigger = _escalation_trigger(run, deps, user_message)
+        result = _loop(run, deps, trigger)
         state.memory.add("assistant", result.answer)
         _maintain_memory(run, deps)
     if run.status == "budget_exceeded":
@@ -159,7 +205,7 @@ def _resume_pending(run: RunHandle, deps: Deps, reg: ToolRegistry) -> str | None
     return f"Note: the earlier request was not approved ({res.error}). Tell the guest politely."
 
 
-def _loop(run: RunHandle, deps: Deps) -> TurnResult:
+def _loop(run: RunHandle, deps: Deps, trigger: str | None = None) -> TurnResult:
     state = deps.tools.state
     reg = build_registry(deps.tools)
     schemas = reg.schemas_for(AGENT)
@@ -210,6 +256,11 @@ def _loop(run: RunHandle, deps: Deps) -> TurnResult:
                     escalate = bool(fa["escalate"]) or fa["confidence"] < min_conf
                     if escalate:
                         _escalate(run, reg, state, "missing_answer", fa["answer"])
+                    elif trigger and not state.handed_off:
+                        # Code-level guarantee: the trigger fired, the agent didn't hand off.
+                        said = state.transcript[-1]["content"][:400]
+                        _escalate(run, reg, state, TRIGGER_REASON[trigger],
+                                  f"[{trigger}] guest: {said}")  # fmt: skip
                     escalated = state.handoff is not None
                     answer = fa["answer"]
                     if escalated and HANDOFF_ANSWER not in answer:

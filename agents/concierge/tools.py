@@ -51,10 +51,18 @@ class ConversationState:
     failed_lookups: int = 0
     pending_approval_id: str | None = None
     lead_captured: bool = False
+    handed_off: bool = False  # once per conversation: later turns reassure instead
     handoff: dict[str, Any] | None = None
     retrieved: set[str] = field(default_factory=set)  # chunk ids seen this turn
 
-    PERSISTED = ("transcript", "verified", "failed_lookups", "pending_approval_id", "lead_captured")
+    PERSISTED = (
+        "transcript",
+        "verified",
+        "failed_lookups",
+        "pending_approval_id",
+        "lead_captured",
+        "handed_off",
+    )
 
     def to_json(self) -> dict[str, Any]:
         out: dict[str, Any] = {k: getattr(self, k) for k in self.PERSISTED}
@@ -129,7 +137,14 @@ class CaptureLeadIn(BaseModel):
 
 class HandoffIn(BaseModel):
     reason: Literal[
-        "requested", "frustrated", "missing_answer", "policy_exception", "safety", "other"
+        "requested",
+        "frustrated",
+        "missing_answer",
+        "policy_exception",
+        "damage",
+        "safety",
+        "emergency",
+        "other",
     ]
     summary: str = Field(min_length=3, max_length=1000)
 
@@ -262,6 +277,7 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
         }
         ts = d.slack.post(d.handoff_channel, f"Handoff ({inp.reason}): {inp.summary}", payload)
         st.handoff = {**payload, "slack_ts": ts}
+        st.handed_off = True
         return ToolResult(ok=True, payload={"handed_off": True, "reason": inp.reason})
 
     def quote_refund(inp: QuoteRefundIn, ctx: ToolContext) -> ToolResult:
