@@ -64,6 +64,26 @@ Eval failures: each results JSON keeps the transcript, tool calls, retrieved chu
 reasons per case (`evals/results/<agent>/<date>.json`). `make calibrate` re-checks the judge
 against the hand labels; `make canary-check` scans exported traces for planted PII.
 
+## Production notes (what this demo doesn't do)
+
+Escalation is the part a real deployment would harden first. The demo classifies every guest
+message against configured triggers and hands off in code when the agent didn't
+(`agents/concierge/prompts/escalation.md`). A production version would add:
+
+- **More than one signal:** a catch-all "needs a person" category, keyword rules for critical
+  words (police, injured, fire) that don't depend on a model, and loop detection.
+- **Per-category thresholds:** safety and emergency escalate even when unsure; "upset" and
+  exception requests need more certainty, or first *offer* a person.
+- **An always-visible "talk to a person" button**, so the guest has an exit when every check misses.
+- **Pause the bot after handoff** until a person hands the conversation back.
+- **Find the misses:** log every decision, review a weekly sample of non-escalated chats, watch
+  thumbs-down, bad reviews and guests who contact you on another channel; staff mark
+  unnecessary handoffs. Every real miss becomes an eval case.
+- **Shadow mode** for any new classifier or category before it goes live.
+- **Operations:** alerts when a handoff isn't picked up, on-call cover for safety cases.
+
+Ideas logged for later are in [`docs/phase2_backlog.md`](docs/phase2_backlog.md).
+
 ## Safety defaults
 
 - `DEMO_INTEGRATIONS=mock` — every external integration is mocked unless set to `real`.
