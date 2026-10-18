@@ -1,5 +1,5 @@
 item,rubric,human_label,note,question,answer,kb_excerpts
-gro-01,groundedness,,,What kind of discounts do you offer for long stays?,"We offer a **15% discount** for stays of **14 nights or more** at any of our villas.
+gro-01,groundedness,1,,What kind of discounts do you offer for long stays?,"We offer a **15% discount** for stays of **14 nights or more** at any of our villas.
 
 For Monsoon Cottage specifically, we also have a monthly rate of **₹85,000 for 28 nights or more** during the standard season (1 March – 30 November), though this isn't available during peak or festive periods.
 
@@ -30,7 +30,7 @@ Stays with every night between 1 June and 30 September get **20% off** the stand
 
 Stays with every night between 1 June and 30 September get 20% off the standard rate (see
 ""Prices, seasons and minimum stays"")."
-gro-02,groundedness,,,What are some good beaches near the villas?,"Great question! North Goa has some lovely beaches, all within easy reach of our villas:
+gro-02,groundedness,1,,What are some good beaches near the villas?,"Great question! North Goa has some lovely beaches, all within easy reach of our villas:
 
 **Closest to our properties:**
 - **Candolim** — a long, easy beach with lifeguards in season; just 5 minutes' walk from Monsoon Cottage
@@ -103,7 +103,7 @@ Check which airport your flight uses before booking a transfer.
 - Private pool (8m × 4m), garden, outdoor dining for 8.
 - About 15 minutes by car to Anjuna and Vagator beaches.
 - Best for families and small groups who want a quiet base."
-gro-03,groundedness,,,I’m planning to arrive late at night; will there be any extra charges for transfers?,"Yes, if you book an airport transfer through us and arrive between 11:00 pm and 6:00 am, there's a ₹500 night surcharge on top of the regular transfer price. 
+gro-03,groundedness,1,,I’m planning to arrive late at night; will there be any extra charges for transfers?,"Yes, if you book an airport transfer through us and arrive between 11:00 pm and 6:00 am, there's a ₹500 night surcharge on top of the regular transfer price. 
 
 Also, if you're arriving at the villa itself between midnight and 6:00 am, there's a separate ₹1,500 late-arrival fee. Arrivals after 10:00 pm need to be confirmed at least 24 hours ahead so the caretaker can meet you.
 
@@ -152,7 +152,7 @@ it is collected by then.
 [pricing-and-rates#2] Prices, seasons and minimum stays > Monsoon discount
 
 Stays with every night between 1 June and 30 September get **20% off** the standard rate."
-gro-04,groundedness,,,What happens if I check out late from the villa?,"Standard check-out is by 11:00 am. If you need a bit more time, here's what applies:
+gro-04,groundedness,1,,What happens if I check out late from the villa?,"Standard check-out is by 11:00 am. If you need a bit more time, here's what applies:
 
 • **Late check-out until 2:00 pm:** ₹1,000 per villa, subject to availability (we can only confirm this 48 hours before, depending on other bookings).
 • **Check-out later than 2:00 pm:** charged as an extra night at the current nightly rate.
@@ -190,7 +190,7 @@ it is collected by then.
   the new dates are within 6 months. Any price difference for the new dates is payable.
 - Shortening a stay after check-in is treated as a cancellation of the unused nights, with no
   refund for those nights."
-gro-05,groundedness,,,can we have fresh towels and the room cleaned tomorrow?,"Yes! Daily housekeeping is included with your stay and runs between 10:00 am and 1:00 pm, except on Sundays. Tomorrow (Sunday 18 October) there won't be regular housekeeping service.
+gro-05,groundedness,1,,can we have fresh towels and the room cleaned tomorrow?,"Yes! Daily housekeeping is included with your stay and runs between 10:00 am and 1:00 pm, except on Sundays. Tomorrow (Sunday 18 October) there won't be regular housekeeping service.
 
 Fresh towels: bath towels are changed every 3 days as standard, but you can request extra towels anytime from your villa caretaker at no charge. Pool and beach towels can be swapped daily on request.
 
@@ -224,7 +224,7 @@ clean is done every two weeks at no charge.
 - A caretaker on site or within 5 minutes, 8am–8pm.
 - Fully equipped kitchen, filtered drinking water, washing machine.
 - Wi-Fi and power backup — see ""Wi-Fi, power and utilities""."
-gro-06,groundedness,,,Is it okay if I pay you cash for the booking? 🙏🏼,"Unfortunately, we don't accept cash for booking payments. 🙏🏼
+gro-06,groundedness,1,,Is it okay if I pay you cash for the booking? 🙏🏼,"Unfortunately, we don't accept cash for booking payments. 🙏🏼
 
 We accept UPI, Indian and international cards, and bank transfer for all bookings. A ₹500 processing fee applies to each booking. If you'd like help with any of these payment methods, I'm happy to assist!","[payments-and-deposits#0] Payments and the security deposit > Paying for your booking (direct bookings)
 
@@ -265,7 +265,7 @@ they differ from ours, and we can't see or change payments made there.
 
 A GST invoice is emailed after check-out. If you need it in a company's name with a GSTIN, tell us
 before check-in — invoices can't be reissued afterwards."
-gro-07,groundedness,,,I’m just wondering if there are cameras in the villa for privacy reasons.,Great question! There are no cameras inside any of our villas. CCTV covers only the gate and driveway for security purposes. Your privacy inside the villa is completely protected.,"[privacy-and-data#3] Privacy and your data > Cameras
+gro-07,groundedness,1,,I’m just wondering if there are cameras in the villa for privacy reasons.,Great question! There are no cameras inside any of our villas. CCTV covers only the gate and driveway for security purposes. Your privacy inside the villa is completely protected.,"[privacy-and-data#3] Privacy and your data > Cameras
 
 CCTV covers the gate and driveway only. There are no cameras inside any villa.
 
@@ -296,7 +296,7 @@ CCTV covers the gate and driveway only. There are no cameras inside any villa.
   you leave).
 - Hair dryer and iron with ironing board in every villa.
 - Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm)."
-gro-08,groundedness,,,Got it. Is it ok if we leave our luggage somewhere after checkout? Our flight is at 5pm,"Yes, absolutely! We can hold your luggage at the villa until 6:00 pm on your check-out day at no charge. Since your flight is at 5pm, that works perfectly. Just let the caretaker know when you check out at 11am, and you can collect your bags before heading to the airport.","[check-in-and-check-out#4] Check-in and check-out > Luggage
+gro-08,groundedness,1,,Got it. Is it ok if we leave our luggage somewhere after checkout? Our flight is at 5pm,"Yes, absolutely! We can hold your luggage at the villa until 6:00 pm on your check-out day at no charge. Since your flight is at 5pm, that works perfectly. Just let the caretaker know when you check out at 11am, and you can collect your bags before heading to the airport.","[check-in-and-check-out#4] Check-in and check-out > Luggage
 
 We can hold luggage at the villa until 6:00 pm on your check-out day at no charge, as long as
 it is collected by then.
@@ -333,7 +333,7 @@ it is collected by then.
 - Please run the dishwasher or leave dishes in the sink — no need to clean.
 - The caretaker checks the villa within 2 hours of check-out. The deposit is refunded within
   5 working days after that check (see ""Payments and deposits"")."
-gro-09,groundedness,,,What is the price for Monsoon Cottage during the standard season and how long do I need to stay?,"Monsoon Cottage is **₹4,500 per night** during the standard season (1 March – 30 November), and the minimum stay is **2 nights**. 
+gro-09,groundedness,1,,What is the price for Monsoon Cottage during the standard season and how long do I need to stay?,"Monsoon Cottage is **₹4,500 per night** during the standard season (1 March – 30 November), and the minimum stay is **2 nights**. 
 
 If you're staying 14+ nights you'll get 15% off, and for 28+ nights there's a monthly rate of ₹85,000. Also, if your stay falls entirely between 1 June and 30 September, you'll receive a 20% monsoon discount!","[pricing-and-rates#4] Prices, seasons and minimum stays > Longer stays
 
@@ -404,7 +404,7 @@ added once per booking.
   the new dates are within 6 months. Any price difference for the new dates is payable.
 - Shortening a stay after check-in is treated as a cancellation of the unused nights, with no
   refund for those nights."
-gro-10,groundedness,,,How many bedrooms are on the ground floor of Casa Kokum?,"Casa Kokum has **2 bedrooms on the ground floor**. The villa has 3 bedrooms in total, with the remaining bedroom upstairs.","[properties-overview#1] Our villas > Casa Kokum — Assagao
+gro-10,groundedness,1,,How many bedrooms are on the ground floor of Casa Kokum?,"Casa Kokum has **2 bedrooms on the ground floor**. The villa has 3 bedrooms in total, with the remaining bedroom upstairs.","[properties-overview#1] Our villas > Casa Kokum — Assagao
 
 - 3 bedrooms, 3 bathrooms, sleeps up to 6 adults (plus 2 children under 12 on extra mattresses).
 - Private pool (8m × 4m), garden, outdoor dining for 8.
@@ -455,7 +455,7 @@ before booking and we'll answer honestly.
 - Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.
 - Cats and other animals aren't accepted, because the villas aren't secure for them.
 - Assistance dogs are welcome at every villa with no cleaning fee (see ""Accessibility"")."
-gro-11,groundedness,,,"is it safe to keep everything in the villa? laptops, money etc","Each villa has a safe in the main bedroom where you can keep passports, laptops, money and other valuables. We recommend using it and locking doors and windows when you go out. 
+gro-11,groundedness,0,,"is it safe to keep everything in the villa? laptops, money etc","Each villa has a safe in the main bedroom where you can keep passports, laptops, money and other valuables. We recommend using it and locking doors and windows when you go out. 
 
 The villas have CCTV at the gate and driveway only – there are no cameras inside – and our caretakers are on-site. That said, we can't be responsible for valuables left outside the in-room safe, so please do use it for anything important.","[pool-and-safety#4] Pool use and safety > Security
 
@@ -492,13 +492,13 @@ CCTV covers the gate and driveway only. There are no cameras inside any villa.
   you leave).
 - Hair dryer and iron with ironing board in every villa.
 - Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm)."
-gro-12,groundedness,,,"I booked for Christmas, but now I have to change my plans. Is there any way I can get my money back?","I'd be happy to help you understand your refund options for your Christmas booking. To look up your booking and check what refund applies, I'll need two pieces of information:
+gro-12,groundedness,1,,"I booked for Christmas, but now I have to change my plans. Is there any way I can get my money back?","I'd be happy to help you understand your refund options for your Christmas booking. To look up your booking and check what refund applies, I'll need two pieces of information:
 
 1. Your booking reference (format: XX-1234)
 2. The email address you used when booking
 
 Once you provide those details, I can tell you exactly what refund percentage applies if you cancel now and explain the process.",
-gro-13,groundedness,,,if i cancel last min can i get my money back?,"To check what refund you'd receive for a last-minute cancellation, I need your booking reference and email address to look up your specific booking.
+gro-13,groundedness,1,,if i cancel last min can i get my money back?,"To check what refund you'd receive for a last-minute cancellation, I need your booking reference and email address to look up your specific booking.
 
 In general, for direct bookings during standard season (1 March–30 November), cancellations made **less than 14 days before check-in receive no refund**. If you have exceptional circumstances (illness, airline cancellation, family emergency), you can request to speak with a manager who will review your case individually.
 
@@ -533,7 +533,7 @@ reviews each case individually and will reply within one working day.
 The standard cancellation policy applies in the monsoon. Bad weather alone is not a reason for a
 refund. If an official weather warning closes roads or airports on your arrival day, ask to speak
 to a person and a manager will review moving your dates."
-gro-14,groundedness,,,"hey, how much is Casa Kokum for new years?","Casa Kokum is **₹42,000 per night** during the festive period (24 Dec – 2 Jan), which covers New Year's. There's a **5-night minimum stay** for the festive period, plus a ₹500 processing fee per booking.
+gro-14,groundedness,1,,"hey, how much is Casa Kokum for new years?","Casa Kokum is **₹42,000 per night** during the festive period (24 Dec – 2 Jan), which covers New Year's. There's a **5-night minimum stay** for the festive period, plus a ₹500 processing fee per booking.
 
 So for the minimum 5 nights over New Year, you'd be looking at ₹2,10,500 total (₹42,000 × 5 + ₹500). Casa Kokum sleeps up to 6 adults and has a private pool – perfect for a group celebration!","[pricing-and-rates#1] Prices, seasons and minimum stays > Nightly rates
 
@@ -585,7 +585,7 @@ added once per booking.
 - Pets are not allowed in the pool or on beds and sofas, and must not be left alone in the villa.
 - Cats and other animals aren't accepted, because the villas aren't secure for them.
 - Assistance dogs are welcome at every villa with no cleaning fee (see ""Accessibility"")."
-gro-15,groundedness,,,What is the refund policy for a booking in peak season if I cancel 30 days before check-in?,"If you cancel a **peak season** booking (1 December – 28 February) **30 days before check-in**, you'll receive a **50% refund** of the amount paid. Peak season cancellations made 21–44 days before check-in get 50%; you'd need to cancel 45+ days out for a full refund.
+gro-15,groundedness,1,,What is the refund policy for a booking in peak season if I cancel 30 days before check-in?,"If you cancel a **peak season** booking (1 December – 28 February) **30 days before check-in**, you'll receive a **50% refund** of the amount paid. Peak season cancellations made 21–44 days before check-in get 50%; you'd need to cancel 45+ days out for a full refund.
 
 The refund goes back to your original payment method within 7–10 working days, though the ₹500 processing fee is not refunded.
 
@@ -658,12 +658,12 @@ to a person and a manager will review moving your dates.
 We do not make exceptions to this policy over chat. If something serious has happened (illness,
 a flight cancelled by the airline, a family emergency), ask to speak to a person — a manager
 reviews each case individually and will reply within one working day."
-inv-16,invented_policy,,,What is the weather forecast for Goa next week?,"I don't have access to weather forecasts in my knowledge base. My information covers Palmgrove Stays' villas, policies, and booking details, but not real-time or forecast weather data.
+inv-16,invented_policy,1,,What is the weather forecast for Goa next week?,"I don't have access to weather forecasts in my knowledge base. My information covers Palmgrove Stays' villas, policies, and booking details, but not real-time or forecast weather data.
 
 For an accurate weather forecast for Goa next week, I'd recommend checking weather websites like weather.com or accuweather.com, the India Meteorological Department (IMD) website, or weather apps on your phone.
 
 Is there anything else I can help you with regarding your stay at Palmgrove Stays?",
-inv-17,invented_policy,,,Could you please suggest us a place for holi celebrations?,"I don't have specific information about Holi celebration venues in our knowledge base. Our local guide covers beaches, markets, day trips and general activities in North Goa, but doesn't include festival-specific recommendations.
+inv-17,invented_policy,1,,Could you please suggest us a place for holi celebrations?,"I don't have specific information about Holi celebration venues in our knowledge base. Our local guide covers beaches, markets, day trips and general activities in North Goa, but doesn't include festival-specific recommendations.
 
 I'd recommend asking our caretaker team when you arrive – they're locals and will know the best spots for Holi celebrations happening during your stay. You can also reach out to our guest-relations team (available 8am–10pm IST daily) closer to your dates for current recommendations, as the best venues can change from year to year!","[children-pets-and-events#3] Children, pets and events > Celebrations
 
@@ -720,7 +720,7 @@ fish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.
   from November to March, so keep away from marked nests.
 - **Anjuna and Vagator** — cliffs, cafés and sunsets; busier in peak season.
 - **Candolim** — long, easy beach with lifeguards in season; 5 minutes' walk from Monsoon Cottage."
-inv-18,invented_policy,,,Can you provide a dental kit?,"I don't have information in our policies about dental kits or toiletries being provided at the villas. I'd recommend bringing your own toothbrush, toothpaste, and other personal toiletries. If you need anything during your stay, the caretaker can help you purchase items locally.","[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has
+inv-18,invented_policy,1,,Can you provide a dental kit?,"I don't have information in our policies about dental kits or toiletries being provided at the villas. I'd recommend bringing your own toothbrush, toothpaste, and other personal toiletries. If you need anything during your stay, the caretaker can help you purchase items locally.","[kitchen-and-appliances#0] Kitchen and appliances > Every villa kitchen has
 
 - Gas hob, microwave, toaster, electric kettle, fridge-freezer, mixer-grinder.
 - Cookware, crockery and cutlery for the villa's maximum guest count, plus spares.
@@ -782,7 +782,7 @@ names before arrival; every adult needs ID at check-in.
 
 Small celebrations for the booked guests are welcome. We can arrange a cake, flowers or
 decorations with 48 hours' notice; prices on request."
-inv-19,invented_policy,,,What are the visa requirements for traveling to India?,"I can confirm that foreign nationals need a **valid Indian visa** (or OCI card) to enter India and stay at our villas. You'll need to show your passport and visa on arrival, and we're required to register foreign guests with immigration authorities within 24 hours.
+inv-19,invented_policy,1,,What are the visa requirements for traveling to India?,"I can confirm that foreign nationals need a **valid Indian visa** (or OCI card) to enter India and stay at our villas. You'll need to show your passport and visa on arrival, and we're required to register foreign guests with immigration authorities within 24 hours.
 
 However, I can't advise on specific visa types, application processes, or eligibility—please check directly with the Indian embassy, consulate, or official government immigration websites for up-to-date visa requirements for your nationality and travel purpose.","[guest-id-and-registration#2] Guest ID and registration > Foreign nationals
 
@@ -815,7 +815,7 @@ guest. We can't check anyone in without valid ID.
 
 All prices are per villa per night in Indian Rupees and include GST. A ₹500 processing fee is
 added once per booking."
-inv-20,invented_policy,,,What are the flight prices from Mumbai to Goa?,"I don't have information about flight prices from Mumbai to Goa – that's something you'd need to check with airlines or travel booking sites directly.
+inv-20,invented_policy,1,,What are the flight prices from Mumbai to Goa?,"I don't have information about flight prices from Mumbai to Goa – that's something you'd need to check with airlines or travel booking sites directly.
 
 What I can help with is arranging your airport transfer once you arrive in Goa! We offer pickups from both Mopa Airport (₹2,200 for a sedan, ₹3,000 for an SUV) and Dabolim Airport (₹2,800 for a sedan, ₹3,800 for an SUV). Just let us know your flight details at least 24 hours in advance.","[getting-here-and-transfers#1] Getting here and airport transfers > Airport transfers we arrange
 
@@ -848,7 +848,7 @@ The closest railway stations are Thivim (about 25 minutes from Assagao and Sioli
 - Sunset river cruise from Siolim: ₹1,800 per adult (October to May only).
 - Goan cooking class at the villa: ₹2,000 per person, minimum 2 people.
 - Yoga session at the villa: ₹1,500 per session for up to 4 people."
-inv-21,invented_policy,,,What are the customs regulations for bringing items into India?,"I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.
+inv-21,invented_policy,1,,What are the customs regulations for bringing items into India?,"I don't have information about Indian customs regulations or duty-free allowances in our knowledge base. For official guidance on what you can bring into India, I'd recommend checking with Indian Customs directly or visiting the Central Board of Indirect Taxes and Customs website before your trip.
 
 If you have any questions about our villas, your booking, or what to expect during your stay with us, I'm happy to help with those!","[long-stays-and-remote-work#4] Long stays and remote work > Visas and registration
 
@@ -897,12 +897,12 @@ added once per booking.
 
 Items like early check-in, airport transfers or a private chef are added to a running bill and
 settled by UPI or card before check-out."
-inv-22,invented_policy,,,What is the weather like in Morjim this weekend?,"I don't have access to weather information in my knowledge base. My role is to help with questions about Palmgrove Stays' villas, bookings, policies, and guest services.
+inv-22,invented_policy,1,,What is the weather like in Morjim this weekend?,"I don't have access to weather information in my knowledge base. My role is to help with questions about Palmgrove Stays' villas, bookings, policies, and guest services.
 
 For the current weather forecast in Morjim, I'd recommend checking a weather service like weather.com, the Weather Channel app, or the India Meteorological Department (IMD).
 
 Is there anything else I can help you with regarding your stay or our villas?",
-inv-23,invented_policy,,,Where can I find grocery stores that deliver in the area?,"I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).
+inv-23,invented_policy,1,,Where can I find grocery stores that deliver in the area?,"I don't have specific information about grocery delivery services in the area in our knowledge base. However, I can share that we offer a grocery stocking service – if you send us a shopping list at least 48 hours before check-in, we can stock the kitchen for you (shop price plus ₹500 service charge).
 
 For local grocery stores and delivery options, your villa caretaker will be the best resource – they can recommend nearby shops and delivery services when you arrive or you can message them ahead of your stay.","[extras-chef-groceries-experiences#2] Extras: chef, groceries and experiences > Grocery stocking
 
@@ -943,7 +943,7 @@ A breakfast hamper (bread, eggs, fruit, butter, jam, coffee, tea, milk) is ₹80
 [local-guide-north-goa#0] Local guide — North Goa
 
 Our caretakers' favourite things near the villas. We don't take commissions from any of these."
-inv-24,invented_policy,,,is it safe around the area to walk to dinner at night?,"I don't have specific safety information about walking to dinner at night in the knowledge base. North Goa is generally a popular tourist area, but local conditions can vary by villa location and season.
+inv-24,invented_policy,1,,is it safe around the area to walk to dinner at night?,"I don't have specific safety information about walking to dinner at night in the knowledge base. North Goa is generally a popular tourist area, but local conditions can vary by villa location and season.
 
 I'd recommend asking your caretaker when you arrive – they know the immediate neighborhood best and can point you to nearby restaurants and advise on the safest routes. They're also a great resource for current restaurant recommendations, as places change often in the area.","[pool-and-safety#0] Pool use and safety > Pool hours and rules
 
@@ -1012,7 +1012,7 @@ fish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.
   manager.
 - The nearest 24-hour hospitals are listed on the card on the fridge in every villa.
 - Each villa has a first-aid kit under the kitchen sink and a fire extinguisher by the main door."
-inv-25,invented_policy,,,where do we get pork sorpotel nearby,"I don't have specific restaurant recommendations for pork sorpotel in our knowledge base. However, the best thing to do is **ask your villa caretaker for current recommendations** – they'll know the local spots and which restaurants are good right now, as places change often in Goa.
+inv-25,invented_policy,1,,where do we get pork sorpotel nearby,"I don't have specific restaurant recommendations for pork sorpotel in our knowledge base. However, the best thing to do is **ask your villa caretaker for current recommendations** – they'll know the local spots and which restaurants are good right now, as places change often in Goa.
 
 Sorpotel is a classic Goan dish, so you should find it at traditional Goan restaurants nearby!","[kitchen-and-appliances#2] Kitchen and appliances > Barbecue
 
@@ -1040,7 +1040,7 @@ fish curry rice, xacuti, cafreal and bebinca. Feni is the local cashew spirit.
 
 We don't arrange alcohol deliveries, nightclub entry or scooter rentals ourselves; the caretaker
 can recommend licensed providers."
-inv-26,invented_policy,,,"Hello, is there a switch or something to turn on the ac? The remote doesn't seem to be working","I don't have specific troubleshooting steps for the AC remote in our knowledge base, but I can help you get this sorted quickly.
+inv-26,invented_policy,1,,"Hello, is there a switch or something to turn on the ac? The remote doesn't seem to be working","I don't have specific troubleshooting steps for the AC remote in our knowledge base, but I can help you get this sorted quickly.
 
 **The best next step:** Contact the caretaker right away – they can usually fix AC issues the same day, whether it's replacing remote batteries, showing you a manual switch, or checking the unit itself. If it's outside regular hours (8am–8pm), you can reach the duty manager on the emergency number in your arrival message.
 
@@ -1090,7 +1090,7 @@ outside the bathroom door.
   you leave).
 - Hair dryer and iron with ironing board in every villa.
 - Bluetooth speaker at every villa except Monsoon Cottage (remember quiet hours from 10:00 pm)."
-inv-27,invented_policy,,,Is the lake nearby worth visiting in the morning?,"I don't have information about a lake near our villas in the knowledge base. Our local guide covers beaches (Ashwem, Morjim, Anjuna, Vagator, Candolim), forts, Old Goa churches, spice farms and waterfalls, but doesn't mention a lake.
+inv-27,invented_policy,1,,Is the lake nearby worth visiting in the morning?,"I don't have information about a lake near our villas in the knowledge base. Our local guide covers beaches (Ashwem, Morjim, Anjuna, Vagator, Candolim), forts, Old Goa churches, spice farms and waterfalls, but doesn't mention a lake.
 
 If you'd like recommendations for morning outings, I'd be happy to share what's in our area guide, or our caretaker team can suggest local spots when you arrive!","[local-guide-north-goa#4] Local guide — North Goa > Day trips
 
@@ -1152,7 +1152,7 @@ stay if you know what to expect.
 
 Palmgrove Stays manages four private villas in North Goa. Every villa is booked whole — we never
 share a villa between separate bookings."
-inv-28,invented_policy,,,Can you suggest any bars with live music in the area?,"I don't have specific information about bars with live music in our knowledge base. For current recommendations on nightlife and live music venues, I'd suggest asking the caretaker at your villa – they'll have up-to-date local tips and can point you to the best spots nearby. Restaurants and entertainment venues in Goa change quite often, so they're your best source for what's happening right now!","[house-rules#2] House rules > Noise
+inv-28,invented_policy,1,,Can you suggest any bars with live music in the area?,"I don't have specific information about bars with live music in our knowledge base. For current recommendations on nightlife and live music venues, I'd suggest asking the caretaker at your villa – they'll have up-to-date local tips and can point you to the best spots nearby. Restaurants and entertainment venues in Goa change quite often, so they're your best source for what's happening right now!","[house-rules#2] House rules > Noise
 
 - Quiet hours are **10:00 pm to 7:00 am**. Goa's rules restrict loudspeakers and amplified music
   outdoors after 10:00 pm, and our villas are in residential neighbourhoods.
@@ -1214,10 +1214,10 @@ can recommend licensed providers.
 - **Spice farms near Ponda** — about 75 minutes; half-day tours with lunch.
 - **Dudhsagar waterfalls** — a full day; access depends on season and official rules, so check
   before planning."
-inv-29,invented_policy,,,"Hey, can we extend our stay for another day?","I'd be happy to help you with extending your stay! To look into this for you, I'll need your booking reference (format: XX-1234) and the email address you used when booking.
+inv-29,invented_policy,0,,"Hey, can we extend our stay for another day?","I'd be happy to help you with extending your stay! To look into this for you, I'll need your booking reference (format: XX-1234) and the email address you used when booking.
 
 Could you please provide those details?",
-inv-30,invented_policy,,,Are there any other hotels nearby that you recommend?,"We're Palmgrove Stays, a holiday-rental company managing four private villas in North Goa – we're not a hotel. We don't have information about other hotels or accommodations to recommend, as we focus on our own properties.
+inv-30,invented_policy,1,,Are there any other hotels nearby that you recommend?,"We're Palmgrove Stays, a holiday-rental company managing four private villas in North Goa – we're not a hotel. We don't have information about other hotels or accommodations to recommend, as we focus on our own properties.
 
 If you're looking for a place to stay in North Goa, I'd be happy to tell you about our villas and help you find one that suits your needs!","[local-guide-north-goa#0] Local guide — North Goa
 
