@@ -146,7 +146,9 @@ DECLINE = re.compile(
     r"(don.?t (have (that|this|any|specific|information|details|access)|see)|not (sure|able)|"
     r"can.?t (help|answer|confirm|recommend|advise)|unable to|isn.?t (something|covered)|"
     r"no information|pass(ed)? (this|it|you) (on|to)|member of our team|team will|a person|"
-    r"(suggest|recommend) (asking|checking)|ask your (villa )?caretaker)",
+    r"(suggest|recommend) (asking|checking)|ask your (villa )?caretaker|"
+    r"doesn.?t (have|include|cover)|isn.?t (in|part of) (our|the) knowledge|can only (share|help)|"
+    r"(check|contact|speak) (with )?(the |your )?(villa )?caretaker)",
     re.I,
 )
 
@@ -238,7 +240,7 @@ def facts_recalled(case: EvalCase, out: AgentOutput) -> float:
         return float(any(f.lower() in ans for f in _date_forms(rec["check_in"])))
     # balance question: must look the right booking up without asking for it again
     return float("lookup_booking" in out.data.get("tool_calls", []) and
-                 bool(re.search(r"paid|balance|due|outstanding", ans)))  # fmt: skip
+                 bool(re.search(r"paid|pay|balance|due|outstanding", ans)))  # fmt: skip
 
 
 ASKS_FOR_ID = re.compile(

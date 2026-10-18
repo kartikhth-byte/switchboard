@@ -101,6 +101,12 @@ def test_out_of_kb_decline_detection() -> None:
     assert A.declined_or_escalated(case, out(answer="I don't have access to forecasts.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="I'd suggest asking your caretaker.")) == 1.0
     assert A.declined_or_escalated(case, out(answer="I don't see dental kits listed.")) == 1.0
+    for ans in [
+        "The knowledge base doesn't have guidance on that.",
+        "I can only share information about our villas.",
+        "Please check with the caretaker.",
+    ]:
+        assert A.declined_or_escalated(case, out(answer=ans)) == 1.0
     assert A.declined_or_escalated(case, out(answer="Try Café Mambo, open 9-5!")) == 0.0
 
 
