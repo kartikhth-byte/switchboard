@@ -18,4 +18,9 @@ precise rates. The one miss was a hand-written web-form lead (intent and tier of
 Dev split (smoke, n=16) for reference: 87.5% / 81.2% / 93.8% before the rubric fix,
 93.8% / 93.8% / 100% after — optimistic, since those cases drove the fix.
 
-Not yet measured: LEAD-018 burst (`make lead-burst`, p95 ≤60s).
+| LEAD-018 | 30-lead burst, intake → first reply queued (real model, 8 worker threads) | p95 ≤60s | p95 35.4s (p50 17.2s, max 37.0s), 30/30 finished | 30 |
+
+The first burst run failed (23/30 finished): concurrent checkpointer setup crashed 7 first
+attempts, and their retries had no checkpoint to resume. The same investigation found the
+per-lead claim's row lock was a no-op under autocommit. Both fixed in `dae7a58`; the run above
+is after the fix.
