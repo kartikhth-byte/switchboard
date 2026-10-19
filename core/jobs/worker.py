@@ -114,8 +114,14 @@ def main() -> None:
     setup_logging()
     dsn = get_settings().database_url
     migrate(dsn)
-    worker = Worker(JobQueue(dsn))
-    # Agents register their job kinds here as they land (M3: lead follow-ups, M4: reminders).
+    # Agents register their job kinds here as they land (M3: leads, M4: reminders).
+    from agents.dispatcher.service import Dispatcher, make_adapters
+    from core.tracing import make_langfuse
+
+    settings = get_settings()
+    dispatcher = Dispatcher(settings, make_adapters(settings), langfuse=make_langfuse(settings))
+    worker = Worker(JobQueue(dsn), on_failure=dispatcher.on_job_failure)
+    dispatcher.register_jobs(worker)
     worker.run_forever()
 
 

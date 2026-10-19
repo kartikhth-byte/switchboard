@@ -33,10 +33,17 @@ class Settings(BaseSettings):
     # Safety defaults (LEAD-017, ADR §Non-negotiable safeguards).
     demo_integrations: Literal["mock", "real"] = "mock"
     outbound_mode: Literal["off", "allowlist", "approve_first"] = "off"
+    # Recipients (E.164 phones, emails) real outbound may reach when OUTBOUND_MODE=allowlist
+    # (LEAD-017). Comma-separated; empty = nobody.
+    outbound_allowlist: str = ""
     daily_usd_cap: float = 5.0
     # Embeddings for KB retrieval (SHR-016). "hash" = offline lexical embedder for tests/CI.
     embed_model: str = "openai/text-embedding-3-small"
     rate_limit_per_min: int = 30  # per client IP, public endpoints (SHR-018)
+
+
+def allowlist(settings: "Settings") -> set[str]:
+    return {x.strip().lower() for x in settings.outbound_allowlist.split(",") if x.strip()}
 
 
 def export_provider_keys(env_file: Path = Path(".env")) -> dict[str, str]:
