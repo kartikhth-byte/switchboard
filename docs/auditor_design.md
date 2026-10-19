@@ -18,6 +18,14 @@ this note is the *Implementation approach / variance* for the INVC rows.
 People review exceptions and approve every proposed entry. No agent writes to an ERP (out of the
 client's scope, INVC-007). PO / 3-way matching stays **Future** (INVC-011, not in the briefs).
 
+## Tax regime and rates (config, effective-dated)
+One regime per deployment, chosen at build time (India GST or US sales/use tax). Every rate and
+threshold lives in `config/tax/<regime>.yaml` with `valid_from` / `valid_to` and a `source`
+(official URL), so an invoice is checked against the rule in force on its invoice date, and a
+rate change is a reviewed config edit plus a test, not a code change. Code applies the rules; the
+agents never compute tax. Rates for many jurisdictions (US) come from a tax-rate adapter (mock in
+CI; a service such as Avalara in a real deployment).
+
 ## Synthetic data
 ~300 invoices from fictional suppliers rendered as PDFs (plus multi-invoice PDFs and ~10
 non-invoices), ~20% with planted problems and known answers: arithmetic and tax errors, cross-
