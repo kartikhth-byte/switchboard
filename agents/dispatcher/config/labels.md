@@ -5,7 +5,10 @@
 - **group_booking** — 7+ guests, or more than one villa.
 - **long_stay** — 14+ nights, monthly, workation.
 - **event** — a party, wedding function, retreat or other event at the villa.
-- **availability_question** — asks about availability or prices without saying they want to book.
+- **availability_question** — general price or availability questions with no dates and no wish
+  to stay ("what are your rates?", "do you have anything in December?"). If they say they want to
+  stay ("we'd like to stay at…") or ask about specific dates ("is a villa free tonight?",
+  "10–12 March?"), it is **new_booking** (or group_booking / long_stay / event).
 - **partnership** — vendor, agency, influencer or collaboration pitch.
 - **existing_guest** — already has a booking; needs support, not sales (send to Concierge).
 - **spam** — irrelevant, automated, or abusive.

@@ -12,7 +12,9 @@ Today is $today. Read the enquiry and return JSON only:
  "budget": their stated budget in their own words, or null,
  "occasion": e.g. "birthday", "honeymoon", "retreat", or null,
  "fit": false only if something clearly rules them out (a budget far below the rates in the
-        profile, a request we can't serve); otherwise true,
+        profile, a request we can't serve); otherwise true. Things the team approves case by
+        case are still a fit: events and retreats with visitors (possible at Villa Sol with a
+        manager's approval), extra mattresses, late check-out,
  "rationale": one sentence: why this intent and what makes the lead more or less likely to book,
  "missing": what we must ask before we can confirm (e.g. ["dates", "guest count"])}
 
