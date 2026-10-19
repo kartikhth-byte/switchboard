@@ -40,6 +40,7 @@ class ToolDeps:
     allowlist: set[str] = field(default_factory=set)  # phones (E.164), emails, or "@domain"
     window_hours: int = 24
     template: str = "palmgrove_enquiry_ack"
+    template_params: bool = True  # False for Meta's parameterless sample template (hello_world)
     now: Callable[[], datetime] = _now
 
 
@@ -116,7 +117,7 @@ def build_registry(d: ToolDeps) -> ToolRegistry:
             pid = (
                 d.whatsapp.send_text(to, inp.body)
                 if in_window
-                else d.whatsapp.send_template(to, d.template, [first])
+                else d.whatsapp.send_template(to, d.template, [first] if d.template_params else [])
             )
         except Exception as exc:
             d.store.mark_message(key, "failed")

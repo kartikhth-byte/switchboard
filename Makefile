@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst data data-lead ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -48,6 +48,9 @@ calib-export:     ## pick 30 judged answers to hand-label: make calib-export RES
 
 canary-check:     ## SHR-019: planted PII canaries absent from >=100 exported eval traces
 	PYTHONPATH=. uv run python scripts/check_canaries.py
+
+integrations-check: ## M3.3: one live call each to Slack, WhatsApp, GoHighLevel, Mailpit
+	PYTHONPATH=. uv run python scripts/integrations_check.py
 
 lead-burst:       ## LEAD-018: 30 leads at once, p95 intake -> reply queued <=60s (needs `make up`)
 	PYTHONPATH=. uv run python scripts/lead_burst.py $(ARGS)

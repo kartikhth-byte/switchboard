@@ -19,4 +19,5 @@ rules:
                     "not interested"]
   whatsapp:
     session_window_hours: 24        # LEAD-020: outside it, approved templates only
-    template_first_contact: palmgrove_enquiry_ack
+    template_first_contact: palmgrove_enquiry_ack   # needs Meta approval; until then use
+    template_params: true                            # hello_world + false (+ language en_US)

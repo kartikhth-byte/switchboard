@@ -28,7 +28,7 @@ from core.retrieval import Hit, KnowledgeBase, make_embedder
 from core.runs import PgRunStore
 from core.tracing import make_langfuse
 from integrations.crm import MockCRM
-from integrations.slack import MockSlack
+from integrations.slack import make_slack
 
 ROOT = Path(__file__).resolve().parents[2]
 CONV_ID = re.compile(r"^web-[0-9a-f]{32}$")
@@ -76,7 +76,8 @@ class ChatService:
         self.s = settings
         self._client, self._memory_client, self._kb = client, memory_client, kb
         self.convs = ConversationStore(settings.database_url, "concierge")
-        self.crm, self.slack = MockCRM(), MockSlack()  # shared by the process: one demo inbox
+        self.crm = MockCRM()  # shared by the process: one demo inbox
+        self.slack = make_slack(settings)  # real Slack in demo runs (DEMO_INTEGRATIONS=real)
 
     @cached_property
     def cfg(self) -> AgentConfig:

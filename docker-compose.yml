@@ -27,6 +27,7 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-switchboard}:${POSTGRES_PASSWORD:-switchboard}@postgres:5432/${POSTGRES_DB:-switchboard}
+      SMTP_HOST: mailpit
     ports: ["8000:8000"]
     depends_on:
       postgres: { condition: service_healthy }
@@ -45,9 +46,15 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-switchboard}:${POSTGRES_PASSWORD:-switchboard}@postgres:5432/${POSTGRES_DB:-switchboard}
+      SMTP_HOST: mailpit
     depends_on:
       api: { condition: service_healthy }  # api runs migrations first
     restart: unless-stopped
+
+  mailpit:
+    # Local inbox for the Dispatcher's email replies (demo runs): UI at http://localhost:8025.
+    image: axllent/mailpit:v1.21
+    ports: ["8025:8025", "1025:1025"]
 
   web:
     build: { context: ./web }

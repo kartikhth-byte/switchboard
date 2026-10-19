@@ -37,10 +37,33 @@ class Settings(BaseSettings):
     # (LEAD-017). Comma-separated; empty = nobody.
     outbound_allowlist: str = ""
     daily_usd_cap: float = 5.0
+
+    # Real integrations (DEMO_INTEGRATIONS=real only; mocks otherwise). Secrets never logged.
+    slack_bot_token: SecretStr | None = None
+    slack_channels: str = ""  # "#leads=C0123,#ops-alerts=C0456,#guest-support=C0789"
+    whatsapp_phone_number_id: str = ""
+    whatsapp_token: SecretStr | None = None
+    whatsapp_api_version: str = "v21.0"
+    whatsapp_template_language: str = "en"
+    ghl_token: SecretStr | None = None  # GoHighLevel Private Integration token
+    ghl_location_id: str = ""
+    smtp_host: str = "localhost"  # Mailpit (compose service `mailpit` inside the network)
+    smtp_port: int = 1025
+    email_from: str = "Palmgrove Stays <hello@palmgrove.test>"
     # Embeddings for KB retrieval (SHR-016). "hash" = offline lexical embedder for tests/CI.
     embed_model: str = "openai/text-embedding-3-small"
     worker_concurrency: int = 8  # jobs run in parallel per worker batch (LEAD-018)
     rate_limit_per_min: int = 30  # per client IP, public endpoints (SHR-018)
+
+
+def missing_real_settings(settings: "Settings", needs: tuple[str, ...]) -> list[str]:
+    """Env var names still unset for the real integrations in `needs` (slack, whatsapp, ghl)."""
+    req = {
+        "slack": ["slack_bot_token"],
+        "whatsapp": ["whatsapp_phone_number_id", "whatsapp_token"],
+        "ghl": ["ghl_token", "ghl_location_id"],
+    }
+    return [k.upper() for n in needs for k in req[n] if not getattr(settings, k)]
 
 
 def allowlist(settings: "Settings") -> set[str]:

@@ -21,14 +21,14 @@ from agents.dispatcher.store import Lead, LeadStore
 from agents.dispatcher.tools import AGENT, ToolDeps, build_registry
 from core.approvals import ApprovalStore
 from core.config.agent import AgentConfig, load_agent_config
-from core.config.settings import Settings, allowlist
+from core.config.settings import Settings, allowlist, missing_real_settings
 from core.jobs import Job, JobQueue
 from core.models import ModelClient
 from core.runs import PgRunStore, RunStore, start_run
 from core.runs.models import RunKind
 from integrations.crm.pg import PgMockCRM
 from integrations.messaging import Email, LeadCRM, MockEmail, MockWhatsApp, WhatsApp
-from integrations.slack import MockSlack, Slack
+from integrations.slack import MockSlack, Slack, make_slack
 
 log = logging.getLogger(__name__)
 _SETUP_LOCK = threading.Lock()
@@ -56,10 +56,28 @@ def mock_adapters(dsn: str) -> Adapters:
 
 
 def make_adapters(settings: Settings) -> Adapters:
-    """Mocks unless DEMO_INTEGRATIONS=real (real GoHighLevel / WhatsApp / Slack / Mailpit: M3.3)."""
-    if settings.demo_integrations == "real":
-        raise NotImplementedError("real Dispatcher adapters land in M3.3")
-    return mock_adapters(settings.database_url)
+    """Mocks unless DEMO_INTEGRATIONS=real: then GoHighLevel, WhatsApp Cloud, Slack and Mailpit.
+    Fails fast, naming the missing env vars, rather than silently mixing real and mock."""
+    if settings.demo_integrations != "real":
+        return mock_adapters(settings.database_url)
+    from integrations.crm.ghl import GoHighLevelCRM
+    from integrations.messaging.real import SmtpEmail, WhatsAppCloud
+
+    missing = missing_real_settings(settings, ("slack", "whatsapp", "ghl"))
+    if missing:
+        raise RuntimeError(f"DEMO_INTEGRATIONS=real needs: {', '.join(missing)} (see .env.example)")
+    assert settings.ghl_token and settings.whatsapp_token
+    return Adapters(
+        crm=GoHighLevelCRM(settings.ghl_token.get_secret_value(), settings.ghl_location_id),
+        whatsapp=WhatsAppCloud(
+            settings.whatsapp_phone_number_id,
+            settings.whatsapp_token.get_secret_value(),
+            settings.whatsapp_api_version,
+            settings.whatsapp_template_language,
+        ),
+        email=SmtpEmail(settings.smtp_host, settings.smtp_port, settings.email_from),
+        slack=make_slack(settings),
+    )
 
 
 @dataclass
@@ -93,6 +111,7 @@ class Dispatcher:
                 allowlist=allowlist(self.settings),
                 window_hours=int(w.get("session_window_hours", 24)),
                 template=str(w.get("template_first_contact", "palmgrove_enquiry_ack")),
+                template_params=bool(w.get("template_params", True)),
                 now=self.now,
             )
         )
