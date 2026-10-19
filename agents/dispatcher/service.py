@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta, timezone
@@ -30,6 +31,8 @@ from integrations.messaging import Email, LeadCRM, MockEmail, MockWhatsApp, What
 from integrations.slack import MockSlack, Slack
 
 log = logging.getLogger(__name__)
+_SETUP_LOCK = threading.Lock()
+_SETUP_DONE = False
 ROOT = Path(__file__).resolve().parents[2]
 IST = timezone(timedelta(hours=5, minutes=30))
 MID_GRAPH = {"processing", "in_crm", "assessed", "drafted"}  # a crash here: resume, don't restart
@@ -131,6 +134,12 @@ class Dispatcher:
     def _invoke(self, lead_id: str, inp: Any, run_input: Any) -> dict[str, Any]:
         def go(cp: BaseCheckpointSaver[Any]) -> dict[str, Any]:
             graph, deps = self._graph(cp)
+            cfg = {"configurable": {"thread_id": lead_id}}
+            start = inp
+            if start is None and not graph.get_state(cfg).next:
+                # Retry, but the first attempt failed before LangGraph saved a checkpoint
+                # (e.g. at run start): nothing to resume, so start the flow from the top.
+                start = {"lead_id": lead_id}
             with start_run(
                 AGENT,
                 self.runs,
@@ -144,7 +153,7 @@ class Dispatcher:
                 kind=self.run_kind,
             ) as run:
                 deps.run = run
-                state = graph.invoke(inp, {"configurable": {"thread_id": lead_id}})
+                state = graph.invoke(start, cfg)
                 if "__interrupt__" in state:
                     run.set_status("waiting_approval")
             self.last_events = deps.events
@@ -162,7 +171,11 @@ class Dispatcher:
         from langgraph.checkpoint.postgres import PostgresSaver
 
         with PostgresSaver.from_conn_string(self.settings.database_url) as cp:
-            cp.setup()
+            with _SETUP_LOCK:  # setup() runs migrations: once per process, never concurrently
+                global _SETUP_DONE
+                if not _SETUP_DONE:
+                    cp.setup()
+                    _SETUP_DONE = True
             return go(cp)
 
     def process(self, lead_id: str, *, retry: bool = False) -> dict[str, Any]:

@@ -15,7 +15,7 @@ class PgMockCRM:
         self.dsn = dsn
 
     def upsert_lead(self, email: str | None, phone: str | None, fields: dict[str, Any]) -> str:
-        with connect(self.dsn) as c:
+        with connect(self.dsn) as c, c.transaction():  # FOR UPDATE needs a transaction
             row = c.execute(
                 "SELECT id, fields FROM crm_contacts"
                 " WHERE (email = %s::text AND %s::text IS NOT NULL)"

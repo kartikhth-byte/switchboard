@@ -309,3 +309,14 @@ def test_retried_job_resumes_from_checkpoint_after_a_model_error() -> None:
     d.process(str(lead.id), retry=True)  # the worker's retry resumes at assess
     got = d.store.get(lead.id)
     assert got and got.stage == "with_owner" and len(sent(d, lead.id)) == 1
+
+
+def test_retry_with_no_checkpoint_starts_from_the_top() -> None:
+    """First attempt died after claiming the lead but before LangGraph saved anything
+    (seen in the burst test): the retry must run the flow, not fail with 'no input'."""
+    d, _ = make()
+    lead, _ = d.intake(payload(), enqueue=False)
+    d.store.advance(lead.id, "process_started")  # claimed, then crashed before the graph ran
+    d.process(str(lead.id), retry=True)
+    got = d.store.get(lead.id)
+    assert got and got.stage == "with_owner" and len(sent(d, lead.id)) == 1

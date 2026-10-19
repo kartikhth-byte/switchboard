@@ -108,7 +108,7 @@ class LeadStore:
         bad = set(fields) - UPDATABLE
         if bad:
             raise ValueError(f"not updatable: {bad}")
-        with connect(self.dsn) as c:
+        with connect(self.dsn) as c, c.transaction():  # FOR UPDATE needs a transaction
             row = c.execute(
                 "SELECT stage FROM leads WHERE id = %s FOR UPDATE", (str(lead_id),)
             ).fetchone()
