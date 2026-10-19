@@ -4,7 +4,9 @@ from __future__ import annotations
 
 TRANSITIONS: dict[tuple[str, str], str] = {
     # Intake (normalize + dedupe) creates the lead at "normalized"; replays never make a new one.
-    ("normalized", "crm_upserted"): "in_crm",
+    # One processing run per lead: claimed atomically, so concurrent deliveries can't both start.
+    ("normalized", "process_started"): "processing",
+    ("processing", "crm_upserted"): "in_crm",
     ("in_crm", "assessed"): "assessed",
     ("assessed", "drafted"): "drafted",
     ("assessed", "no_reply"): "closed",  # spam / existing guest: no sales reply

@@ -23,7 +23,7 @@ def test_every_stage_event_pair(stage: str, event: str) -> None:
 
 def test_happy_path_and_stops() -> None:
     s = "normalized"
-    for e in ["crm_upserted", "assessed", "drafted", "sent", "routed"]:
+    for e in ["process_started", "crm_upserted", "assessed", "drafted", "sent", "routed"]:
         s = next_stage(s, e)
     assert s == "with_owner"
     assert next_stage("nurturing", "opt_out") == "opted_out"

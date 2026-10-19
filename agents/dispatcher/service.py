@@ -15,6 +15,7 @@ from langgraph.types import Command
 
 from agents.dispatcher.graph import GraphDeps, build
 from agents.dispatcher.normalize import dedupe_key, normalize
+from agents.dispatcher.states import InvalidTransition
 from agents.dispatcher.store import Lead, LeadStore
 from agents.dispatcher.tools import AGENT, ToolDeps, build_registry
 from core.approvals import ApprovalStore
@@ -31,6 +32,7 @@ from integrations.slack import MockSlack, Slack
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[2]
 IST = timezone(timedelta(hours=5, minutes=30))
+MID_GRAPH = {"processing", "in_crm", "assessed", "drafted"}  # a crash here: resume, don't restart
 EventKind = Literal["lead_replied", "human_takeover", "opt_out"]
 
 
@@ -70,6 +72,7 @@ class Dispatcher:
     now: Callable[[], datetime] = lambda: datetime.now(UTC)
     cfg: AgentConfig = field(default_factory=lambda: load_agent_config(ROOT / "agents/dispatcher"))
     last_events: list[str] = field(default_factory=list)
+    dedupe_scope: str = ""  # evals: a fresh scope per run so re-runs don't hit earlier leads
 
     def __post_init__(self) -> None:
         dsn = self.settings.database_url
@@ -96,7 +99,10 @@ class Dispatcher:
     def intake(self, payload: dict[str, Any], *, enqueue: bool = True) -> tuple[Lead, bool]:
         region = str(self.cfg.rules.get("default_region", "IN"))
         contact = normalize(payload.get("email"), payload.get("phone"), region)
-        lead, created = self.store.intake(payload, contact.model_dump(), dedupe_key(contact))
+        key = dedupe_key(contact)
+        if key and self.dedupe_scope:
+            key = f"{self.dedupe_scope}:{key}"
+        lead, created = self.store.intake(payload, contact.model_dump(), key)
         if created and enqueue:
             self.jobs.enqueue(
                 "dispatcher.process",
@@ -159,10 +165,19 @@ class Dispatcher:
             cp.setup()
             return go(cp)
 
-    def process(self, lead_id: str) -> dict[str, Any]:
+    def process(self, lead_id: str, *, retry: bool = False) -> dict[str, Any]:
+        """Run the graph once per lead. The first caller claims the lead (normalized ->
+        processing, under a row lock); a concurrent or replayed delivery is skipped. A retried
+        job (`retry=True`) resumes from the last checkpoint instead of starting over."""
         lead = self.store.get(lead_id)
-        if lead is None or lead.stage != "normalized":
-            return {"skipped": True, "stage": lead.stage if lead else None}  # replay of the job
+        if lead is None:
+            return {"skipped": True, "stage": None}
+        if retry and lead.stage in MID_GRAPH:
+            return self._invoke(lead_id, None, {"resume_after_error": True})
+        try:
+            lead = self.store.advance(lead_id, "process_started")
+        except InvalidTransition:
+            return {"skipped": True, "stage": lead.stage}
         return self._invoke(lead_id, {"lead_id": lead_id}, {"message": lead.payload.get("message")})
 
     def resume(self, lead_id: str, decision: str) -> dict[str, Any]:
@@ -247,7 +262,10 @@ class Dispatcher:
                 log.warning("could not mark lead failed")
 
     def register_jobs(self, worker: Any) -> None:
-        worker.register("dispatcher.process", lambda j: self.process(j.payload["lead_id"]))
+        worker.register(
+            "dispatcher.process",
+            lambda j: self.process(j.payload["lead_id"], retry=j.attempts > 1),
+        )
         worker.register(
             "dispatcher.follow_up",
             lambda j: self.follow_up(j.payload["lead_id"], int(j.payload["n"])),

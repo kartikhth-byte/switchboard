@@ -12,6 +12,7 @@ import logging
 import signal
 import time
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -33,8 +34,10 @@ class Worker:
         *,
         policy: RetryPolicy | None = None,
         on_failure: FailureHook | None = None,
+        concurrency: int = 1,
     ) -> None:
         self.queue = queue
+        self.concurrency = max(1, concurrency)  # >1: a batch runs in threads (LEAD-018 burst)
         self.policy = policy or RetryPolicy()
         self.on_failure = on_failure
         self._handlers: dict[str, JobHandler] = {}
@@ -47,9 +50,15 @@ class Worker:
 
     def run_once(self, *, now: datetime | None = None) -> int:
         """Process one batch of due jobs. Returns how many were claimed."""
-        jobs = self.queue.claim(now=now)
-        for job in jobs:
-            self._process(job, now or datetime.now(UTC))
+        t = now or datetime.now(UTC)
+        if self.concurrency == 1:
+            jobs = self.queue.claim(now=now)
+            for job in jobs:
+                self._process(job, t)
+            return len(jobs)
+        jobs = self.queue.claim(limit=self.concurrency, now=now)
+        with ThreadPoolExecutor(self.concurrency) as pool:
+            list(pool.map(lambda j: self._process(j, t), jobs))
         return len(jobs)
 
     def run_forever(self, poll_s: float = POLL_S) -> None:
@@ -120,7 +129,11 @@ def main() -> None:
 
     settings = get_settings()
     dispatcher = Dispatcher(settings, make_adapters(settings), langfuse=make_langfuse(settings))
-    worker = Worker(JobQueue(dsn), on_failure=dispatcher.on_job_failure)
+    worker = Worker(
+        JobQueue(dsn),
+        on_failure=dispatcher.on_job_failure,
+        concurrency=settings.worker_concurrency,
+    )
     dispatcher.register_jobs(worker)
     worker.run_forever()
 

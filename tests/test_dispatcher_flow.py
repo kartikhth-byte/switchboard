@@ -286,3 +286,26 @@ def test_failed_job_alerts_ops_with_run_id_and_marks_lead_failed() -> None:
     assert alert["channel"] == "#ops-alerts" and str(run_id) in alert["text"]  # LEAD-005
     got = d.store.get(lead.id)
     assert got and got.stage == "failed" and got.stopped
+
+
+def test_retried_job_resumes_from_checkpoint_after_a_model_error() -> None:
+    class Flaky(FakeModel):
+        calls = 0
+
+        def complete(self, messages: Any, tools: Any = None, **kw: Any) -> ModelResponse:
+            if messages[0]["content"].startswith("You qualify") and Flaky.calls == 0:
+                Flaky.calls += 1
+                raise TimeoutError("model timeout")
+            return super().complete(messages, tools, **kw)
+
+    d, _ = make()
+    d.client = Flaky(HOT)
+    lead, _ = d.intake(payload(), enqueue=False)
+    with pytest.raises(TimeoutError):
+        d.process(str(lead.id))
+    got = d.store.get(lead.id)
+    assert got and got.stage == "in_crm"  # crashed in assess
+    assert d.process(str(lead.id))["skipped"]  # a duplicate delivery doesn't restart it
+    d.process(str(lead.id), retry=True)  # the worker's retry resumes at assess
+    got = d.store.get(lead.id)
+    assert got and got.stage == "with_owner" and len(sent(d, lead.id)) == 1

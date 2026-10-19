@@ -176,3 +176,18 @@ def test_concurrent_claims_never_double_take(queue: JobQueue) -> None:
         batches = list(pool.map(lambda _: queue.claim(limit=5, now=T0), range(12)))
     ids = [j.id for b in batches for j in b]
     assert len(ids) == 30 and len(set(ids)) == 30
+
+
+@pytestmark_db
+def test_worker_concurrency_runs_a_batch_in_parallel(queue: JobQueue) -> None:
+    import threading
+    import time
+
+    w = Worker(queue, concurrency=4)
+    seen: set[int] = set()
+    w.register("slow", lambda job: (time.sleep(0.3), seen.add(threading.get_ident())))
+    for i in range(4):
+        queue.enqueue("slow", {"n": i}, run_at=T0)
+    t = time.monotonic()
+    assert w.run_once(now=T0) == 4
+    assert time.monotonic() - t < 0.9 and len(seen) == 4
