@@ -1,6 +1,6 @@
 # Dispatcher eval summary (M3)
 
-Test split, commit `772796f`, 2026-10-19, Claude Sonnet via LiteLLM, cost $0.30.
+Test split, commit `772796f`, 2026-10-19, claude-sonnet-4-5 via LiteLLM, cost $0.30.
 All assertions are code (no judge). The prompt was tuned only on dev-split failures
 (s025, h009, s043); the test split was run once after that.
 
