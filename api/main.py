@@ -3,6 +3,7 @@
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from typing import Any, Literal
 from uuid import UUID
 
@@ -11,10 +12,13 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
 from pydantic import BaseModel, Field
 
 from agents.concierge.service import ChatService, UnknownConversation
+from agents.dispatcher.service import Dispatcher, make_adapters
+from agents.dispatcher.states import InvalidTransition
 from core.approvals import ApprovalError, ApprovalRequest, ApprovalStore
 from core.config.settings import get_settings
 from core.db import migrate
 from core.guardrails import RateLimiter
+from core.jobs import JobQueue
 from core.logs import setup_logging
 
 log = logging.getLogger(__name__)
@@ -124,6 +128,83 @@ def list_approvals(agent: str | None = None) -> list[ApprovalRequest]:
 @app.post("/approvals/{approval_id}/decision", dependencies=[Depends(public_rate_limit)])
 def decide_approval(approval_id: UUID, body: DecisionIn) -> ApprovalRequest:
     try:
-        return _approvals().decide(approval_id, body.decision, body.decided_by)
+        req = _approvals().decide(approval_id, body.decision, body.decided_by)
     except ApprovalError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
+    lead_id = req.payload.get("lead_id")
+    if req.agent == "dispatcher" and lead_id:  # the paused lead graph continues in the worker
+        JobQueue(get_settings().database_url).enqueue(
+            "dispatcher.resume",
+            {"lead_id": str(lead_id), "decision": req.decision},
+            key=f"lead:{lead_id}:resume:{req.id}",
+            run_id=req.run_id,
+        )
+    return req
+
+
+# ---- Dispatcher (LEAD-001, 005, 013, 016): intake from n8n / the demo form, lead events ----
+
+
+class LeadIn(BaseModel):
+    channel: Literal["web_form", "email", "whatsapp", "instagram", "phone"]
+    name: str | None = Field(default=None, max_length=120)
+    email: str | None = Field(default=None, max_length=254)
+    phone: str | None = Field(default=None, max_length=40)
+    message: str = Field(min_length=1, max_length=4000)
+    received_at: str | None = None
+    source: str | None = Field(default=None, max_length=80)
+    campaign: str | None = Field(default=None, max_length=80)
+    utm: dict[str, str] = Field(default_factory=dict)
+
+
+class LeadEventIn(BaseModel):
+    kind: Literal["lead_replied", "human_takeover", "opt_out"]
+    text: str | None = Field(default=None, max_length=4000)
+
+
+_dispatcher: Dispatcher | None = None
+
+
+def _lead_service() -> Dispatcher:
+    global _dispatcher
+    if _dispatcher is None:
+        s = get_settings()
+        _dispatcher = Dispatcher(s, make_adapters(s))
+    return _dispatcher
+
+
+@app.post("/agents/lead/intake", dependencies=[Depends(public_rate_limit)])
+def lead_intake(body: LeadIn, response: Response) -> dict[str, Any]:
+    """Idempotent: a replayed delivery returns the existing lead with 200, a new one 202."""
+    if not (body.email or body.phone):
+        raise HTTPException(422, "email or phone required")
+    payload = body.model_dump()
+    payload["received_at"] = payload["received_at"] or datetime.now(UTC).isoformat()
+    lead, created = _lead_service().intake(payload)
+    response.status_code = status.HTTP_202_ACCEPTED if created else status.HTTP_200_OK
+    return {"lead_id": str(lead.id), "created": created, "stage": lead.stage}
+
+
+@app.post("/agents/lead/{lead_id}/events", dependencies=[Depends(public_rate_limit)])
+def lead_event(lead_id: UUID, body: LeadEventIn) -> dict[str, Any]:
+    d = _lead_service()
+    if d.store.get(lead_id) is None:
+        raise HTTPException(404, "lead not found")
+    try:
+        lead = d.event(str(lead_id), body.kind, body.text)
+    except InvalidTransition as exc:
+        raise HTTPException(409, str(exc)) from exc
+    return {"lead_id": str(lead.id), "stage": lead.stage}
+
+
+@app.get("/agents/lead/{lead_id}")
+def lead_detail(lead_id: UUID) -> dict[str, Any]:
+    d = _lead_service()
+    lead = d.store.get(lead_id)
+    if lead is None:
+        raise HTTPException(404, "lead not found")
+    return {
+        "lead": lead.model_dump(mode="json", exclude={"payload"}),
+        "events": d.store.events(lead_id),
+        "messages": d.store.messages(lead_id),
+    }

@@ -220,3 +220,69 @@ def test_whatsapp_inside_window_free_text() -> None:
     d.process(str(lead.id))
     (msg,) = sent(d, lead.id)
     assert msg["template"] is None and ad.whatsapp.sent[0]["body"].startswith("Hi Asha")
+
+
+def test_api_intake_is_idempotent_and_approval_enqueues_resume(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    import api.main as m
+    from core.db import connect
+
+    d, _ = make(mode="approve_first")
+    monkeypatch.setattr(m, "_dispatcher", d)
+    client = TestClient(m.app)
+    body = {k: v for k, v in payload().items() if k != "received_at"}
+    first = client.post("/agents/lead/intake", json=body)
+    again = client.post("/agents/lead/intake", json=body)
+    assert first.status_code == 202 and again.status_code == 200
+    lead_id = first.json()["lead_id"]
+    assert again.json()["lead_id"] == lead_id and not again.json()["created"]
+    assert (
+        client.post("/agents/lead/intake", json={**body, "email": None, "phone": None}).status_code
+        == 422
+    )
+
+    d.process(lead_id)
+    got = d.store.get(lead_id)
+    assert got and got.approval_id
+    r = client.post(f"/approvals/{got.approval_id}/decision", json={"decision": "approved"})
+    assert r.status_code == 200
+    with connect(d.settings.database_url) as c:
+        job = c.execute(
+            "SELECT payload FROM jobs WHERE kind = 'dispatcher.resume' AND key = %s",
+            (f"lead:{lead_id}:resume:{got.approval_id}",),
+        ).fetchone()
+    assert job and job["payload"] == {"lead_id": lead_id, "decision": "approved"}
+
+    ev = client.post(f"/agents/lead/{lead_id}/events", json={"kind": "human_takeover"})
+    assert ev.status_code == 200 and ev.json()["stage"] == "with_owner"
+    detail = client.get(f"/agents/lead/{lead_id}").json()
+    assert detail["lead"]["stage"] == "with_owner" and detail["events"]
+    assert client.get(f"/agents/lead/{uuid4()}").status_code == 404
+
+
+def test_failed_job_alerts_ops_with_run_id_and_marks_lead_failed() -> None:
+    from core.jobs import Job
+
+    d, ad = make()
+    lead, _ = d.intake(payload(), enqueue=False)
+    run_id = uuid4()
+    job = Job(
+        id=uuid4(),
+        kind="dispatcher.process",
+        key=None,
+        run_at=datetime.now(UTC),
+        payload={"lead_id": str(lead.id)},
+        status="failed",
+        attempts=3,
+        max_attempts=3,
+        last_error="boom",
+        run_id=run_id,
+    )
+    d.on_job_failure(job, "TimeoutError: model")
+    (alert,) = ad.slack.messages
+    assert alert["channel"] == "#ops-alerts" and str(run_id) in alert["text"]  # LEAD-005
+    got = d.store.get(lead.id)
+    assert got and got.stage == "failed" and got.stopped
