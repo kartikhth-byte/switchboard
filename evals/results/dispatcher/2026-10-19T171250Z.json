@@ -1,0 +1,1095 @@
+{
+  "agent": "dispatcher",
+  "created_at": "2026-10-19T17:12:50.613537+00:00",
+  "git_sha": "772796f",
+  "split": "test",
+  "splits_used": [
+    "all",
+    "test"
+  ],
+  "smoke": false,
+  "repeat": 1,
+  "truncated_by_cost_cap": false,
+  "cost_usd": 0.297603,
+  "sets": {
+    "leads": 60,
+    "takeover": 20
+  },
+  "metrics": {
+    "pass_rate": {
+      "value": 0.972972972972973,
+      "n": 37
+    },
+    "assessment_valid": {
+      "value": 1.0,
+      "n": 17
+    },
+    "intent_correct": {
+      "value": 0.9411764705882353,
+      "n": 17
+    },
+    "no_messages_after_event": {
+      "value": 1.0,
+      "n": 20
+    },
+    "tier_exact": {
+      "value": 0.9411764705882353,
+      "n": 17
+    },
+    "tier_within_one": {
+      "value": 1.0,
+      "n": 17
+    }
+  },
+  "by_tag": {
+    "edge": {
+      "pass_rate": {
+        "value": 0.9615384615384616,
+        "n": 26
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 6
+      },
+      "intent_correct": {
+        "value": 0.8333333333333334,
+        "n": 6
+      },
+      "no_messages_after_event": {
+        "value": 1.0,
+        "n": 20
+      },
+      "tier_exact": {
+        "value": 0.8333333333333334,
+        "n": 6
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 6
+      }
+    },
+    "email": {
+      "pass_rate": {
+        "value": 1,
+        "n": 8
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 8
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 8
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 8
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 8
+      }
+    },
+    "generated": {
+      "pass_rate": {
+        "value": 1,
+        "n": 10
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 10
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 10
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 10
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 10
+      }
+    },
+    "handwritten": {
+      "pass_rate": {
+        "value": 0.8571428571428571,
+        "n": 7
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 7
+      },
+      "intent_correct": {
+        "value": 0.8571428571428571,
+        "n": 7
+      },
+      "tier_exact": {
+        "value": 0.8571428571428571,
+        "n": 7
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 7
+      }
+    },
+    "happy_path": {
+      "pass_rate": {
+        "value": 1,
+        "n": 11
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 11
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 11
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 11
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 11
+      }
+    },
+    "human_takeover": {
+      "pass_rate": {
+        "value": 1,
+        "n": 7
+      },
+      "no_messages_after_event": {
+        "value": 1.0,
+        "n": 7
+      }
+    },
+    "lead_replied": {
+      "pass_rate": {
+        "value": 1,
+        "n": 7
+      },
+      "no_messages_after_event": {
+        "value": 1.0,
+        "n": 7
+      }
+    },
+    "opt_out": {
+      "pass_rate": {
+        "value": 1,
+        "n": 6
+      },
+      "no_messages_after_event": {
+        "value": 1.0,
+        "n": 6
+      }
+    },
+    "paraphrased": {
+      "pass_rate": {
+        "value": 1,
+        "n": 9
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 9
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 9
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 9
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 9
+      }
+    },
+    "seed_text": {
+      "pass_rate": {
+        "value": 1,
+        "n": 1
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 1
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 1
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 1
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 1
+      }
+    },
+    "web_form": {
+      "pass_rate": {
+        "value": 0.8333333333333334,
+        "n": 6
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 6
+      },
+      "intent_correct": {
+        "value": 0.8333333333333334,
+        "n": 6
+      },
+      "tier_exact": {
+        "value": 0.8333333333333334,
+        "n": 6
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 6
+      }
+    },
+    "whatsapp": {
+      "pass_rate": {
+        "value": 1,
+        "n": 3
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 3
+      },
+      "intent_correct": {
+        "value": 1.0,
+        "n": 3
+      },
+      "tier_exact": {
+        "value": 1.0,
+        "n": 3
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 3
+      }
+    }
+  },
+  "by_set": {
+    "leads": {
+      "pass_rate": {
+        "value": 0.9411764705882353,
+        "n": 17
+      },
+      "assessment_valid": {
+        "value": 1.0,
+        "n": 17
+      },
+      "intent_correct": {
+        "value": 0.9411764705882353,
+        "n": 17
+      },
+      "tier_exact": {
+        "value": 0.9411764705882353,
+        "n": 17
+      },
+      "tier_within_one": {
+        "value": 1.0,
+        "n": 17
+      }
+    },
+    "takeover": {
+      "pass_rate": {
+        "value": 1,
+        "n": 20
+      },
+      "no_messages_after_event": {
+        "value": 1.0,
+        "n": 20
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "lead-s004",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "f2e527586bbc0e53508f3f7f8c909b35",
+      "cost_usd": 0.008739,
+      "tags": [
+        "generated",
+        "happy_path",
+        "email",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your enquiry about The Cashew House for two guests from 4 to 8 May (four nights).\n\nI've passed your request to our reservations team, and someone will get back to you shortly with availability and the exact price for your dates.\n\nIf you have any questions in the meantime, feel free to reply to this email.\n\nWarm regards,\nPalmgrove Stays\nGuest Relations",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s010",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "c3928f5f12c460f538b74782f2d7b9ce",
+      "cost_usd": 0.008922,
+      "tags": [
+        "generated",
+        "happy_path",
+        "email",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for your enquiry about Villa Sol for your group of 10 from 5 to 9 January 2027.\n\nVilla Sol can comfortably accommodate your group size. One of our reservations team will check availability for those dates and send you the exact pricing and booking details within the next few hours.\n\nIf you have any questions in the meantime, feel free to reply to this email.\n\nWarm regards,\nThe Palmgrove Stays Team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s018",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "6995c08962f4c0759f9aef59a012f4ad",
+      "cost_usd": 0.00828,
+      "tags": [
+        "generated",
+        "happy_path",
+        "web_form",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for getting in touch! We'd be happy to help you find a villa for your group of 3.\n\nTo check availability and send you an accurate quote, could you let us know your preferred dates (check-in and check-out)?\n\nOnce we have that, someone from our team will confirm what's available and share the exact price with you.\n\nLooking forward to hearing from you.\n\nWarm regards,\nThe Palmgrove Stays team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s026",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "2ff21c87fd8a65b11d80d8cf012306ea",
+      "cost_usd": 0.00819,
+      "tags": [
+        "generated",
+        "happy_path",
+        "whatsapp",
+        "seed_text"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi! A 60-night workation from 7 Nov to 6 Jan sounds great. We do offer long-stay rates for bookings over 28 nights. Which villa were you interested in, or would you like us to recommend one? Someone from our team will then confirm availability and share the exact pricing for your dates.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s028",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "36daedca853f164d72d3456bce5c53e6",
+      "cost_usd": 0.009843000000000001,
+      "tags": [
+        "generated",
+        "happy_path",
+        "email",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nCongratulations on your engagement! We'd be happy to help with your celebration at Villa Sol from 9\u201311 November with 6 guests staying over.\n\nBecause you're expecting around 15 guests total for the dinner, we'll need manager approval for the event and to confirm pricing for the additional day visitors. Villa Sol's standard rate applies to the 6 overnight guests, but hosting 9 additional guests for the dinner may involve an event supplement.\n\nCould you share a bit more about the timing and setup you have in mind? One of our team will then check availability and come back with the exact cost.\n\nWarm regards,\nPalmgrove Stays Reservations",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s033",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "71c78431910036933a419bea8d69f815",
+      "cost_usd": 0.004398,
+      "tags": [
+        "generated",
+        "edge",
+        "web_form",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": null,
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s034",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "b481aa205606193b8f58f71b6aa6f6e3",
+      "cost_usd": 0.008886,
+      "tags": [
+        "generated",
+        "happy_path",
+        "email",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for your enquiry about Monsoon Cottage for two guests from 14 to 19 January 2027 (5 nights).\n\nI've passed your request to our reservations team, and someone will get back to you shortly with availability and the exact price for your dates.\n\nIf you have any questions in the meantime, feel free to reply to this email.\n\nWarm regards,\nPalmgrove Stays\nReservations Team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s035",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "d4834b80e4094be559441fb5a1bbda92",
+      "cost_usd": 0.004311,
+      "tags": [
+        "generated",
+        "edge",
+        "whatsapp",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": null,
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s036",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "d09f4553f677ad862e6345fe35da3e33",
+      "cost_usd": 0.010302,
+      "tags": [
+        "generated",
+        "happy_path",
+        "web_form",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your enquiry about hosting a yoga retreat at Villa Sol from 10 to 12 January, with 6 overnight guests and around 40 attendees in total.\n\nBecause this involves a larger gathering beyond standard occupancy, we'll need our manager to review the request and confirm whether Villa Sol can accommodate your event safely and comfortably.\n\nCould you share a bit more detail about your plans? Specifically:\n\n\u2022 Timing of daily sessions (arrival/departure hours for day guests)\n\u2022 Any specific space or facility needs\n\u2022 Parking or access requirements\n\nOnce we have this, someone from our team will get back to you within 24 hours with availability and pricing.\n\nWarm regards,\nPalmgrove Stays Reservations",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-s040",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "0fdd06bc75f56af5c5b57a298a2291cf",
+      "cost_usd": 0.007563,
+      "tags": [
+        "generated",
+        "edge",
+        "email",
+        "paraphrased"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Thank you for reaching out about your SEO and Google Ads services.\n\nWe're not looking to bring on new marketing partners at the moment, but I appreciate you thinking of Palmgrove Stays.\n\nWishing you all the best with your business.\n\nWarm regards,\nThe Palmgrove Stays team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h001",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "d0555932279ca701cefae89dcd8c5879",
+      "cost_usd": 0.009258,
+      "tags": [
+        "handwritten",
+        "happy_path",
+        "email"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for getting in touch about Monsoon Cottage for three nights from 21st November.\n\nYou've picked a great spot \u2014 the cottage is a short walk from Ashwem Beach and close to some excellent caf\u00e9s and beach shacks.\n\nLet me check availability for your dates and work out the exact price for two guests. Someone from our team will get back to you within a few hours with confirmation and next steps.\n\nLooking forward to hosting you both in Goa.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h002",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "cfbb5b3bd5bbef4378b32b9bba90011a",
+      "cost_usd": 0.00732,
+      "tags": [
+        "handwritten",
+        "happy_path",
+        "whatsapp"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi! We'd be happy to help with a 3-night stay for your family of three. Which dates were you looking at? Once we have those, someone from our team will check availability across our villas and get back to you with options and pricing.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h003",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "2e5a35b348926335d1a1542de8f295a6",
+      "cost_usd": 0.009167999999999999,
+      "tags": [
+        "handwritten",
+        "happy_path",
+        "web_form"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for your interest in Casa Kokum for 1\u20133 December 2026.\n\nTo check availability and share the rate for those dates, could you let me know how many guests will be staying?\n\nOnce I have that, someone from our team will get back to you with confirmation and the exact price. Our rates are set according to the season and villa occupancy, and any applicable offers will already be reflected in the quote we send.\n\nLooking forward to hearing from you.\n\nWarm regards,\nPalmgrove Stays Reservations",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h004",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "60325fe65f48e3addea4e9eb79795870",
+      "cost_usd": 0.009261,
+      "tags": [
+        "handwritten",
+        "happy_path",
+        "email"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for reaching out! We'd be happy to help with your 2-night stay from 19\u201321 October for two guests.\n\nTo check availability and send you an exact quote, could you let us know which villa you're interested in? We have four properties across North Goa, each with different layouts and amenities.\n\nYou can see all four on our website, or if you'd like a recommendation based on what you're looking for, just let me know.\n\nOnce I hear back, I'll confirm what's available and share the total price.\n\nWarm regards,\nPalmgrove Stays reservations team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h006",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "0134e1618edb8d8c24e9478de8a2147b",
+      "cost_usd": 0.009624,
+      "tags": [
+        "handwritten",
+        "edge",
+        "web_form"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for reaching out about a long-term stay with us.\n\nWe do offer monthly rates for extended bookings, and your budget of \u20b915,000\u201318,000 per month is helpful to know. To check what's available and share accurate pricing, I'll need a few more details:\n\n\u2022 Your preferred move-in date (or the month you're looking at)\n\u2022 How many guests will be staying\n\u2022 Roughly how long you're planning to stay\n\nOnce I have that, someone from our team will get back to you with availability and a quote tailored to your dates.\n\nLooking forward to hearing from you.\n\nWarm regards,\nThe Palmgrove Stays team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h013",
+      "passed": true,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 1.0,
+        "tier_exact": 1.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "a5da0c3dd6f480f926dbde2dbd67e627",
+      "cost_usd": 0.0046619999999999995,
+      "tags": [
+        "handwritten",
+        "edge",
+        "email"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": null,
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "lead-h015",
+      "passed": false,
+      "metrics": {
+        "assessment_valid": 1.0,
+        "intent_correct": 0.0,
+        "tier_exact": 0.0,
+        "tier_within_one": 1.0
+      },
+      "trace_id": "f1f4042c73a9b3dd2591024f5ed76152",
+      "cost_usd": 0.005031000000000001,
+      "tags": [
+        "handwritten",
+        "edge",
+        "web_form"
+      ],
+      "split": "test",
+      "error": null,
+      "answer": null,
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-001",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "1e72c0432db6c6a41526be1f2e574068",
+      "cost_usd": 0.008718,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will confirm whether The Cashew House is available for your dates and send you the exact pricing.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-002",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "7ccd67ec75458b1a7258585d5748cfda",
+      "cost_usd": 0.007392,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello! Thanks for your interest in Casa Kokum. To check availability and share pricing, could you let me know your check-in and check-out dates, and how many guests will be staying? Someone from our team will get back to you shortly after.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-003",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "54cc8a4701ae3ad61c2159597373383f",
+      "cost_usd": 0.008655,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Casa Kokum!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will confirm whether Casa Kokum is available for your dates and send you the exact pricing.\n\nLook forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-004",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "1c672a2ba66195aa9fb0bc6f7e3c511d",
+      "cost_usd": 0.008361,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Villa Sol!\n\nTo check availability and share an accurate price, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will get back to you within a few hours with availability and the exact cost for your stay.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-005",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "5e2a259b849f0ee7c69349c7e421a1ab",
+      "cost_usd": 0.007416000000000001,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi! Thanks for your interest in Monsoon Cottage. To check availability and share pricing, could you let me know your check-in and check-out dates, and how many guests will be staying? Someone from our team will get back to you shortly after.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-006",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "2eb94c056483553687f62eb7c537adb2",
+      "cost_usd": 0.008625,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Casa Kokum!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will confirm whether Casa Kokum is available for your dates and send you the exact pricing.\n\nLook forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-007",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "9f58744d1a583c47e5d794cc6d96fadd",
+      "cost_usd": 0.008673,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, we'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce we have this, someone from our team will confirm whether The Cashew House is available for your dates and send you the exact pricing.\n\nLooking forward to hearing from you.\n\nWarm regards,\nThe Palmgrove Stays team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-008",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "342ca671a3964a56bd5214b79dad6c4a",
+      "cost_usd": 0.007416000000000001,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi! Thanks for your interest in Monsoon Cottage. To check availability and share pricing, could you let me know your check-in and check-out dates, and how many guests will be staying? Someone from our team will get back to you shortly after.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-009",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "148eab19cc59fdb651b3c4fc16369ce7",
+      "cost_usd": 0.008625,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Casa Kokum!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will confirm whether Casa Kokum is available for your dates and send you the exact pricing.\n\nLook forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-010",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "0949882cdc31a6a9e1d8e14bfa276370",
+      "cost_usd": 0.008643000000000001,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our team will confirm whether the villa is free for your dates and send you the exact price.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-011",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "911404e759128161397a7795636ce3e9",
+      "cost_usd": 0.007416000000000001,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi! Thanks for your interest in Monsoon Cottage. To check availability and share pricing, could you let me know your check-in and check-out dates, and how many guests will be staying? Someone from our team will get back to you shortly after.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-012",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "3158fc5325995af8dfdff16e6714cf0f",
+      "cost_usd": 0.008625,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Casa Kokum!\n\nTo check availability and share an accurate quote, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will confirm whether Casa Kokum is available for your dates and send you the exact pricing.\n\nLook forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-013",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "53e6d0e533d6767692bc05e2e91b8e5e",
+      "cost_usd": 0.008703,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi there,\n\nThank you for your interest in Monsoon Cottage!\n\nTo check availability and share an accurate price, I'll need a few quick details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have these, someone from our reservations team will get back to you within a few hours with availability and the exact cost for your stay.\n\nLooking forward to hearing from you.\n\nWarm regards,\nPalmgrove Stays Reservations Team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-014",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "8213bead83f6a363d8561f551f32b730",
+      "cost_usd": 0.007407,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello! Thanks for your interest in Casa Kokum. To check availability and share pricing, could you let me know your check-in and check-out dates, and how many guests will be staying? Someone from our team will get back to you shortly after.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-015",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "a5bf7ea6bd99526b5e848c248a1f2e5d",
+      "cost_usd": 0.008694,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, could you let me know:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have these details, someone from our team will confirm whether The Cashew House is available for your dates and send you the exact pricing.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-016",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "555caef8a1bea0154e9a1b460161a5f1",
+      "cost_usd": 0.008688000000000001,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, we'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce we have this, someone from our team will confirm whether The Cashew House is available for your dates and send you the exact pricing.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-017",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "a3d50c75cd65b5f2b330bd1dff6c2597",
+      "cost_usd": 0.007419,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi! Thanks for your interest in Villa Sol. We'd be happy to help check availability for you. Could you share your check-in and check-out dates, and how many guests will be staying? Once we have that, someone from our team will confirm availability and send you the exact price.",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-018",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "b89f22dee417df5238c1ae7ac69c3bfc",
+      "cost_usd": 0.008694,
+      "tags": [
+        "edge",
+        "opt_out"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in The Cashew House!\n\nTo check availability and share an accurate quote, we'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce we have this, someone from our team will confirm whether The Cashew House is available for your dates and send you the exact pricing.\n\nLooking forward to hearing from you.\n\nWarm regards,\nReservations Team\nPalmgrove Stays",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-019",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "d6c7af093b396c05c6eb94f77617ba9b",
+      "cost_usd": 0.008271,
+      "tags": [
+        "edge",
+        "lead_replied"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hello,\n\nThank you for your interest in Villa Sol!\n\nTo check availability and share an accurate price, I'll need a few details:\n\n\u2022 Your check-in and check-out dates\n\u2022 Number of guests (adults and children, if any)\n\nOnce I have this, someone from our reservations team will get back to you with availability and the exact cost for your stay.\n\nLooking forward to hearing from you.\n\nWarm regards,\nPalmgrove Stays Reservations Team",
+      "notes": {
+        "transcript": []
+      }
+    },
+    {
+      "case_id": "takeover-020",
+      "passed": true,
+      "metrics": {
+        "no_messages_after_event": 1.0
+      },
+      "trace_id": "90a0dd7430fdd9b7dcc9be586ebe3441",
+      "cost_usd": 0.007404,
+      "tags": [
+        "edge",
+        "human_takeover"
+      ],
+      "split": "all",
+      "error": null,
+      "answer": "Hi! Thanks for your interest in Villa Sol. We'd be happy to check availability for you. Could you share your check-in and check-out dates, and how many guests will be staying? Once we have that, someone from our team will confirm availability and send you the exact price.",
+      "notes": {
+        "transcript": []
+      }
+    }
+  ]
+}
