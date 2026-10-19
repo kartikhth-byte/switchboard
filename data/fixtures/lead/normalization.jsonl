@@ -1,0 +1,50 @@
+{"id": "norm-001", "field": "phone", "raw": "9876543210", "expected": "+919876543210"}
+{"id": "norm-002", "field": "phone", "raw": "98765 43210", "expected": "+919876543210"}
+{"id": "norm-003", "field": "phone", "raw": "098765 43210", "expected": "+919876543210"}
+{"id": "norm-004", "field": "phone", "raw": "+91 98765 43210", "expected": "+919876543210"}
+{"id": "norm-005", "field": "phone", "raw": "+91-98765-43210", "expected": "+919876543210"}
+{"id": "norm-006", "field": "phone", "raw": "91 9876543210", "expected": "+919876543210"}
+{"id": "norm-007", "field": "phone", "raw": "0091 98765 43210", "expected": "+919876543210"}
+{"id": "norm-008", "field": "phone", "raw": "(+91) 98765-43210", "expected": "+919876543210"}
+{"id": "norm-009", "field": "phone", "raw": " +919876543210 ", "expected": "+919876543210"}
+{"id": "norm-010", "field": "phone", "raw": "+91 98 76 54 32 10", "expected": "+919876543210"}
+{"id": "norm-011", "field": "phone", "raw": "022 2345 6789", "expected": "+912223456789"}
+{"id": "norm-012", "field": "phone", "raw": "+91 22 2345 6789", "expected": "+912223456789"}
+{"id": "norm-013", "field": "phone", "raw": "0832 222 3344", "expected": "+918322223344"}
+{"id": "norm-014", "field": "phone", "raw": "+918322223344", "expected": "+918322223344"}
+{"id": "norm-015", "field": "phone", "raw": "+1 (415) 555-2671", "expected": "+14155552671"}
+{"id": "norm-016", "field": "phone", "raw": "+1 415.555.2671", "expected": "+14155552671"}
+{"id": "norm-017", "field": "phone", "raw": "001 415 555 2671", "expected": "+14155552671"}
+{"id": "norm-018", "field": "phone", "raw": "+44 20 7946 0958", "expected": "+442079460958"}
+{"id": "norm-019", "field": "phone", "raw": "+44 (0)20 7946 0958", "expected": "+442079460958"}
+{"id": "norm-020", "field": "phone", "raw": "+971 50 123 4567", "expected": "+971501234567"}
+{"id": "norm-021", "field": "phone", "raw": "+49 30 901820", "expected": "+4930901820"}
+{"id": "norm-022", "field": "phone", "raw": "+61 2 9876 5432", "expected": "+61298765432"}
+{"id": "norm-023", "field": "phone", "raw": "12345", "expected": null}
+{"id": "norm-024", "field": "phone", "raw": "98765", "expected": null}
+{"id": "norm-025", "field": "phone", "raw": "abc-def-ghij", "expected": null}
+{"id": "norm-026", "field": "phone", "raw": "+91 98765 4321", "expected": null}
+{"id": "norm-027", "field": "phone", "raw": "+1 555 0100", "expected": null}
+{"id": "norm-028", "field": "phone", "raw": "", "expected": null}
+{"id": "norm-029", "field": "email", "raw": "Asha.Rao@Example.org", "expected": "asha.rao@example.org"}
+{"id": "norm-030", "field": "email", "raw": "  asha.rao@example.org  ", "expected": "asha.rao@example.org"}
+{"id": "norm-031", "field": "email", "raw": "ASHA@EXAMPLE.ORG", "expected": "asha@example.org"}
+{"id": "norm-032", "field": "email", "raw": "mailto:asha@example.org", "expected": "asha@example.org"}
+{"id": "norm-033", "field": "email", "raw": "<asha@example.org>", "expected": "asha@example.org"}
+{"id": "norm-034", "field": "email", "raw": "asha@example.org.", "expected": "asha@example.org"}
+{"id": "norm-035", "field": "email", "raw": "asha+goa@example.org", "expected": "asha+goa@example.org"}
+{"id": "norm-036", "field": "email", "raw": "first.last@sub.example.co.in", "expected": "first.last@sub.example.co.in"}
+{"id": "norm-037", "field": "email", "raw": "o'neil@example.org", "expected": null}
+{"id": "norm-038", "field": "email", "raw": "asha@example", "expected": null}
+{"id": "norm-039", "field": "email", "raw": "asha.example.org", "expected": null}
+{"id": "norm-040", "field": "email", "raw": "asha@@example.org", "expected": null}
+{"id": "norm-041", "field": "email", "raw": "asha @example.org", "expected": null}
+{"id": "norm-042", "field": "email", "raw": "asha@exa mple.org", "expected": null}
+{"id": "norm-043", "field": "email", "raw": "asha..rao@example.org", "expected": null}
+{"id": "norm-044", "field": "email", "raw": "@example.org", "expected": null}
+{"id": "norm-045", "field": "email", "raw": "asha@.org", "expected": null}
+{"id": "norm-046", "field": "email", "raw": "", "expected": null}
+{"id": "norm-047", "field": "email", "raw": "Vikram_K@Example.ORG", "expected": "vikram_k@example.org"}
+{"id": "norm-048", "field": "email", "raw": "vikram-k@example-mail.org", "expected": "vikram-k@example-mail.org"}
+{"id": "norm-049", "field": "email", "raw": "\tleah.d@example.org\n", "expected": "leah.d@example.org"}
+{"id": "norm-050", "field": "email", "raw": "MAILTO:Leah.D@Example.org", "expected": "leah.d@example.org"}

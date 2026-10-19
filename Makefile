@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check data ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check data data-lead ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -54,6 +54,10 @@ calibrate:        ## re-judge the hand-labelled answers and report agreement (ta
 
 data:             ## rebuild eval sets (cached generations); ARGS=--refresh re-generates (OpenAI key)
 	PYTHONPATH=. uv run python -m data.generators.support_evals $(ARGS)
+	PYTHONPATH=. uv run python -m data.generators.lead_evals $(ARGS)
+
+data-lead:        ## rebuild Dispatcher eval sets only; ARGS=--refresh re-paraphrases (OpenAI key)
+	PYTHONPATH=. uv run python -m data.generators.lead_evals $(ARGS)
 
 ingest:           ## (re)index the support KB; ARGS="--embedder hash" works without a key
 	PYTHONPATH=. uv run python -m core.retrieval ingest $(ARGS)

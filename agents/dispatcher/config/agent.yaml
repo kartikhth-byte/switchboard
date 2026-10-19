@@ -1,0 +1,22 @@
+# Dispatcher — lead qualification for the fictional Palmgrove Stays (SHR-017, LEAD-001..020).
+agent: dispatcher
+model: {provider: anthropic, name: claude-sonnet-4-5, fallback: openai/gpt-4o-mini}
+business: ../concierge/config/business.md   # one business for both agents (spec §6)
+limits: {max_steps: 6, run_token_budget: 30000}
+memory: {window_turns: 8, summarize_over_tokens: 6000, model: openai/gpt-4o-mini}
+rules:
+  default_region: IN                # phones without a country code (LEAD-010)
+  intents: [new_booking, group_booking, long_stay, event, availability_question,
+            partnership, existing_guest, spam]
+  tiers: {1: hot, 2: warm, 3: cool, 4: cold}   # definitions: config/labels.md
+  routing:                          # LEAD-004: owner chosen by rule; first match wins
+    - {when: {tier: 1, intent: [group_booking, event]}, owner: "@events-lead", channel: "#leads"}
+    - {when: {tier: 1}, owner: "@reservations", channel: "#leads"}
+  follow_up:                        # LEAD-013: cancelled by lead_replied / human_takeover / opt_out
+    tier_2: [24h, 72h]
+    tier_3: [72h]
+  opt_out_phrases: ["stop", "unsubscribe", "don't message", "do not contact", "remove me",
+                    "not interested"]
+  whatsapp:
+    session_window_hours: 24        # LEAD-020: outside it, approved templates only
+    template_first_contact: palmgrove_enquiry_ack
