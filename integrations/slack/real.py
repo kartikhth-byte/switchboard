@@ -3,7 +3,6 @@ and the Concierge handoff. Channel names map to IDs via SLACK_CHANNELS ("#leads=
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 import httpx
@@ -39,7 +38,7 @@ class SlackWeb:
             blocks.append({"type": "section", "text": {"type": "mrkdwn", "text": thread[:2900]}})
         body = {"channel": self.channels.get(channel, channel), "text": text, "blocks": blocks}
         data = check(
-            self.http.post(API, headers=self._headers, content=json.dumps(body), timeout=TIMEOUT),
+            self.http.post(API, headers=self._headers, json=body, timeout=TIMEOUT),
             "slack",
         )
         if not data.get("ok"):  # Slack returns 200 with ok=false on errors

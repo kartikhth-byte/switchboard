@@ -40,6 +40,8 @@ def test_slack_posts_to_mapped_channel_with_blocks() -> None:
     body = json.loads(seen[0].content)
     assert ts == "1712.0001" and body["channel"] == "C111"
     assert seen[0].headers["authorization"] == "Bearer xoxb-test"
+    # Slack ignores a JSON body without this header ("missing_post_type", first live run)
+    assert seen[0].headers["content-type"].startswith("application/json")
     assert any("@reservations" in json.dumps(b) for b in body["blocks"])
 
 
