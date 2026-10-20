@@ -141,5 +141,16 @@ def test_real_mode_fails_fast_and_mock_by_default() -> None:
 
     with pytest.raises(RuntimeError, match="SLACK_BOT_TOKEN"):
         make_adapters(real)
+    from integrations.messaging import MockWhatsApp
+
+    partial = Settings(
+        _env_file=None,
+        demo_integrations="real",
+        slack_bot_token="xoxb-t",  # type: ignore[call-arg]
+        ghl_token="pit-t",
+        ghl_location_id="loc",
+    )
+    ad = make_adapters(partial)
+    assert isinstance(ad.whatsapp, MockWhatsApp) and not isinstance(ad.slack, MockSlack)
     assert isinstance(make_slack(Settings(_env_file=None)), MockSlack)  # type: ignore[call-arg]
     assert isinstance(make_slack(real), MockSlack)  # no token: Concierge stays on the mock
