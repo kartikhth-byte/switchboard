@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import sys
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 from core.config.settings import allowlist, get_settings, missing_real_settings
@@ -69,9 +70,11 @@ def main() -> int:
         from integrations.calendar.google import GoogleCalendarMirror
 
         key = s.google_service_account_file.replace("/run/secrets/", "secrets/")  # host path
-        gcal = GoogleCalendarMirror(key, s.google_calendar_id)
 
         def gcal_check() -> str:
+            if not Path(key).is_file():
+                raise FileNotFoundError(f"{key} missing: move the service account JSON there")
+            gcal = GoogleCalendarMirror(key, s.google_calendar_id)
             start = datetime.now(UTC).replace(microsecond=0) + timedelta(days=1)
             eid = "sbcheck000001"  # Google event ids: 0-9 and a-v only
             gcal.upsert(
