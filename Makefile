@@ -52,7 +52,7 @@ canary-check:     ## SHR-019: planted PII canaries absent from >=100 exported ev
 n8n-import:       ## LEAD-007: start n8n, import + activate n8n/lead_intake.json
 	docker compose --profile n8n up -d n8n
 	sleep 8
-	docker compose exec -T n8n n8n import:workflow --input=/workflows/lead_intake.json
+	docker compose exec -T n8n n8n import:workflow --separate --input=/workflows/
 	docker compose exec -T n8n n8n update:workflow --id=SwbLeadIntake001 --active=true
 	docker compose restart n8n
 	@echo "n8n UI: http://localhost:5678  webhook: http://localhost:5678/webhook/lead-intake"
