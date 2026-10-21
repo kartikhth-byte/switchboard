@@ -1,0 +1,173 @@
+"""One phone call (text in, text out). The same `CallSession` serves the text-mode eval suite
+and the Pipecat voice pipeline, which only adds speech-to-text in front and text-to-speech
+behind (spec §7.1), so the evals test exactly what callers talk to.
+
+Decided in code, not by the model:
+- the opening line: AI + recording disclosure, and the after-hours line by config hours
+  (VOICE-017, VOICE-002);
+- transfer to staff when the caller asks for a person or complains, or after N consecutive
+  turns where a booking step failed (VOICE-002);
+- the stored transcript is redacted (VOICE-017); booking actions are in `booking_audit`.
+"""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any
+
+from agents.operator.calendar import Calendar
+from agents.operator.tools import AGENT, CallState, build_registry
+from core.config.agent import AgentConfig
+from core.memory import ConversationStore
+from core.models import Message, ModelClient
+from core.redaction import redact
+from core.runs import RunStore, start_run
+from core.runs.models import RunKind
+
+BOOKING_TOOLS = {"find_slots", "hold_slot", "confirm_booking", "cancel_booking"}
+FILLER = "One moment while I check that."
+
+
+@dataclass
+class Turn:
+    text: str
+    tools: list[str] = field(default_factory=list)
+    transferred: bool = False
+    used_filler: bool = False
+    cost_usd: float = 0.0
+
+
+@dataclass
+class CallSession:
+    cfg: AgentConfig
+    cal: Calendar
+    client: ModelClient
+    runs: RunStore
+    call_id: str
+    caller_phone: str | None = None
+    transcripts: ConversationStore | None = None
+    langfuse: Any = None
+    run_kind: RunKind = "live"
+    messages: list[Message] = field(default_factory=list)
+    failed_streak: int = 0
+    turns: list[dict[str, str]] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.state = CallState(self.call_id, self.caller_phone)
+        self.registry = build_registry(self.cal, self.state)
+
+    # ---- opening line (code)
+
+    def greet(self) -> str:
+        r = self.cfg.rules
+        line = str(r["disclosure"])
+        if not self.cal.salon.is_open(self.cal.now()):
+            line += " " + str(r["after_hours"])
+        line += " How can I help?"
+        self._record("agent", line)
+        return line
+
+    # ---- a caller turn
+
+    def _wants_person(self, text: str) -> bool:
+        t = text.lower()
+        return any(re.search(rf"\b{re.escape(p)}\b", t) for p in self.cfg.rules["transfer_phrases"])
+
+    def _system(self) -> str:
+        now = self.cal.now().astimezone(self.cal.salon.tz)
+        return self.cfg.prompt(
+            "system",
+            now=now.strftime("%A %d %B %Y, %I:%M %p"),
+            open_now="open" if self.cal.salon.is_open(now) else "closed",
+            caller_phone="known" if self.caller_phone else "not available",
+        )
+
+    def respond(self, text: str) -> Turn:
+        self._record("caller", text)
+        if self.state.transferred:
+            return self._say(Turn("I'm connecting you to the salon team now.", transferred=True))
+        if self._wants_person(text):
+            self.state.transferred = "caller asked for a person / complaint"
+            return self._say(
+                Turn(
+                    "Of course, I'll put you through to someone at the salon now.", transferred=True
+                )
+            )
+        if not self.messages:
+            self.messages = [{"role": "system", "content": self._system()}]
+        self.messages.append({"role": "user", "content": text})
+        turn = Turn("")
+        failed = False
+        with start_run(
+            AGENT,
+            self.runs,
+            self.langfuse,
+            run_input={"caller": redact(text)},
+            session_id=self.call_id,
+            budget=self.cfg.budget(None),
+            kind=self.run_kind,
+        ) as run:
+            schemas = self.registry.schemas_for(AGENT)
+            for step in range(self.cfg.limits.max_steps):
+                resp = run.model(self.client, self.messages, schemas, name=f"step-{step}")
+                if not resp.tool_calls:
+                    turn.text = (resp.content or "").strip()
+                    self.messages.append({"role": "assistant", "content": turn.text})
+                    break
+                turn.used_filler = True  # the voice pipeline says FILLER while tools run
+                self.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": resp.content or "",
+                        "tool_calls": [
+                            {
+                                "id": c.id,
+                                "type": "function",
+                                "function": {"name": c.name, "arguments": c.raw_arguments or "{}"},
+                            }
+                            for c in resp.tool_calls
+                        ],
+                    }
+                )
+                for call in resp.tool_calls:
+                    turn.tools.append(call.name)
+                    res = run.tool(self.registry, call.name, call.arguments)
+                    if call.name in BOOKING_TOOLS and not res.ok:
+                        failed = True
+                    body = res.model_dump_json(include={"ok", "payload", "error"})
+                    self.messages.append({"role": "tool", "tool_call_id": call.id, "content": body})
+            turn.cost_usd = run.cost_usd
+        if run.status == "budget_exceeded":
+            self.state.transferred = "call token budget exceeded"
+        if not turn.text:
+            turn.text = "Sorry, I didn't catch that. Could you say it again?"
+            failed = True
+        self.failed_streak = self.failed_streak + 1 if failed else 0
+        if self.failed_streak >= int(self.cfg.rules.get("max_failed_intents", 2)):
+            self.state.transferred = "repeated failed booking steps"
+        if self.state.transferred:
+            turn.transferred = True
+            if "connect" not in turn.text.lower() and "put you through" not in turn.text.lower():
+                turn.text += " Let me put you through to someone at the salon."
+        return self._say(turn)
+
+    # ---- transcript (redacted before it's stored)
+
+    def _say(self, turn: Turn) -> Turn:
+        self._record("agent", turn.text)
+        return turn
+
+    def _record(self, who: str, text: str) -> None:
+        self.turns.append({"role": who, "text": redact(text), "at": datetime.now().isoformat()})
+        if self.transcripts is not None:
+            self.transcripts.save(
+                self.call_id,
+                {
+                    "turns": self.turns,
+                    "transferred": self.state.transferred,
+                    "booked": self.state.booked,
+                    "cancelled": self.state.cancelled,
+                },
+            )

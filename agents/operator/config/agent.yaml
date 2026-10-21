@@ -1,0 +1,17 @@
+# Operator: phone receptionist for the fictional Studio Nine Salon (VOICE-001..005).
+agent: operator
+# Fast model: voice latency targets (VOICE-016) leave ~1s for the model on a non-tool turn.
+model: {provider: anthropic, name: claude-haiku-4-5, fallback: openai/gpt-4o-mini, max_tokens: 300}
+business: config/business.md
+limits: {max_steps: 6, run_token_budget: 60000}
+rules:
+  # VOICE-002: transfer is decided in code, not left to the model.
+  transfer_phrases: ["speak to a person", "speak to someone", "talk to a person", "real person",
+                     "human", "manager", "receptionist", "staff member", "complaint", "complain"]
+  max_failed_intents: 2           # consecutive turns where a booking step failed -> transfer
+  disclosure: >-
+    Hi, you've reached Studio Nine Salon. I'm the salon's AI assistant, and this call is recorded
+    and transcribed so we can get your booking right.
+  after_hours: >-
+    We're closed right now, but I can still book, move or cancel an appointment for you, or
+    answer questions.

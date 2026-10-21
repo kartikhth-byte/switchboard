@@ -63,6 +63,9 @@ n8n-import:       ## LEAD-007: start n8n, import + activate n8n/lead_intake.json
 n8n-e2e:          ## LEAD-007: form fixture -> n8n webhook -> agent API (needs `make up` + n8n-import)
 	PYTHONPATH=. uv run python scripts/n8n_e2e.py
 
+call:             ## M4: talk to the Operator (salon receptionist) by typing
+	PYTHONPATH=. uv run python -m agents.operator $(ARGS)
+
 integrations-check: ## M3.3: one live call each to Slack, WhatsApp, GoHighLevel, Mailpit
 	PYTHONPATH=. uv run python scripts/integrations_check.py
 
