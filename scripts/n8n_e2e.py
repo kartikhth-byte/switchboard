@@ -27,6 +27,17 @@ def main() -> int:
     user, domain = form["email"].split("@")
     form["email"] = f"{user}+n8n{int(time.time())}@{domain}"
     with httpx.Client(timeout=30) as http:
+        for _ in range(60):  # n8n takes a few seconds after `make n8n-import` restarts it
+            try:
+                if http.get("http://localhost:5678/healthz").status_code == 200:
+                    break
+            except httpx.TransportError:
+                pass
+            time.sleep(1)
+        else:
+            print("n8n is not up on :5678 (docker compose --profile n8n up -d n8n)")
+            return 1
+        time.sleep(2)  # webhooks register just after the health endpoint answers
         r = http.post(WEBHOOK, json=form)
         if r.status_code == 404:
             print("n8n webhook not found: run `make n8n-import` first")
