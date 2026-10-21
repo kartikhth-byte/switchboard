@@ -49,6 +49,17 @@ calib-export:     ## pick 30 judged answers to hand-label: make calib-export RES
 canary-check:     ## SHR-019: planted PII canaries absent from >=100 exported eval traces
 	PYTHONPATH=. uv run python scripts/check_canaries.py
 
+n8n-import:       ## LEAD-007: start n8n, import + activate n8n/lead_intake.json
+	docker compose --profile n8n up -d n8n
+	sleep 8
+	docker compose exec -T n8n n8n import:workflow --input=/workflows/lead_intake.json
+	docker compose exec -T n8n n8n update:workflow --id=SwbLeadIntake001 --active=true
+	docker compose restart n8n
+	@echo "n8n UI: http://localhost:5678  webhook: http://localhost:5678/webhook/lead-intake"
+
+n8n-e2e:          ## LEAD-007: form fixture -> n8n webhook -> agent API (needs `make up` + n8n-import)
+	PYTHONPATH=. uv run python scripts/n8n_e2e.py
+
 integrations-check: ## M3.3: one live call each to Slack, WhatsApp, GoHighLevel, Mailpit
 	PYTHONPATH=. uv run python scripts/integrations_check.py
 

@@ -1,0 +1,117 @@
+{
+  "id": "SwbLeadIntake001",
+  "name": "Switchboard — lead intake (web form)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "Form webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "5b4a8f0e-4d2b-4a0e-9f62-1c2d3e4f5a6b",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "a2",
+      "name": "Map to lead schema",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Map a website form submission to Switchboard's lead intake schema (LEAD-001, LEAD-007).\n// Normalisation and dedupe happen in the API, so this node only renames fields.\nconst out = [];\nfor (const item of $input.all()) {\n  const f = item.json.body ?? item.json;  // Webhook node puts the POST body under .body\n  const utm = {};\n  for (const k of ['utm_source', 'utm_medium', 'utm_campaign']) if (f[k]) utm[k] = String(f[k]);\n  out.push({ json: {\n    channel: 'web_form',\n    name: f.full_name ?? f.name ?? null,\n    email: f.email ?? null,\n    phone: f.phone ?? null,\n    message: String(f.message ?? '').slice(0, 4000),\n    received_at: new Date().toISOString(),\n    source: 'website',\n    campaign: f.utm_campaign ?? null,\n    utm,\n  }});\n}\nreturn out;"
+      }
+    },
+    {
+      "id": "a3",
+      "name": "POST /agents/lead/intake",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/agents/lead/intake",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "fullResponse": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "a4",
+      "name": "Reply to form",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ lead_id: $json.body.lead_id ?? null, created: $json.body.created ?? null, status: $json.statusCode }) }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Form webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to lead schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to lead schema": {
+      "main": [
+        [
+          {
+            "node": "POST /agents/lead/intake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST /agents/lead/intake": {
+      "main": [
+        [
+          {
+            "node": "Reply to form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
