@@ -320,3 +320,18 @@ def test_retry_with_no_checkpoint_starts_from_the_top() -> None:
     d.process(str(lead.id), retry=True)
     got = d.store.get(lead.id)
     assert got and got.stage == "with_owner" and len(sent(d, lead.id)) == 1
+
+
+def test_run_token_budget_stops_the_lead_cleanly() -> None:
+    """LEAD-016: over the per-run token budget the run ends as budget_exceeded (no exception,
+    so no job retries), nothing is sent, the lead is marked failed and ops are told."""
+    d, ad = make()
+    d.cfg = d.cfg.model_copy(
+        update={"limits": d.cfg.limits.model_copy(update={"run_token_budget": 60})}
+    )  # each scripted model call uses 70 tokens
+    lead, _ = d.intake(payload(), enqueue=False)
+    out = d.process(str(lead.id))
+    got = d.store.get(lead.id)
+    assert out["status"] == "budget_exceeded" and got and got.stage == "failed"
+    assert sent(d, lead.id) == []
+    assert ad.slack.messages[-1]["channel"] == "#ops-alerts"

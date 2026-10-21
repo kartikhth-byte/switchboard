@@ -178,10 +178,13 @@ class Dispatcher:
                 kind=self.run_kind,
             ) as run:
                 deps.run = run
+                state: dict[str, Any] = {}
                 state = graph.invoke(start, cfg)
                 if "__interrupt__" in state:
                     run.set_status("waiting_approval")
             self.last_events = deps.events
+            if run.status == "budget_exceeded":  # LEAD-016: stop cleanly, visibly, no retries
+                self._stop_lead(lead_id, f"run token budget exceeded (run {run.run_id})")
             return {
                 "state": state,
                 "run_id": str(run.run_id),
@@ -281,6 +284,21 @@ class Dispatcher:
             self.store.advance(lead_id, "follow_up_sent", data={"n": n})
             return "sent"
         return f"not_sent: {res.error}"
+
+    def _stop_lead(self, lead_id: str, reason: str) -> None:
+        self.registry.execute(
+            "post_slack",
+            {
+                "channel": "#ops-alerts",
+                "text": f"Dispatcher stopped lead {lead_id}: {reason}",
+                "lead_id": lead_id,
+            },
+            _ctx(),
+        )
+        try:
+            self.store.advance(lead_id, "failed", data={"error": reason})
+        except Exception:  # noqa: BLE001 — already terminal
+            log.warning("could not mark lead failed")
 
     # ---- failures (LEAD-005): alert with the run id, mark the lead
 

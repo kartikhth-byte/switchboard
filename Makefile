@@ -49,6 +49,9 @@ calib-export:     ## pick 30 judged answers to hand-label: make calib-export RES
 canary-check:     ## SHR-019: planted PII canaries absent from >=100 exported eval traces
 	PYTHONPATH=. uv run python scripts/check_canaries.py
 
+secrets-scan:     ## LEAD-016/SHR-005: no keys in Langfuse traces (7 days) or api/worker logs
+	docker compose logs --no-color api worker 2>/dev/null | PYTHONPATH=. uv run python scripts/check_secrets.py --logs -
+
 n8n-import:       ## LEAD-007: start n8n, import + activate n8n/lead_intake.json
 	docker compose --profile n8n up -d n8n
 	sleep 8
