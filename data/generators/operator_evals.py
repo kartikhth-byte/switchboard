@@ -301,9 +301,9 @@ def build_calls() -> list[dict]:
         )
         k += 1
     for svc, sty, dow0, t0, dow1, phrase, w0, w1 in RESCHEDULE:
+        # The new day is the next one after 'now', even if it's before the old booking:
+        # "move my Sunday to Saturday instead" means the Saturday just before (test call-032).
         d0, d1 = on(k, dow0), on(k, dow1)
-        if d1 < d0:
-            d1 += timedelta(days=7)
         out.append(
             case(
                 k,

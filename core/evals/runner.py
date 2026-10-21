@@ -112,7 +112,17 @@ def run_case(suite: EvalSuite, case: EvalCase, split: str) -> EvalResult:
             errors.append(f"{a}: {type(exc).__name__}")
     notes: dict[str, Any] = {
         k: out.data[k]
-        for k in ("judge", "citations", "escalated", "status", "tool_calls", "retrieved")
+        for k in (
+            "judge",
+            "citations",
+            "escalated",
+            "status",
+            "tool_calls",
+            "retrieved",
+            "tool_log",
+            "transferred",
+            "bookings",
+        )
         if k in out.data
     }
     notes["transcript"] = out.transcript  # so a failure can be read without re-running
@@ -153,6 +163,7 @@ def run_suite(
     max_usd: float | None = None,
     out_dir: Path = Path("evals/results"),
     only: list[str] | None = None,
+    ids: list[str] | None = None,
 ) -> dict[str, Any]:
     check_cross_provider(suite.agent_provider, *suite.helpers)
     sets = load_sets(suite.cases_dir)
@@ -162,6 +173,8 @@ def run_suite(
             raise ValueError(f"unknown eval sets: {sorted(unknown)}; have {sorted(sets)}")
         sets = {k: v for k, v in sets.items() if k in only}
     chosen = select(sets, split, smoke)
+    if ids:  # debugging one case: its split is unchanged, the report says which ids ran
+        chosen = [x for x in chosen if x[1].id in ids]
     runs: list[list[EvalResult]] = []
     by_set: dict[str, str] = {c.id: name for name, c, _ in chosen}
     spent, truncated = 0.0, False
@@ -198,6 +211,7 @@ def run_suite(
         "truncated_by_cost_cap": truncated,
         "cost_usd": round(spent, 6),
         "sets": {name: len(cases) for name, cases in sets.items()},
+        "ids": ids,
         "metrics": _summarise(results) if results else {},
         "by_tag": {},
         "by_set": {},

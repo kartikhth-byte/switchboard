@@ -19,6 +19,7 @@ def main() -> int:
     p.add_argument("--repeat", type=int, default=1, help="variance run: report mean and min")
     p.add_argument("--max-usd", type=float, default=None, help="stop when spend reaches this")
     p.add_argument("--sets", default="", help="comma-separated set names, e.g. lead_capture")
+    p.add_argument("--ids", default="", help="comma-separated case ids (debug one case)")
     a = p.parse_args()
     split: Split = a.split or ("dev" if a.smoke else "test")
     report = run_suite(
@@ -28,6 +29,7 @@ def main() -> int:
         repeat=a.repeat,
         max_usd=a.max_usd,
         only=[s for s in a.sets.split(",") if s] or None,
+        ids=[s for s in a.ids.split(",") if s] or None,
     )
     print(to_markdown(report))
     print("written:", *report["paths"])
