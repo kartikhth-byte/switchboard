@@ -1,0 +1,31 @@
+# Studio Nine Salon (fictional). Services, stylists and hours drive find_slots (VOICE-004):
+# durations and stylist skills come from here, never from the model. Edit freely (VOICE-013).
+timezone: Asia/Kolkata
+slot_step_minutes: 15          # candidate start times
+min_lead_minutes: 60           # no bookings starting sooner than this
+hold_ttl_seconds: 120
+transfer_number: "+91 832 000 0000"   # placeholder staff line (VOICE-002)
+
+hours:                          # local time; missing day = closed
+  mon: null
+  tue: ["10:00", "19:00"]
+  wed: ["10:00", "19:00"]
+  thu: ["10:00", "19:00"]
+  fri: ["10:00", "20:00"]
+  sat: ["09:00", "20:00"]
+  sun: ["10:00", "17:00"]
+
+services:
+  - {id: haircut_women, name: "Women's haircut", minutes: 45, price_inr: 1200}
+  - {id: haircut_men, name: "Men's haircut", minutes: 30, price_inr: 700}
+  - {id: blowdry, name: "Blow-dry", minutes: 30, price_inr: 800}
+  - {id: colour_full, name: "Full colour", minutes: 120, price_inr: 4500}
+  - {id: highlights, name: "Highlights", minutes: 150, price_inr: 6000}
+  - {id: keratin, name: "Keratin treatment", minutes: 180, price_inr: 8500}
+  - {id: beard_trim, name: "Beard trim", minutes: 20, price_inr: 400}
+  - {id: kids_cut, name: "Kids' haircut (under 12)", minutes: 30, price_inr: 600}
+
+stylists:
+  - {id: anita, name: Anita, skills: [haircut_women, blowdry, colour_full, highlights, keratin]}
+  - {id: farhan, name: Farhan, skills: [haircut_men, beard_trim, kids_cut, haircut_women]}
+  - {id: leela, name: Leela, skills: [haircut_women, blowdry, kids_cut, colour_full]}
