@@ -7,3 +7,8 @@ def test_scan_finds_values_and_shapes_but_not_clean_text() -> None:
     assert "slack pattern" in scan("token xoxb-1234567890-abcdefghij", {})
     assert "anthropic pattern" in scan("key=sk-ant-api03-" + "x" * 30, {})
     assert scan('{"lead_id": "5e17c8d3", "tier": 1, "owner": "@reservations"}', secrets) == []
+
+
+def test_langfuse_public_key_is_not_a_secret() -> None:
+    assert scan('{"public_key": "pk-lf-1234abcd-1234-abcd-1234-abcdef123456"}', {}) == []
+    assert "langfuse_secret pattern" in scan("sk-lf-1234abcd-1234-abcd-1234-abcdef123456", {})

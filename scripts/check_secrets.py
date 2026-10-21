@@ -25,7 +25,7 @@ from core.config.settings import PROVIDER_KEYS, get_settings
 PATTERNS = {
     "anthropic": r"sk-ant-[A-Za-z0-9_-]{20,}",
     "openai": r"sk-(?:proj-)?[A-Za-z0-9_-]{32,}",
-    "langfuse": r"(?:sk|pk)-lf-[0-9a-f-]{20,}",
+    "langfuse_secret": r"sk-lf-[0-9a-f-]{20,}",  # pk-lf- is a public client id, on every trace
     "slack": r"xox[abposr]-[0-9A-Za-z-]{10,}",
     "ghl_pit": r"pit-[0-9a-f-]{20,}",
     "meta": r"EAA[A-Za-z0-9]{40,}",
@@ -42,7 +42,7 @@ def configured_secrets() -> dict[str, str]:
     vals = {k: os.environ.get(k, "") for k in PROVIDER_KEYS}
     for name in type(s).model_fields:
         v = getattr(s, name)
-        if hasattr(v, "get_secret_value"):
+        if hasattr(v, "get_secret_value") and name != "langfuse_public_key":
             vals[name.upper()] = v.get_secret_value()
     return {k: v for k, v in vals.items() if v and len(v) >= 12}
 
