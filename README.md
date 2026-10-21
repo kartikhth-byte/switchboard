@@ -35,6 +35,26 @@ make eval AGENT=concierge ARGS="--smoke --max-usd 3"   # ~20 dev cases, ~$1
 
 Test booking: `PG-1002` / `rohan.fernandes@example.com`. Everything outbound is mocked.
 
+## Dispatcher (lead qualification)
+
+Enquiries from a web form (via n8n), email or WhatsApp → normalise and dedupe → CRM upsert →
+model extracts the facts → **code** computes the tier and decides whether a reply may go
+(outbound mode, allowlist, opt-out, WhatsApp 24h window) → hot leads to a person in Slack, warmer
+ones get follow-ups that stop on a reply, takeover or opt-out. LangGraph with a Postgres
+checkpointer, so approval pauses and crashed jobs resume where they stopped.
+
+```bash
+make up                         # then open http://localhost:3000/lead
+make eval AGENT=dispatcher      # intent / tier / 0 messages after a stop event
+make lead-burst                 # 30 leads at once, p95 to first reply
+make n8n-import && make n8n-e2e # form → n8n → API
+make integrations-check         # real Slack / GoHighLevel / Mailpit (keys in .env)
+```
+
+Results: [`evals/results/dispatcher/summary.md`](evals/results/dispatcher/summary.md). Real
+integrations run only with `DEMO_INTEGRATIONS=real`; WhatsApp stays on the mock until Meta
+verification clears (Phase 2, LEAD-P2-01). Email replies land in Mailpit (`localhost:8025`).
+
 ## Debugging a run
 
 Every guest message is one **run** with a `run_id`; the same id ties together the log lines,
