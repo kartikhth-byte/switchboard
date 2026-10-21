@@ -24,3 +24,14 @@ The first burst run failed (23/30 finished): concurrent checkpointer setup crash
 attempts, and their retries had no checkpoint to resume. The same investigation found the
 per-lead claim's row lock was a no-op under autocommit. Both fixed in `dae7a58`; the run above
 is after the fix.
+
+## M3.3–M3.4 checks (2026-10-21)
+
+| Requirement | Check | Result |
+|---|---|---|
+| LEAD-001/003/004/006 | One lead end to end with `DEMO_INTEGRATIONS=real`: GoHighLevel contact, reply in Mailpit, hot-lead alert in Slack #leads, one Langfuse trace | pass (WhatsApp on the mock: Phase 2 LEAD-P2-01) |
+| LEAD-005 | GoHighLevel upsert returned the same contact id on repeat (`make integrations-check` ×2) | pass |
+| LEAD-007 | `make n8n-import` into a fresh n8n 1.80, `make n8n-e2e`: lead created (202), replay returns the same lead (200), processed to `with_owner` | pass |
+| LEAD-016 | `make secrets-scan`: 5 configured secrets + 8 key formats in 1,471 Langfuse traces and 311 api/worker log lines | 0 leaks |
+| LEAD-016 | Token budget overrun stops the lead (failed + #ops-alerts, no retries) | unit test |
+| LEAD-003 | Personalization rubric ≥90% | not measured (cut list); replies cite enquiry details and greet by name |
