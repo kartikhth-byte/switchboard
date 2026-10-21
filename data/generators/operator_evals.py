@@ -82,7 +82,8 @@ EDGE_CREATE = [
         "highlights",
         "anita",
         "I'd like highlights on Sunday, as late in the day as possible.",
-        "highlights on Sunday, the latest start time they can do",
+        "highlights on Sunday at the latest start time they can do; whatever latest time they "
+        "offer, accept it and book (don't push for later)",
         "sunday",
         0,
         "14:00",
