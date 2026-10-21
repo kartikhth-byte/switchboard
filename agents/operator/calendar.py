@@ -157,6 +157,10 @@ class Calendar:
         now = self.now()
         try:
             with connect(self.dsn) as c, c.transaction():
+                # Writes for one stylist queue on this lock (hold and confirm). Without it a
+                # losing hold's insert and the winner's confirm wait on each other's exclusion
+                # check: a deadlock, ~1 race in 10. The constraint still decides who wins.
+                c.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", ("appt:" + stylist_id,))
                 c.execute(  # expired holds stop blocking (the constraint ignores 'expired')
                     "UPDATE appointments SET status = 'expired', updated_at = now()"
                     " WHERE stylist_id = %s AND status = 'held' AND hold_expires <= %s",
@@ -201,6 +205,14 @@ class Calendar:
         """Turn a live hold into a booking. If the hold replaces an earlier booking (reschedule),
         that booking is cancelled in the same transaction."""
         with connect(self.dsn) as c, c.transaction():
+            sty = c.execute(
+                "SELECT stylist_id FROM appointments WHERE id = %s", (str(hold_id),)
+            ).fetchone()
+            if sty:  # same lock as hold(): the update re-checks the exclusion constraint, which
+                # would otherwise wait on a racing hold's insert while it waits on us (deadlock)
+                c.execute(
+                    "SELECT pg_advisory_xact_lock(hashtext(%s))", ("appt:" + sty["stylist_id"],)
+                )
             row = c.execute(
                 "SELECT status, hold_expires, replaces FROM appointments WHERE id = %s FOR UPDATE",
                 (str(hold_id),),
