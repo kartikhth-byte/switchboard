@@ -100,7 +100,7 @@ def test_booking_flow_ends_with_a_confirmed_db_row(make: Any) -> None:
     slot = "2027-01-06T10:00:00+05:30"
     s = make(
         [
-            {"find_slots": {"service_id": "haircut_men", "date_from": "2027-01-06"}},
+            {"find_slots": {"service_id": "haircut_men", "day": "tomorrow", "time": "morning"}},
             "Farhan has 10 in the morning or 10:15 tomorrow. Which suits you?",
             {"hold_slot": {"service_id": "haircut_men", "stylist_id": "farhan", "start": slot}},
             "That's a men's haircut with Farhan, Wednesday at 10am. Can I take your name?",
@@ -202,13 +202,15 @@ def test_empty_window_returns_hours_and_real_alternatives(make: Any) -> None:
     reg = build_registry(s.cal, CallState("x", "+919800000042"))
     out = reg.execute(
         "find_slots",
-        {
-            "service_id": "haircut_men",
-            "date_from": "2027-01-08",
-            "earliest_time": "07:30",
-            "latest_time": "09:30",
-        },
+        {"service_id": "haircut_men", "day": "Friday", "time": "eight in the morning"},
         ToolContext(run_id=uuid4(), agent="operator"),
     ).payload
     assert out["slots"] == [] and out["opening_hours"] == {"2027-01-08": "10:00-20:00"}
     assert out["nearest_free"][0]["start"].startswith("2027-01-08T10:00")
+    assert out["understood"].startswith("Friday 08 January (open 10:00-20:00)")
+    old_style = reg.execute(
+        "find_slots",
+        {"service_id": "haircut_men", "date_from": "2027-01-08", "earliest_time": "07:30"},
+        ToolContext(run_id=uuid4(), agent="operator"),
+    )
+    assert not old_style.ok  # unknown parameters are rejected, not silently ignored

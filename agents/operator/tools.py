@@ -4,13 +4,14 @@ skills, durations, hours and overlaps are checked by the calendar, not the model
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from agents.operator.calendar import BookingError, Calendar, SlotTaken
 from agents.operator.notify import Notifier
+from agents.operator.when import NotUnderstood, Window, resolve_day, resolve_time, understood
 from core.tools import ToolContext, ToolRegistry, ToolResult, ToolSpec
 
 AGENT = "operator"
@@ -31,17 +32,22 @@ class NoInput(BaseModel):
 
 
 class FindSlotsIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")  # a stale parameter is an error, not ignored
+
     service_id: str
-    date_from: date
-    date_to: date | None = None
+    day: str | None = Field(
+        default=None,
+        description="the caller's own words for the day, unchanged: 'this Sunday', 'tomorrow', "
+        "'Friday the 23rd'. Code resolves it; don't convert it to a date yourself.",
+    )
+    time: str | None = Field(
+        default=None,
+        description="the caller's own words for the time, unchanged: '8 in the morning', "
+        "'around 4', 'after work', 'as late as possible'. Omit if they gave none.",
+    )
     stylist_id: str | None = None
-    earliest_time: time | None = Field(
-        default=None, description="HH:MM local; set when the caller names a time or 'afternoon'"
-    )
-    latest_time: time | None = Field(default=None, description="HH:MM local, latest start")
-    latest_first: bool = Field(
-        default=False, description="true when they want the latest time ('as late as possible')"
-    )
+    date_from: date | None = Field(default=None, description="only for a range of days")
+    date_to: date | None = None
 
 
 class HoldIn(BaseModel):
@@ -80,36 +86,56 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
         }
 
     def find_slots(inp: FindSlotsIn, ctx: ToolContext) -> dict[str, Any]:
+        today = cal.now().astimezone(salon.tz).date()
+        try:  # the caller's words become dates and times here, in code (not in the model)
+            day_from = resolve_day(inp.day, today) if inp.day else inp.date_from
+            if day_from is None:
+                return {"error": "say which day: pass the caller's words in `day`"}
+            day_to = day_from if inp.day else (inp.date_to or day_from)
+            span = salon.opening(day_from)
+            win = (
+                resolve_time(
+                    inp.time, span[0].time() if span else None, span[1].time() if span else None
+                )
+                if inp.time
+                else Window(None, None)
+            )
+        except NotUnderstood as exc:
+            return {
+                "error": f"didn't understand {str(exc)!r}: ask the caller to say it another way"
+            }
         try:
             slots = cal.find_slots(
                 inp.service_id,
-                inp.date_from,
-                inp.date_to or inp.date_from,
+                day_from,
+                day_to,
                 inp.stylist_id,
                 limit=4,
-                earliest=inp.earliest_time,
-                latest=inp.latest_time,
-                latest_first=inp.latest_first,
+                earliest=win.earliest,
+                latest=win.latest,
+                latest_first=win.latest_first,
             )
         except (BookingError, KeyError) as exc:
             return {"error": str(exc).strip("'")}
-        day_to = inp.date_to or inp.date_from
         hours = {}
-        d = inp.date_from
-        while d <= day_to:  # the model must not work out opening times itself (live call 10-21)
-            span = salon.opening(d)
-            hours[d.isoformat()] = f"{span[0]:%H:%M}-{span[1]:%H:%M}" if span else "closed"
+        d = day_from
+        while d <= day_to:
+            sp = salon.opening(d)
+            hours[d.isoformat()] = f"{sp[0]:%H:%M}-{sp[1]:%H:%M}" if sp else "closed"
             d += timedelta(days=1)
-        out: dict[str, Any] = {"opening_hours": hours}
+        out: dict[str, Any] = {
+            "understood": understood(salon, day_from, win),
+            "opening_hours": hours,
+        }
         if slots:
-            out["slots"] = [s.as_dict(salon) for s in slots]
+            out["slots"] = [x.as_dict(salon) for x in slots]
             return out
         out["slots"] = []
-        if inp.earliest_time or inp.latest_time:
+        if win.earliest or win.latest:
             # Nothing in the window they asked for: hand back the nearest real alternatives, so
-            # the reply offers times that exist instead of guessing one.
-            nearest = cal.find_slots(inp.service_id, inp.date_from, day_to, inp.stylist_id, limit=3)
-            out["nearest_free"] = [s.as_dict(salon) for s in nearest]
+            # the reply offers times that exist instead of guessing one (live call 2026-10-21).
+            nearest = cal.find_slots(inp.service_id, day_from, day_to, inp.stylist_id, limit=3)
+            out["nearest_free"] = [x.as_dict(salon) for x in nearest]
         out["note"] = "nothing free in that window; offer only times listed here"
         return out
 

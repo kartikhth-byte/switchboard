@@ -63,14 +63,7 @@ def test_create_case_scores_from_the_db() -> None:
     slot = "2027-01-09T16:00:00+05:30"
     agent = Script(
         [
-            {
-                "find_slots": {
-                    "service_id": "haircut_men",
-                    "date_from": "2027-01-09",
-                    "earliest_time": "15:30",
-                    "latest_time": "16:30",
-                }
-            },
+            {"find_slots": {"service_id": "haircut_men", "day": "Saturday", "time": "4pm"}},
             "Farhan has 4pm Saturday. Shall I hold it?",
             {"hold_slot": {"service_id": "haircut_men", "stylist_id": "farhan", "start": slot}},
             "Held. Your name?",
