@@ -56,6 +56,7 @@ class CallSession:
     messages: list[Message] = field(default_factory=list)
     failed_streak: int = 0
     turns: list[dict[str, str]] = field(default_factory=list)
+    on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
 
     def __post_init__(self) -> None:
         self.state = CallState(self.call_id, self.caller_phone)
@@ -126,6 +127,8 @@ class CallSession:
                     turn.text = (resp.content or "").strip()
                     self.messages.append({"role": "assistant", "content": turn.text})
                     break
+                if not turn.used_filler and self.on_tools is not None:
+                    self.on_tools()
                 turn.used_filler = True  # the voice pipeline says FILLER while tools run
                 self.messages.append(
                     {

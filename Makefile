@@ -1,7 +1,7 @@
 .PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead data-operator ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
-	uv sync
+	uv sync --extra voice
 	cd web && npm ci
 	test -f .env || cp .env.example .env
 
@@ -65,6 +65,9 @@ n8n-e2e:          ## LEAD-007: form fixture -> n8n webhook -> agent API (needs `
 
 call:             ## M4: talk to the Operator (salon receptionist) by typing
 	PYTHONPATH=. uv run python -m agents.operator $(ARGS)
+
+voice:            ## M4: talk to the Operator in the browser (http://localhost:7860/client)
+	PYTHONPATH=. uv run --extra voice python -m agents.operator.voice -t webrtc
 
 integrations-check: ## M3.3: one live call each to Slack, WhatsApp, GoHighLevel, Mailpit
 	PYTHONPATH=. uv run python scripts/integrations_check.py

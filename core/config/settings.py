@@ -49,6 +49,11 @@ class Settings(BaseSettings):
     ghl_location_id: str = ""
     google_service_account_file: str = ""  # JSON key path (mounted read-only into the worker)
     google_calendar_id: str = ""  # the shared test calendar's id (…@group.calendar.google.com)
+    # Voice (Operator, M4): speech-to-text and text-to-speech.
+    deepgram_api_key: SecretStr | None = None
+    cartesia_api_key: SecretStr | None = None
+    cartesia_voice_id: str = "71a7ad14-091c-4e8e-a314-022ece01c121"  # a Cartesia stock voice
+    operator_demo_caller: str = "+919800000042"  # browser calls have no caller ID
     smtp_host: str = "localhost"  # Mailpit (compose service `mailpit` inside the network)
     smtp_port: int = 1025
     email_from: str = "Palmgrove Stays <hello@palmgrove.test>"

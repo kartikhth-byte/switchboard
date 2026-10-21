@@ -18,6 +18,11 @@ dependencies = [
     "google-auth>=2.30",
 ]
 
+[project.optional-dependencies]
+voice = [
+    "pipecat-ai[cartesia,deepgram,runner,silero,webrtc]==1.13.0",
+]
+
 [dependency-groups]
 dev = [
     "ruff>=0.6",
