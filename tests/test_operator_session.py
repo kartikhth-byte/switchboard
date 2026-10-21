@@ -39,12 +39,16 @@ class Script(ModelClient):
         self.seen.append(list(messages))
         step = self.steps.pop(0)
         if isinstance(step, str):
-            return ModelResponse(content=step, model="claude-haiku-4-5", tokens_in=40,
-                                 tokens_out=10)  # fmt: skip
-        calls = [ToolCall(id=f"t{i}", name=n, arguments=a, raw_arguments=json.dumps(a))
-                 for i, (n, a) in enumerate(step.items())]  # fmt: skip
-        return ModelResponse(content="", tool_calls=calls, model="claude-haiku-4-5",
-                             tokens_in=40, tokens_out=10)  # fmt: skip
+            return ModelResponse(
+                content=step, model="claude-haiku-4-5", tokens_in=40, tokens_out=10
+            )
+        calls = [
+            ToolCall(id=f"t{i}", name=n, arguments=a, raw_arguments=json.dumps(a))
+            for i, (n, a) in enumerate(step.items())
+        ]
+        return ModelResponse(
+            content="", tool_calls=calls, model="claude-haiku-4-5", tokens_in=40, tokens_out=10
+        )
 
 
 def last_tool_result(script: Script) -> dict[str, Any]:
@@ -61,9 +65,16 @@ def make() -> Any:
 
     def _make(steps: list[Any], now: datetime, phone: str = "+919800000042") -> CallSession:
         cal = Calendar(dsn, SALON, now=lambda: now)
-        return CallSession(CFG, cal, Script(steps), PgRunStore(dsn), call_id=f"t-{uuid4().hex[:8]}",
-                           caller_phone=phone, transcripts=ConversationStore(dsn, "operator"),
-                           run_kind="eval")  # fmt: skip
+        return CallSession(
+            CFG,
+            cal,
+            Script(steps),
+            PgRunStore(dsn),
+            call_id=f"t-{uuid4().hex[:8]}",
+            caller_phone=phone,
+            transcripts=ConversationStore(dsn, "operator"),
+            run_kind="eval",
+        )
 
     return _make
 
@@ -87,14 +98,17 @@ def test_asking_for_a_person_transfers_without_the_model(make: Any) -> None:
 
 def test_booking_flow_ends_with_a_confirmed_db_row(make: Any) -> None:
     slot = "2027-01-06T10:00:00+05:30"
-    s = make([
-        {"find_slots": {"service_id": "haircut_men", "date_from": "2027-01-06"}},
-        "Farhan has 10 in the morning or 10:15 tomorrow. Which suits you?",
-        {"hold_slot": {"service_id": "haircut_men", "stylist_id": "farhan", "start": slot}},
-        "That's a men's haircut with Farhan, Wednesday at 10am. Can I take your name?",
-        {"confirm_booking": {"hold_id": "__HOLD__", "name": "Ravi"}},
-        "You're booked, Ravi. See you Wednesday at 10.",
-    ], OPEN)  # fmt: skip
+    s = make(
+        [
+            {"find_slots": {"service_id": "haircut_men", "date_from": "2027-01-06"}},
+            "Farhan has 10 in the morning or 10:15 tomorrow. Which suits you?",
+            {"hold_slot": {"service_id": "haircut_men", "stylist_id": "farhan", "start": slot}},
+            "That's a men's haircut with Farhan, Wednesday at 10am. Can I take your name?",
+            {"confirm_booking": {"hold_id": "__HOLD__", "name": "Ravi"}},
+            "You're booked, Ravi. See you Wednesday at 10.",
+        ],
+        OPEN,
+    )
     s.greet()
     t1 = s.respond("Hi, I need a men's haircut tomorrow morning")
     assert "find_slots" in t1.tools and t1.used_filler
@@ -110,15 +124,24 @@ def test_booking_flow_ends_with_a_confirmed_db_row(make: Any) -> None:
 
 def test_reschedule_replaces_the_old_booking(make: Any) -> None:
     s = make([], OPEN)
-    old = s.cal.confirm(s.cal.hold("leela", "blowdry", datetime(2027, 1, 6, 12, 0, tzinfo=TZ)),
-                        "Priya", "+919800000042")  # fmt: skip
+    old = s.cal.confirm(
+        s.cal.hold("leela", "blowdry", datetime(2027, 1, 6, 12, 0, tzinfo=TZ)),
+        "Priya",
+        "+919800000042",
+    )
     s.client.steps = [
-        {"hold_slot": {"service_id": "blowdry", "stylist_id": "leela",
-                       "start": "2027-01-06T15:00:00+05:30", "replaces_booking_id": str(old)}},
+        {
+            "hold_slot": {
+                "service_id": "blowdry",
+                "stylist_id": "leela",
+                "start": "2027-01-06T15:00:00+05:30",
+                "replaces_booking_id": str(old),
+            }
+        },
         "Held 3pm. Shall I move it?",
         {"confirm_booking": {"hold_id": "__HOLD__", "name": "Priya"}},
         "Done, moved to 3pm.",
-    ]  # fmt: skip
+    ]
     s.respond("Move my blow-dry tomorrow to 3pm")
     s.client.steps[0]["confirm_booking"]["hold_id"] = last_tool_result(s.client)["payload"][
         "hold_id"
@@ -131,16 +154,24 @@ def test_reschedule_replaces_the_old_booking(make: Any) -> None:
 
 def test_someone_elses_booking_cannot_be_cancelled(make: Any) -> None:
     s = make([], OPEN, phone="+919800000099")
-    other = s.cal.confirm(s.cal.hold("anita", "blowdry", datetime(2027, 1, 6, 12, 0, tzinfo=TZ)),
-                          "Someone", "+919800000001")  # fmt: skip
+    other = s.cal.confirm(
+        s.cal.hold("anita", "blowdry", datetime(2027, 1, 6, 12, 0, tzinfo=TZ)),
+        "Someone",
+        "+919800000001",
+    )
     s.client.steps = [{"cancel_booking": {"booking_id": str(other)}}, "I couldn't find that one."]
     s.respond("cancel booking " + str(other))
     assert s.cal.get(other)["status"] == "confirmed"
 
 
 def test_two_failed_booking_turns_transfer(make: Any) -> None:
-    bad = {"hold_slot": {"service_id": "keratin", "stylist_id": "farhan",
-                         "start": "2027-01-06T10:00:00+05:30"}}  # fmt: skip
+    bad = {
+        "hold_slot": {
+            "service_id": "keratin",
+            "stylist_id": "farhan",
+            "start": "2027-01-06T10:00:00+05:30",
+        }
+    }
     s = make([bad, "Sorry, that didn't work.", bad, "Sorry again."], OPEN)
     assert not s.respond("Keratin with Farhan tomorrow at 10").transferred
     assert s.respond("Try again").transferred and s.state.transferred
@@ -157,3 +188,27 @@ def test_stored_transcript_is_redacted(make: Any) -> None:
 def test_closed_days_are_reported_by_find_slots(make: Any) -> None:
     s = make([], OPEN)
     assert s.cal.find_slots("haircut_men", date(2027, 1, 11), date(2027, 1, 11)) == []  # Monday
+
+
+def test_empty_window_returns_hours_and_real_alternatives(make: Any) -> None:
+    """Live voice call 2026-10-21: asked for 8am Friday (opens 10), the agent offered 9 without
+    checking. The tool now returns the day's hours and the nearest real free times."""
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    s = make([], OPEN)
+    reg = build_registry(s.cal, CallState("x", "+919800000042"))
+    out = reg.execute(
+        "find_slots",
+        {
+            "service_id": "haircut_men",
+            "date_from": "2027-01-08",
+            "earliest_time": "07:30",
+            "latest_time": "09:30",
+        },
+        ToolContext(run_id=uuid4(), agent="operator"),
+    ).payload
+    assert out["slots"] == [] and out["opening_hours"] == {"2027-01-08": "10:00-20:00"}
+    assert out["nearest_free"][0]["start"].startswith("2027-01-08T10:00")

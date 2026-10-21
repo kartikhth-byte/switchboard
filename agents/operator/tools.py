@@ -4,7 +4,7 @@ skills, durations, hours and overlaps are checked by the calendar, not the model
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -93,7 +93,25 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
             )
         except (BookingError, KeyError) as exc:
             return {"error": str(exc).strip("'")}
-        return {"slots": [s.as_dict(salon) for s in slots] or "none free in that range"}
+        day_to = inp.date_to or inp.date_from
+        hours = {}
+        d = inp.date_from
+        while d <= day_to:  # the model must not work out opening times itself (live call 10-21)
+            span = salon.opening(d)
+            hours[d.isoformat()] = f"{span[0]:%H:%M}-{span[1]:%H:%M}" if span else "closed"
+            d += timedelta(days=1)
+        out: dict[str, Any] = {"opening_hours": hours}
+        if slots:
+            out["slots"] = [s.as_dict(salon) for s in slots]
+            return out
+        out["slots"] = []
+        if inp.earliest_time or inp.latest_time:
+            # Nothing in the window they asked for: hand back the nearest real alternatives, so
+            # the reply offers times that exist instead of guessing one.
+            nearest = cal.find_slots(inp.service_id, inp.date_from, day_to, inp.stylist_id, limit=3)
+            out["nearest_free"] = [s.as_dict(salon) for s in nearest]
+        out["note"] = "nothing free in that window; offer only times listed here"
+        return out
 
     def mine() -> set[str]:
         phone = st.caller_phone
