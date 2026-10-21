@@ -27,7 +27,15 @@ from core.models import ModelClient
 from core.runs import PgRunStore, RunStore, start_run
 from core.runs.models import RunKind
 from integrations.crm.pg import PgMockCRM
-from integrations.messaging import Email, LeadCRM, MockEmail, MockWhatsApp, WhatsApp
+from integrations.messaging import (
+    Email,
+    LeadCRM,
+    MockEmail,
+    MockWhatsApp,
+    WhatsApp,
+    make_email,
+    make_whatsapp,
+)
 from integrations.slack import MockSlack, Slack, make_slack
 
 log = logging.getLogger(__name__)
@@ -61,27 +69,15 @@ def make_adapters(settings: Settings) -> Adapters:
     if settings.demo_integrations != "real":
         return mock_adapters(settings.database_url)
     from integrations.crm.ghl import GoHighLevelCRM
-    from integrations.messaging.real import SmtpEmail, WhatsAppCloud
 
     missing = missing_real_settings(settings, ("slack", "ghl"))
     if missing:
         raise RuntimeError(f"DEMO_INTEGRATIONS=real needs: {', '.join(missing)} (see .env.example)")
     assert settings.ghl_token
-    whatsapp: WhatsApp
-    if settings.whatsapp_token and settings.whatsapp_phone_number_id:
-        whatsapp = WhatsAppCloud(
-            settings.whatsapp_phone_number_id,
-            settings.whatsapp_token.get_secret_value(),
-            settings.whatsapp_api_version,
-            settings.whatsapp_template_language,
-        )
-    else:  # Meta test number not available yet (Phase 2 LEAD-P2-01): rules still apply
-        log.warning("WhatsApp keys not set: WhatsApp replies go to the mock adapter")
-        whatsapp = MockWhatsApp()
     return Adapters(
         crm=GoHighLevelCRM(settings.ghl_token.get_secret_value(), settings.ghl_location_id),
-        whatsapp=whatsapp,
-        email=SmtpEmail(settings.smtp_host, settings.smtp_port, settings.email_from),
+        whatsapp=make_whatsapp(settings),
+        email=make_email(settings),
         slack=make_slack(settings),
     )
 

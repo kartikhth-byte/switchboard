@@ -20,6 +20,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from agents.dispatcher.store import Lead, LeadStore
+from core.guardrails.outbound import allowed
 from core.tools import RetryableToolError, ToolContext, ToolRegistry, ToolResult, ToolSpec
 from integrations.messaging import Email, WhatsApp
 from integrations.slack import Slack
@@ -60,15 +61,6 @@ class PostSlackIn(BaseModel):
     text: str = Field(min_length=1, max_length=3000)
     lead_id: str | None = None
     payload: dict[str, Any] = Field(default_factory=dict)
-
-
-def allowed(recipient: str, allowlist: set[str]) -> bool:
-    """Exact address/number, a whole email domain ("@example.org") or a number prefix
-    ending in "*" ("+9198765*", for a block of test numbers)."""
-    r = recipient.lower()
-    if r in allowlist or ("@" in r and "@" + r.split("@", 1)[1] in allowlist):
-        return True
-    return any(a.endswith("*") and r.startswith(a[:-1]) for a in allowlist)
 
 
 def _key(*parts: str) -> str:

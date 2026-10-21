@@ -6,7 +6,7 @@ import pytest
 
 from agents.dispatcher import assessment as A
 from agents.dispatcher.graph import routing_owner
-from agents.dispatcher.tools import allowed
+from core.guardrails.outbound import allowed
 from data.generators import lead_evals as gen
 
 
