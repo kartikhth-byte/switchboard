@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead ingest search chat ci
+.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead data-operator ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -78,6 +78,10 @@ calibrate:        ## re-judge the hand-labelled answers and report agreement (ta
 data:             ## rebuild eval sets (cached generations); ARGS=--refresh re-generates (OpenAI key)
 	PYTHONPATH=. uv run python -m data.generators.support_evals $(ARGS)
 	PYTHONPATH=. uv run python -m data.generators.lead_evals $(ARGS)
+	PYTHONPATH=. uv run python -m data.generators.operator_evals
+
+data-operator:    ## rebuild Operator eval sets (50 calls, 30 FAQ; deterministic)
+	PYTHONPATH=. uv run python -m data.generators.operator_evals
 
 data-lead:        ## rebuild Dispatcher eval sets only; ARGS=--refresh re-paraphrases (OpenAI key)
 	PYTHONPATH=. uv run python -m data.generators.lead_evals $(ARGS)
