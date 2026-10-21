@@ -29,3 +29,9 @@ button.link { border: 0; padding: 0; text-decoration: underline; }
 .meta { margin-top: 6px; }
 .composer { display: flex; gap: 8px; position: sticky; bottom: 0; background: var(--bg); padding: 8px 0; }
 .composer input { flex: 1; min-width: 0; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.leadform { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
+.leadform input, .leadform select, .leadform textarea { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; min-width: 0; }
+.leadform textarea, .leadform button { grid-column: 1 / -1; }
+.lead { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.lead h2 { font-size: 1.1em; margin: 0; }
+@media (max-width: 520px) { .leadform { grid-template-columns: 1fr; } }
