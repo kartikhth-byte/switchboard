@@ -38,6 +38,9 @@ class FindSlotsIn(BaseModel):
         default=None, description="HH:MM local; set when the caller names a time or 'afternoon'"
     )
     latest_time: time | None = Field(default=None, description="HH:MM local, latest start")
+    latest_first: bool = Field(
+        default=False, description="true when they want the latest time ('as late as possible')"
+    )
 
 
 class HoldIn(BaseModel):
@@ -85,6 +88,7 @@ def build_registry(cal: Calendar, st: CallState) -> ToolRegistry:
                 limit=4,
                 earliest=inp.earliest_time,
                 latest=inp.latest_time,
+                latest_first=inp.latest_first,
             )
         except (BookingError, KeyError) as exc:
             return {"error": str(exc).strip("'")}

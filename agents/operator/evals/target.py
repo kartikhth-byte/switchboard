@@ -109,6 +109,7 @@ def run_target(env: EvalEnv, case: EvalCase) -> AgentOutput:
             "greeting": greeting,
             "agent_turns": [t.text for t in turns],
             "tools": [x for t in turns for x in t.tools],
+            "tool_log": [x for t in turns for x in t.tool_log],
             "transferred": call.state.transferred,
             "seeds": seeds,
             "bookings": bookings,

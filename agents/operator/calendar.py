@@ -78,6 +78,7 @@ class Calendar:
         limit: int = 6,
         earliest: time | None = None,
         latest: time | None = None,
+        latest_first: bool = False,
     ) -> list[Slot]:
         """Free start times where the whole service fits inside opening hours, for stylists who
         have the skill (VOICE-004). Earliest first, at most `limit`; `earliest`/`latest` (local
@@ -92,12 +93,13 @@ class Calendar:
         soonest = self.now() + timedelta(minutes=self.salon.min_lead_minutes)
         out: list[Slot] = []
         day = day_from
-        while day <= day_to and len(out) < limit:
+        cap = 10_000 if latest_first else limit  # latest-first: collect all, keep the last ones
+        while day <= day_to and len(out) < cap:
             span = self.salon.opening(day)
             if span:
                 busy = {s.id: self.busy(s.id, span[0], span[1]) for s in stylists}
                 t = span[0]
-                while t + dur <= span[1] and len(out) < limit:
+                while t + dur <= span[1] and len(out) < cap:
                     local = t.astimezone(self.salon.tz).time()
                     in_window = (earliest is None or local >= earliest) and (
                         latest is None or local <= latest
@@ -109,7 +111,7 @@ class Calendar:
                                 break
                     t += self.salon.step()
             day += timedelta(days=1)
-        return out
+        return sorted(out, key=lambda s: s.start, reverse=True)[:limit] if latest_first else out
 
     def get(self, appointment_id: UUID | str) -> dict[str, Any] | None:
         with connect(self.dsn) as c:

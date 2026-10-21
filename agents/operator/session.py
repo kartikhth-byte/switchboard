@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
 from agents.operator.calendar import Calendar
@@ -34,6 +34,7 @@ FILLER = "One moment while I check that."
 class Turn:
     text: str
     tools: list[str] = field(default_factory=list)
+    tool_log: list[dict[str, Any]] = field(default_factory=list)  # args + result (evals, debug)
     transferred: bool = False
     used_filler: bool = False
     cost_usd: float = 0.0
@@ -77,8 +78,15 @@ class CallSession:
 
     def _system(self) -> str:
         now = self.cal.now().astimezone(self.cal.salon.tz)
+        days = []
+        for i in range(14):  # date maths is where small models slip: give them the calendar
+            d = (now + timedelta(days=i)).date()
+            label = "today" if i == 0 else "tomorrow" if i == 1 else ""
+            hours = "closed" if not self.cal.salon.opening(d) else ""
+            days.append(f"{d:%a %d %b} = {d.isoformat()} {label} {hours}".rstrip())
         return self.cfg.prompt(
             "system",
+            days="\n".join(days),
             now=now.strftime("%A %d %B %Y, %I:%M %p"),
             open_now="open" if self.cal.salon.is_open(now) else "closed",
             caller_phone="known" if self.caller_phone else "not available",
@@ -134,6 +142,15 @@ class CallSession:
                 for call in resp.tool_calls:
                     turn.tools.append(call.name)
                     res = run.tool(self.registry, call.name, call.arguments)
+                    turn.tool_log.append(
+                        {
+                            "tool": call.name,
+                            "args": call.arguments,
+                            "ok": res.ok,
+                            "error": res.error,
+                            "result": str(res.payload)[:400],
+                        }
+                    )
                     if call.name in BOOKING_TOOLS and not res.ok:
                         failed = True
                     body = res.model_dump_json(include={"ok", "payload", "error"})

@@ -137,3 +137,10 @@ def test_time_window_finds_afternoon_slots_the_first_page_misses(cal: Calendar) 
     )
     assert at(16) in {s.start for s in pm}
     assert all(time(15, 30) <= s.start.astimezone(TZ).time() <= time(16, 30) for s in pm)
+
+
+def test_latest_first_finds_the_last_start_that_fits(cal: Calendar) -> None:
+    """Dev eval call-020: 'highlights Sunday, as late as possible' was told 10:45 was the latest."""
+    sun = date(2027, 1, 10)
+    (last,) = cal.find_slots("highlights", sun, sun, limit=1, latest_first=True)
+    assert last.start == at(14, 30, day=sun)  # Sunday closes 17:00, highlights take 2.5h

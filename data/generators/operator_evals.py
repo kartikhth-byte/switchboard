@@ -446,11 +446,22 @@ FAQ = [
     ("How long does a keratin treatment take?", [["3 hours", "three hours", "180"]]),
     (
         "How long do highlights take?",
-        [["2.5 hours", "two and a half hours", "150", "2 and a half"]],
+        [
+            [
+                "2.5 hours",
+                "two and a half hours",
+                "150",
+                "2 and a half",
+                "two hours and thirty",
+                "2 hours and 30",
+                "2 hours 30",
+                "two hours thirty",
+            ]
+        ],
     ),
     (
         "How long is a men's haircut?",
-        [["30 minutes", "thirty minutes", "half an hour", "half hour"]],
+        [["30 minutes", "thirty minutes", "half an hour", "half hour", "30 min"]],
     ),
     ("Are you open on Mondays?", [["closed", "not open", "aren't open", "we're not"]]),
     ("What time do you close on Friday?", [["8", "eight"]]),
