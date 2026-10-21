@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from typing import Any
 from uuid import UUID
 
@@ -76,9 +76,12 @@ class Calendar:
         day_to: date,
         stylist_id: str | None = None,
         limit: int = 6,
+        earliest: time | None = None,
+        latest: time | None = None,
     ) -> list[Slot]:
         """Free start times where the whole service fits inside opening hours, for stylists who
-        have the skill (VOICE-004). Earliest first, at most `limit`."""
+        have the skill (VOICE-004). Earliest first, at most `limit`; `earliest`/`latest` (local
+        start times) narrow it to the part of the day the caller asked for."""
         svc = self.salon.service(service_id)
         dur = timedelta(minutes=svc.minutes)
         stylists = [s for s in self.salon.stylists if service_id in s.skills]
@@ -86,7 +89,7 @@ class Calendar:
             stylists = [s for s in stylists if s.id == stylist_id]
             if not stylists:
                 raise BookingError(f"{stylist_id} doesn't do {svc.name}")
-        earliest = self.now() + timedelta(minutes=self.salon.min_lead_minutes)
+        soonest = self.now() + timedelta(minutes=self.salon.min_lead_minutes)
         out: list[Slot] = []
         day = day_from
         while day <= day_to and len(out) < limit:
@@ -95,7 +98,11 @@ class Calendar:
                 busy = {s.id: self.busy(s.id, span[0], span[1]) for s in stylists}
                 t = span[0]
                 while t + dur <= span[1] and len(out) < limit:
-                    if t >= earliest:
+                    local = t.astimezone(self.salon.tz).time()
+                    in_window = (earliest is None or local >= earliest) and (
+                        latest is None or local <= latest
+                    )
+                    if t >= soonest and in_window:
                         for st in stylists:
                             if all(not (t < e and s < t + dur) for s, e in busy[st.id]):
                                 out.append(Slot(st.id, service_id, t, t + dur))

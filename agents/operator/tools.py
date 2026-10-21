@@ -4,7 +4,7 @@ skills, durations, hours and overlaps are checked by the calendar, not the model
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date, datetime, time
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -34,6 +34,10 @@ class FindSlotsIn(BaseModel):
     date_from: date
     date_to: date | None = None
     stylist_id: str | None = None
+    earliest_time: time | None = Field(
+        default=None, description="HH:MM local; set when the caller names a time or 'afternoon'"
+    )
+    latest_time: time | None = Field(default=None, description="HH:MM local, latest start")
 
 
 class HoldIn(BaseModel):
@@ -74,7 +78,13 @@ def build_registry(cal: Calendar, st: CallState) -> ToolRegistry:
     def find_slots(inp: FindSlotsIn, ctx: ToolContext) -> dict[str, Any]:
         try:
             slots = cal.find_slots(
-                inp.service_id, inp.date_from, inp.date_to or inp.date_from, inp.stylist_id, limit=4
+                inp.service_id,
+                inp.date_from,
+                inp.date_to or inp.date_from,
+                inp.stylist_id,
+                limit=4,
+                earliest=inp.earliest_time,
+                latest=inp.latest_time,
             )
         except (BookingError, KeyError) as exc:
             return {"error": str(exc).strip("'")}

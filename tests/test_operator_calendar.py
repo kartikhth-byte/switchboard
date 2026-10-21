@@ -123,3 +123,17 @@ def test_racing_callers_never_double_book(cal: Calendar, run: int) -> None:
             " WHERE a.status IN ('held','confirmed') AND b.status IN ('held','confirmed')"
         ).fetchone()
     assert overlaps and overlaps["n"] == 0
+
+
+def test_time_window_finds_afternoon_slots_the_first_page_misses(cal: Calendar) -> None:
+    """Live test, 2026-10-21: "move it to 4pm" got 'not available' because only the first
+    morning slots were returned. A time window must surface 16:00."""
+    from datetime import time
+
+    first = cal.find_slots("haircut_men", TUE, TUE, limit=4)
+    assert all(s.start.astimezone(TZ).hour < 12 for s in first)
+    pm = cal.find_slots(
+        "haircut_men", TUE, TUE, limit=4, earliest=time(15, 30), latest=time(16, 30)
+    )
+    assert at(16) in {s.start for s in pm}
+    assert all(time(15, 30) <= s.start.astimezone(TZ).time() <= time(16, 30) for s in pm)
