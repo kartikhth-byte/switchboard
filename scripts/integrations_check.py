@@ -63,6 +63,31 @@ def main() -> int:
             {"name": "Integrations Check", "source": "check"},
         )
 
+    if s.google_service_account_file and s.google_calendar_id:
+        from datetime import UTC, datetime, timedelta
+
+        from integrations.calendar.google import GoogleCalendarMirror
+
+        key = s.google_service_account_file.replace("/run/secrets/", "secrets/")  # host path
+        gcal = GoogleCalendarMirror(key, s.google_calendar_id)
+
+        def gcal_check() -> str:
+            start = datetime.now(UTC).replace(microsecond=0) + timedelta(days=1)
+            eid = "sbcheck000001"  # Google event ids: 0-9 and a-v only
+            gcal.upsert(
+                eid,
+                "Switchboard integrations check",
+                start,
+                start + timedelta(minutes=15),
+                "Created by make integrations-check; deleted right away.",
+            )
+            gcal.delete(eid)
+            return "created and deleted a test event"
+
+        checks["gcal"] = gcal_check
+    else:
+        skipped["gcal"] = "GOOGLE_SERVICE_ACCOUNT_FILE, GOOGLE_CALENDAR_ID"
+
     from integrations.messaging.real import SmtpEmail
 
     mail = SmtpEmail(s.smtp_host, s.smtp_port, s.email_from)

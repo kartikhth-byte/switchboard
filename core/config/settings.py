@@ -47,6 +47,8 @@ class Settings(BaseSettings):
     whatsapp_template_language: str = "en"
     ghl_token: SecretStr | None = None  # GoHighLevel Private Integration token
     ghl_location_id: str = ""
+    google_service_account_file: str = ""  # JSON key path (mounted read-only into the worker)
+    google_calendar_id: str = ""  # the shared test calendar's id (…@group.calendar.google.com)
     smtp_host: str = "localhost"  # Mailpit (compose service `mailpit` inside the network)
     smtp_port: int = 1025
     email_from: str = "Palmgrove Stays <hello@palmgrove.test>"

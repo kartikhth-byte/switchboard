@@ -13,3 +13,6 @@ web/next-env.d.ts
 *.tsbuildinfo
 .DS_Store
 evals/results/*/*-smoke.*
+
+# Credential files (Google service account key etc.): never committed
+secrets/

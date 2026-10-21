@@ -1,5 +1,8 @@
 """Booking confirmations and reminders (VOICE-005).
 
+Calendar mirror: every confirm/cancel/reschedule enqueues `operator.gcal_sync`, which copies the
+row's current state to Google Calendar (demo) or the mock (CI).
+
 On confirm: a `operator.confirm` job now, and an `operator.reminder` job at T-24h. On cancel
 or reschedule, the old booking's jobs are cancelled by key prefix (`appt:<id>:`). The worker
 sends through the shared WhatsApp/email adapters, under the same outbound rules as the
@@ -22,6 +25,7 @@ from core.config.settings import Settings, allowlist
 from core.db import connect
 from core.guardrails.outbound import allowed
 from core.jobs import JobQueue
+from integrations.calendar import CalendarMirror
 from integrations.messaging import Email, WhatsApp
 
 log = logging.getLogger(__name__)
@@ -39,6 +43,7 @@ class Notifier:
         if not b:
             return
         bid = str(booking_id)
+        self._sync(bid)
         self.jobs.enqueue("operator.confirm", {"booking_id": bid}, key=f"appt:{bid}:confirm")
         n = self.cal.salon.notifications
         at = b["start"] - timedelta(hours=n.reminder_hours_before)
@@ -48,7 +53,14 @@ class Notifier:
             )
 
     def cancelled(self, booking_id: UUID | str) -> int:
-        return self.jobs.cancel_prefix(f"appt:{booking_id}:")
+        n = self.jobs.cancel_prefix(f"appt:{booking_id}:")
+        self._sync(str(booking_id))  # removes the mirrored event
+        return n
+
+    def _sync(self, bid: str) -> None:
+        """Mirror the booking's current state to Google Calendar (VOICE-003): the job reads
+        the row when it runs, so it copies whatever Postgres says then."""
+        self.jobs.enqueue("operator.gcal_sync", {"booking_id": bid}, key=f"gcal:{bid}")
 
 
 @dataclass
@@ -59,6 +71,7 @@ class Sender:
     settings: Settings
     whatsapp: WhatsApp
     email: Email
+    mirror: CalendarMirror | None = None
 
     def _done(self, booking_id: str, kind: str) -> bool:
         with connect(self.cal.dsn) as c:
@@ -118,7 +131,30 @@ class Sender:
         self._log(booking_id, f"{kind}_sent" if sent else f"{kind}_blocked", results)
         return "sent" if sent else "blocked"
 
+    def sync_calendar(self, booking_id: str) -> str:
+        b = self.cal.get(booking_id)
+        if b is None or self.mirror is None:
+            return "skipped"
+        event_id = UUID(booking_id).hex
+        if b["status"] != "confirmed":
+            self.mirror.delete(event_id)
+            self._log(booking_id, "gcal_deleted", {})
+            return "deleted"
+        salon = self.cal.salon
+        svc, who = salon.service(b["service_id"]).name, salon.stylist(b["stylist_id"]).name
+        first = (b["caller_name"] or "caller").split()[0]  # no phone numbers in the calendar
+        self.mirror.upsert(
+            event_id,
+            f"{svc} — {first} ({who})",
+            b["start"],
+            b["end"],
+            f"Booked by phone (Switchboard Operator). Booking {booking_id}.",
+        )
+        self._log(booking_id, "gcal_upserted", {"event_id": event_id})
+        return "upserted"
+
     def register_jobs(self, worker: Any) -> None:
+        worker.register("operator.gcal_sync", lambda j: self.sync_calendar(j.payload["booking_id"]))
         worker.register(
             "operator.confirm", lambda j: self.send(j.payload["booking_id"], "confirmation")
         )

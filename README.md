@@ -55,6 +55,32 @@ Results: [`evals/results/dispatcher/summary.md`](evals/results/dispatcher/summar
 integrations run only with `DEMO_INTEGRATIONS=real`; WhatsApp stays on the mock until Meta
 verification clears (Phase 2, LEAD-P2-01). Email replies land in Mailpit (`localhost:8025`).
 
+## Operator (voice receptionist)
+
+A phone receptionist for the fictional Studio Nine Salon: answers questions from config, books,
+moves and cancels appointments. The same `CallSession` (text in, text out) backs the text-mode
+evals and the voice pipeline, so the evals test what callers talk to.
+
+- **Calendar of record: Postgres.** Holds and bookings share one table with an exclusion
+  constraint, so overlapping appointments for a stylist are impossible whatever the service
+  length; a per-stylist lock keeps racing callers from deadlocking. Google Calendar gets a copy
+  (worker job, demo runs only).
+- **Decided in code:** durations, prices, hours, stylist skills; the opening AI/recording
+  disclosure and after-hours line; transfer when the caller asks for a person or complains, or
+  after two failed booking steps. Stored transcripts are redacted; every booking action is in
+  `booking_audit`.
+- **Confirmations:** email to the front desk is real (Mailpit) in demo runs; the caller's
+  WhatsApp template goes to the mock until Meta verification clears (Phase 2, LEAD-P2-01).
+  Reminder at T-24h, cancelled on cancel or reschedule.
+
+```bash
+make call                         # talk to it by typing (real model + calendar)
+make eval AGENT=operator          # 50 simulated calls + 30 FAQ, DB state as ground truth
+make data-operator                # regenerate the eval sets (deterministic)
+```
+
+Results: [`evals/results/operator/summary.md`](evals/results/operator/summary.md).
+
 ## Debugging a run
 
 Every guest message is one **run** with a `run_id`; the same id ties together the log lines,

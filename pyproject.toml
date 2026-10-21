@@ -15,6 +15,7 @@ dependencies = [
     "phonenumbers>=9.0.41",
     "langgraph>=1.2.16",
     "langgraph-checkpoint-postgres>=3.2.0",
+    "google-auth>=2.30",
 ]
 
 [dependency-groups]

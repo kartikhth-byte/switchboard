@@ -138,10 +138,15 @@ def main() -> None:
     from agents.operator.calendar import Calendar
     from agents.operator.notify import Sender
     from agents.operator.salon import load_salon
+    from integrations.calendar import make_calendar_mirror
     from integrations.messaging import make_email, make_whatsapp
 
     Sender(
-        Calendar(dsn, load_salon()), settings, make_whatsapp(settings), make_email(settings)
+        Calendar(dsn, load_salon()),
+        settings,
+        make_whatsapp(settings),
+        make_email(settings),
+        make_calendar_mirror(settings),
     ).register_jobs(worker)
     worker.run_forever()
 

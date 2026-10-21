@@ -124,3 +124,81 @@ def test_tools_queue_and_cancel_notifications(cal: Calendar) -> None:
     assert set(jobs(f"appt:{bid}:")) == {"confirm", "reminder"}
     reg.execute("cancel_booking", {"booking_id": bid}, ctx)
     assert {v["status"] for v in jobs(f"appt:{bid}:").values()} == {"cancelled"}
+
+
+def test_calendar_mirror_follows_the_calendar_of_record(cal: Calendar) -> None:
+    """VOICE-003 (demo runs): confirm -> event, reschedule -> old event gone + new one,
+    cancel -> event gone. No phone numbers in the mirrored event."""
+    from uuid import UUID
+
+    from integrations.calendar import MockCalendarMirror
+
+    mirror = MockCalendarMirror()
+    s, _, _ = sender(cal, "off", "")
+    s.mirror = mirror
+    n = Notifier(cal, JobQueue(DSN))
+    old = book(cal, 8, 15)
+    n.booked(old)
+    assert jobs(f"gcal:{old}")
+    assert s.sync_calendar(old) == "upserted"
+    ev = mirror.events[UUID(old).hex]
+    assert ev["summary"] == "Men's haircut — Ravi (Farhan)" and "+91" not in str(ev)
+    new = str(
+        cal.confirm(
+            cal.hold("farhan", "haircut_men", datetime(2027, 1, 9, 12, tzinfo=TZ), replaces=old),
+            "Ravi",
+            "+919800000042",
+        )
+    )
+    n.booked(new, replaced=old)
+    assert s.sync_calendar(old) == "deleted" and s.sync_calendar(new) == "upserted"
+    assert set(mirror.events) == {UUID(new).hex}
+    cal.cancel(new)
+    assert s.sync_calendar(new) == "deleted" and mirror.events == {}
+
+
+def test_google_adapter_inserts_then_updates_on_conflict_and_tolerates_gone(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import json
+
+    import httpx
+
+    from integrations.calendar import google as g
+
+    class Creds:
+        valid, token = True, "ya29.test"
+
+    monkeypatch.setattr(
+        g.service_account.Credentials,
+        "from_service_account_file",
+        staticmethod(lambda *a, **k: Creds()),
+    )
+    seen: list[httpx.Request] = []
+    replies = iter(
+        [
+            httpx.Response(200, json={"id": "abc123"}),
+            httpx.Response(409, json={"error": {"message": "duplicate"}}),
+            httpx.Response(200, json={"id": "abc123"}),
+            httpx.Response(410),
+        ]
+    )
+
+    def handle(req: httpx.Request) -> httpx.Response:
+        seen.append(req)
+        return next(replies)
+
+    m = g.GoogleCalendarMirror(
+        "key.json",
+        "test@group.calendar.google.com",
+        httpx.Client(transport=httpx.MockTransport(handle)),
+    )
+    start = datetime(2027, 1, 8, 15, tzinfo=TZ)
+    assert m.upsert("abc123", "Cut", start, start + timedelta(minutes=30), "d") == "abc123"
+    m.upsert("abc123", "Cut", start, start + timedelta(minutes=30), "d")  # 409 -> PUT
+    m.delete("abc123")  # 410 gone: fine
+    assert [r.method for r in seen] == ["POST", "POST", "PUT", "DELETE"]
+    assert "test%40group.calendar.google.com" in str(seen[0].url)
+    body = json.loads(seen[0].content)
+    assert body["start"]["dateTime"] == "2027-01-08T15:00:00+05:30"
+    assert seen[0].headers["authorization"] == "Bearer ya29.test"

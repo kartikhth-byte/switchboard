@@ -44,6 +44,8 @@ services:
     env_file:
       - path: .env
         required: false
+    volumes:
+      - ./secrets:/run/secrets:ro   # Google service account key for the calendar mirror
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-switchboard}:${POSTGRES_PASSWORD:-switchboard}@postgres:5432/${POSTGRES_DB:-switchboard}
       SMTP_HOST: mailpit
