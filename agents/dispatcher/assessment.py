@@ -137,7 +137,7 @@ def draft_reply(
         missing=", ".join(a.missing) or "nothing",
         facts=json.dumps(facts),
         message=payload.get("message", ""),
-        name=(str(payload.get("name") or "").split() or ["(not given)"])[0],
+        first_name=(str(payload.get("name") or "").split() or ["(not given)"])[0],
     )
     resp = run.model(client, [{"role": "user", "content": prompt}], name="draft")
     data = _json(resp.content)
