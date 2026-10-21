@@ -214,3 +214,28 @@ def test_empty_window_returns_hours_and_real_alternatives(make: Any) -> None:
         ToolContext(run_id=uuid4(), agent="operator"),
     )
     assert not old_style.ok  # unknown parameters are rejected, not silently ignored
+
+
+def test_sunday_said_on_a_sunday(make: Any) -> None:
+    """Article review: 'Sunday' said on a Sunday means today while there's time left to book,
+    next Sunday once the day is over; 'this Sunday' and 'today' always mean today."""
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    def ask(now: datetime, day: str) -> str:
+        s = make([], now)
+        reg = build_registry(s.cal, CallState("x", "+919800000042"))
+        out = reg.execute(
+            "find_slots",
+            {"service_id": "haircut_men", "day": day},
+            ToolContext(run_id=uuid4(), agent="operator"),
+        ).payload
+        return out["understood"]
+
+    sun_morning = datetime(2027, 1, 10, 9, 0, tzinfo=TZ)  # opens 10:00, closes 17:00
+    sun_evening = datetime(2027, 1, 10, 16, 30, tzinfo=TZ)  # past the last bookable start
+    assert ask(sun_morning, "Sunday").startswith("Sunday 10 January")
+    assert ask(sun_evening, "Sunday").startswith("Sunday 17 January")
+    assert ask(sun_evening, "this Sunday").startswith("Sunday 10 January")

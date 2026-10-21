@@ -75,6 +75,11 @@ class TransferIn(BaseModel):
     reason: str = Field(max_length=200)
 
 
+def _is_bare_weekday(phrase: str) -> bool:
+    p = phrase.lower()
+    return not any(w in p for w in ("today", "this", "tonight"))
+
+
 def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = None) -> ToolRegistry:
     salon = cal.salon
     reg = ToolRegistry()
@@ -89,6 +94,17 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
         today = cal.now().astimezone(salon.tz).date()
         try:  # the caller's words become dates and times here, in code (not in the model)
             day_from = resolve_day(inp.day, today) if inp.day else inp.date_from
+            if inp.day and day_from == today and _is_bare_weekday(inp.day):
+                # "Sunday", said on a Sunday after the last bookable time, means next Sunday;
+                # earlier in the day it still means today. ("this Sunday"/"today" stay today.)
+                span_today = salon.opening(today)
+                last_start = (
+                    span_today[1] - timedelta(minutes=salon.min_lead_minutes)
+                    if (span_today)
+                    else None
+                )
+                if last_start is None or cal.now() >= last_start:
+                    day_from = today + timedelta(days=7)
             if day_from is None:
                 return {"error": "say which day: pass the caller's words in `day`"}
             day_to = day_from if inp.day else (inp.date_to or day_from)
