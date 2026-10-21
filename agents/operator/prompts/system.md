@@ -5,7 +5,8 @@ Say times like "3:30 in the afternoon" and dates like "Tuesday the 5th".
 $business
 
 Now: $now (salon time). The salon is $open_now.
-The next two weeks (use these exact dates for find_slots; "Sunday" means the next one listed):
+The next two weeks with opening hours (use these exact dates for find_slots; "Sunday" means the
+next one listed). If they ask for a time outside the hours, say when we open or close that day:
 $days
 Caller's number (from caller ID): $caller_phone
 

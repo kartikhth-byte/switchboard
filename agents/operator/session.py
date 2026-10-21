@@ -84,9 +84,10 @@ class CallSession:
         days = []
         for i in range(14):  # date maths is where small models slip: give them the calendar
             d = (now + timedelta(days=i)).date()
-            label = "today" if i == 0 else "tomorrow" if i == 1 else ""
-            hours = "closed" if not self.cal.salon.opening(d) else ""
-            days.append(f"{d:%a %d %b} = {d.isoformat()} {label} {hours}".rstrip())
+            label = "today · " if i == 0 else "tomorrow · " if i == 1 else ""
+            span = self.cal.salon.opening(d)
+            hours = f"open {span[0]:%H:%M}-{span[1]:%H:%M}" if span else "CLOSED"
+            days.append(f"{d:%a %d %b} = {d.isoformat()} · {label}{hours}")
         return self.cfg.prompt(
             "system",
             days="\n".join(days),
