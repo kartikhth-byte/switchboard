@@ -2356,17 +2356,15 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
 ]
 
-[package.optional-dependencies]
-voice = [
-    { name = "pipecat-ai", extra = ["deepgram", "runner", "webrtc"] },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
     { name = "types-pyyaml" },
+]
+voice = [
+    { name = "pipecat-ai", extra = ["deepgram", "runner", "webrtc"] },
 ]
 
 [package.metadata]
@@ -2379,13 +2377,11 @@ requires-dist = [
     { name = "langgraph-checkpoint-postgres", specifier = ">=3.2.0" },
     { name = "litellm", specifier = ">=1.50" },
     { name = "phonenumbers", specifier = ">=9.0.41" },
-    { name = "pipecat-ai", extras = ["cartesia", "deepgram", "runner", "silero", "webrtc"], marker = "extra == 'voice'", specifier = "==1.13.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
     { name = "pydantic-settings", specifier = ">=2.4" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
-provides-extras = ["voice"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -2394,6 +2390,7 @@ dev = [
     { name = "ruff", specifier = ">=0.6" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20260906" },
 ]
+voice = [{ name = "pipecat-ai", extras = ["cartesia", "deepgram", "runner", "silero", "webrtc"], specifier = "==1.13.0" }]
 
 [[package]]
 name = "sympy"

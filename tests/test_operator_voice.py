@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-pytest.importorskip("pipecat", reason="voice extra not installed (uv sync --extra voice)")
+pytest.importorskip("pipecat", reason="voice group not installed (uv sync)")
 
 from pipecat.frames.frames import (
     InterruptionFrame,
