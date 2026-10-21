@@ -54,10 +54,14 @@ class Salon(BaseModel):
         raise KeyError(f"unknown service: {service_id}")
 
     def stylist(self, stylist_id: str) -> Stylist:
+        """By id or by name, any case: models reuse the display name a tool returned
+        ("Leela") as the id (dev eval 2026-10-21, call-027/033)."""
+        key = stylist_id.strip().lower()
         for s in self.stylists:
-            if s.id == stylist_id:
+            if key in (s.id, s.name.lower()):
                 return s
-        raise KeyError(f"unknown stylist: {stylist_id}")
+        known = ", ".join(s.id for s in self.stylists)
+        raise KeyError(f"unknown stylist {stylist_id!r}: use one of {known}")
 
     def opening(self, day: date) -> tuple[datetime, datetime] | None:
         span = self.hours.get(DAYS[day.weekday()])

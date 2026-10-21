@@ -87,9 +87,10 @@ class Calendar:
         dur = timedelta(minutes=svc.minutes)
         stylists = [s for s in self.salon.stylists if service_id in s.skills]
         if stylist_id:
-            stylists = [s for s in stylists if s.id == stylist_id]
+            want = self.salon.stylist(stylist_id)  # KeyError: unknown stylist (not "doesn't do")
+            stylists = [s for s in stylists if s.id == want.id]
             if not stylists:
-                raise BookingError(f"{stylist_id} doesn't do {svc.name}")
+                raise BookingError(f"{want.name} doesn't do {svc.name}")
         soonest = self.now() + timedelta(minutes=self.salon.min_lead_minutes)
         out: list[Slot] = []
         day = day_from
@@ -155,6 +156,7 @@ class Calendar:
         call_id: str | None = None,
         replaces: UUID | str | None = None,
     ) -> UUID:
+        stylist_id = self.salon.stylist(stylist_id).id  # canonical id for the row and the lock
         end = self._validate(stylist_id, service_id, start)
         now = self.now()
         try:

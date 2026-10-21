@@ -211,6 +211,7 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
                 {
                     "booking_id": str(r["id"]),
                     "service_id": r["service_id"],
+                    "stylist_id": r["stylist_id"],
                     "stylist": salon.stylist(r["stylist_id"]).name,
                     "start": r["start"].astimezone(salon.tz).isoformat(),
                 }

@@ -144,3 +144,15 @@ def test_latest_first_finds_the_last_start_that_fits(cal: Calendar) -> None:
     sun = date(2027, 1, 10)
     (last,) = cal.find_slots("highlights", sun, sun, limit=1, latest_first=True)
     assert last.start == at(14, 30, day=sun)  # Sunday closes 17:00, highlights take 2.5h
+
+
+def test_stylist_by_name_or_id_and_honest_errors(cal: Calendar) -> None:
+    """Dev eval call-027/033: the model passed 'Leela' (the display name find_my_bookings
+    returned) and got "Leela doesn't do Blow-dry", which was false, so it transferred."""
+    assert cal.find_slots("blowdry", TUE, TUE, stylist_id="Leela")
+    h = cal.hold("Anita", "highlights", at(10))
+    assert cal.get(h)["stylist_id"] == "anita"  # canonical id stored
+    with pytest.raises(KeyError, match="unknown stylist 'Priya': use one of anita, farhan, leela"):
+        cal.find_slots("blowdry", TUE, TUE, stylist_id="Priya")
+    with pytest.raises(BookingError, match="Farhan doesn't do Highlights"):
+        cal.find_slots("highlights", TUE, TUE, stylist_id="farhan")
