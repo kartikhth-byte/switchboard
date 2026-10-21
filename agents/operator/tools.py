@@ -10,6 +10,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from agents.operator.calendar import BookingError, Calendar, SlotTaken
+from agents.operator.notify import Notifier
 from core.tools import ToolContext, ToolRegistry, ToolResult, ToolSpec
 
 AGENT = "operator"
@@ -68,7 +69,7 @@ class TransferIn(BaseModel):
     reason: str = Field(max_length=200)
 
 
-def build_registry(cal: Calendar, st: CallState) -> ToolRegistry:
+def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = None) -> ToolRegistry:
     salon = cal.salon
     reg = ToolRegistry()
 
@@ -128,6 +129,8 @@ def build_registry(cal: Calendar, st: CallState) -> ToolRegistry:
         st.booked.append(str(bid))
         if st.holds[inp.hold_id]:
             st.cancelled.append(st.holds[inp.hold_id])
+        if notifier is not None:  # VOICE-005: confirmation now, reminder at T-24h
+            notifier.booked(bid, replaced=st.holds[inp.hold_id] or None)
         b = cal.get(bid) or {}
         return ToolResult(
             ok=True,
@@ -163,6 +166,8 @@ def build_registry(cal: Calendar, st: CallState) -> ToolRegistry:
         except BookingError as exc:
             return ToolResult(ok=False, error=str(exc))
         st.cancelled.append(inp.booking_id)
+        if notifier is not None:
+            notifier.cancelled(inp.booking_id)
         return ToolResult(ok=True, payload={"cancelled": inp.booking_id})
 
     def transfer_to_staff(inp: TransferIn, ctx: ToolContext) -> ToolResult:

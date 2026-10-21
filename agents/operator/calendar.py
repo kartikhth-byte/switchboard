@@ -67,7 +67,7 @@ class Calendar:
                 " AND (status = 'confirmed' OR (status = 'held' AND hold_expires > %s))",
                 (stylist_id, start, end, self.now()),
             ).fetchall()
-        return [(r["s"], r["e"]) for r in rows]
+        return [(r["s"], r["e"]) for r in rows]  # type: ignore[misc]
 
     def find_slots(
         self,
@@ -213,7 +213,8 @@ class Calendar:
             if sty:  # same lock as hold(): the update re-checks the exclusion constraint, which
                 # would otherwise wait on a racing hold's insert while it waits on us (deadlock)
                 c.execute(
-                    "SELECT pg_advisory_xact_lock(hashtext(%s))", ("appt:" + sty["stylist_id"],)
+                    "SELECT pg_advisory_xact_lock(hashtext(%s))",
+                    ("appt:" + str(sty["stylist_id"]),),
                 )
             row = c.execute(
                 "SELECT status, hold_expires, replaces FROM appointments WHERE id = %s FOR UPDATE",

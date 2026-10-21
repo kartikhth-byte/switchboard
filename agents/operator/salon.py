@@ -26,6 +26,12 @@ class Stylist(BaseModel):
     skills: list[str]
 
 
+class Notifications(BaseModel):
+    front_desk_email: str
+    reminder_hours_before: int = 24
+    whatsapp_template: str = "studio_nine_appointment"
+
+
 class Salon(BaseModel):
     timezone: str
     slot_step_minutes: int = 15
@@ -35,6 +41,7 @@ class Salon(BaseModel):
     hours: dict[str, list[str] | None]
     services: list[Service]
     stylists: list[Stylist]
+    notifications: Notifications
 
     @property
     def tz(self) -> ZoneInfo:

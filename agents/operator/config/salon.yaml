@@ -29,3 +29,9 @@ stylists:
   - {id: anita, name: Anita, skills: [haircut_women, blowdry, colour_full, highlights, keratin]}
   - {id: farhan, name: Farhan, skills: [haircut_men, beard_trim, kids_cut, haircut_women]}
   - {id: leela, name: Leela, skills: [haircut_women, blowdry, kids_cut, colour_full]}
+
+# VOICE-005: confirmation right after booking, reminder 24h before; both cancelled on cancel.
+notifications:
+  front_desk_email: frontdesk@studionine.test   # gets every confirmation (callers rarely give email)
+  reminder_hours_before: 24
+  whatsapp_template: studio_nine_appointment    # needs Meta approval: {{1}} name, {{2}} service, {{3}} time

@@ -135,6 +135,14 @@ def main() -> None:
         concurrency=settings.worker_concurrency,
     )
     dispatcher.register_jobs(worker)
+    from agents.operator.calendar import Calendar
+    from agents.operator.notify import Sender
+    from agents.operator.salon import load_salon
+    from integrations.messaging import make_email, make_whatsapp
+
+    Sender(
+        Calendar(dsn, load_salon()), settings, make_whatsapp(settings), make_email(settings)
+    ).register_jobs(worker)
     worker.run_forever()
 
 

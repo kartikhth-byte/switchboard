@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from agents.operator.calendar import Calendar
+from agents.operator.notify import Notifier
 from agents.operator.tools import AGENT, CallState, build_registry
 from core.config.agent import AgentConfig
 from core.memory import ConversationStore
@@ -50,6 +51,7 @@ class CallSession:
     caller_phone: str | None = None
     transcripts: ConversationStore | None = None
     langfuse: Any = None
+    notifier: Notifier | None = None  # confirmations + reminders (VOICE-005)
     run_kind: RunKind = "live"
     messages: list[Message] = field(default_factory=list)
     failed_streak: int = 0
@@ -57,7 +59,7 @@ class CallSession:
 
     def __post_init__(self) -> None:
         self.state = CallState(self.call_id, self.caller_phone)
-        self.registry = build_registry(self.cal, self.state)
+        self.registry = build_registry(self.cal, self.state, self.notifier)
 
     # ---- opening line (code)
 

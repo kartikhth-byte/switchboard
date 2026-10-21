@@ -11,11 +11,13 @@ from pathlib import Path
 from uuid import uuid4
 
 from agents.operator.calendar import Calendar
+from agents.operator.notify import Notifier
 from agents.operator.salon import load_salon
 from agents.operator.session import CallSession
 from core.config.agent import load_agent_config
 from core.config.settings import get_settings
 from core.db import migrate
+from core.jobs import JobQueue
 from core.memory import ConversationStore
 from core.models import ModelClient
 from core.runs import PgRunStore
@@ -32,6 +34,7 @@ def main() -> None:
     migrate(s.database_url)
     cfg = load_agent_config(ROOT)
     lf = make_langfuse(s)
+    cal = Calendar(s.database_url, load_salon())
     call = CallSession(
         cfg,
         Calendar(s.database_url, load_salon()),
@@ -41,6 +44,7 @@ def main() -> None:
         caller_phone=a.phone,
         transcripts=ConversationStore(s.database_url, "operator"),
         langfuse=lf,
+        notifier=Notifier(cal, JobQueue(s.database_url)),
     )
     print(f"[{call.call_id}] Ctrl-D to hang up\n")
     print("Studio Nine:", call.greet())
