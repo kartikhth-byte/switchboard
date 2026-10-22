@@ -166,7 +166,7 @@ class OperatorBrain(FrameProcessor):
                 self.dropped += 1
                 return
             if self.on_reply is not None:
-                self.on_reply(text, reply, secs)
+                self.on_reply(self.call.last_input or text, reply, secs)
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")

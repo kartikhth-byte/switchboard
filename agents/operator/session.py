@@ -57,7 +57,8 @@ class CallSession:
     run_kind: RunKind = "live"
     messages: list[Message] = field(default_factory=list)
     failed_streak: int = 0
-    _pending: str = ""  # an utterance cut short by early turn detection, joined to the next
+    _pending: str = ""
+    last_input: str = ""  # an utterance cut short by early turn detection, joined to the next
     turns: list[dict[str, str]] = field(default_factory=list)
     on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
 
@@ -108,6 +109,7 @@ class CallSession:
         self._record("caller", text)
         if self._pending:
             text, self._pending = f"{self._pending} {text}", ""
+        self.last_input = text  # what this turn actually answers (harness reporting)
         if self.state.transferred:
             return self._say(Turn("I'm connecting you to the salon team now.", transferred=True))
         if self._wants_person(text):

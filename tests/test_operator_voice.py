@@ -32,6 +32,7 @@ class FakeCall:
         self.tools, self.delay, self.heard = tools, delay, []
         self.on_tools: Any = None
         self.active = self.max_active = 0
+        self.last_input = ""
 
         class S:
             transferred = None
