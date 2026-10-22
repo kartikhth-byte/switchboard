@@ -241,7 +241,8 @@ async def bot(runner_args: RunnerArguments) -> None:
 
     @transport.event_handler("on_client_disconnected")
     async def on_disconnected(transport: Any, client: Any) -> None:
-        logger.info(f"call {call.call_id} ended; transferred={call.state.transferred}")
+        missed = call.end()  # VOICE-002: a missed call becomes a callback job + email
+        logger.info(f"call {call.call_id} ended; transferred={call.state.transferred} {missed=}")
         await task.cancel()
 
     await PipelineRunner(handle_sigint=runner_args.handle_sigint).run(task)

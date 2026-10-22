@@ -62,6 +62,8 @@ def main() -> None:
     except (EOFError, KeyboardInterrupt):
         print("\n(hung up)")
     finally:
+        if missed := call.end():
+            print(f"(missed call: {missed}; callback job queued)")
         if lf is not None:
             lf.flush()
 

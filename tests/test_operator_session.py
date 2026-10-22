@@ -276,7 +276,7 @@ def test_caller_resuming_before_any_tool_restarts_from_the_whole_utterance(make:
 def test_caller_resuming_after_a_tool_keeps_its_result(make: Any) -> None:
     stops = iter([False, False, True])  # top of step 0, after step 0's model call, top of step 1
     call = make(
-        [{"find_slots": {"service": "haircut_men", "day": "Saturday", "time": "4pm"}}, "Done."],
+        [{"find_slots": {"service_id": "haircut_men", "day": "Saturday", "time": "4pm"}}, "Done."],
         OPEN,
     )
     call.greet()
@@ -284,3 +284,64 @@ def test_caller_resuming_after_a_tool_keeps_its_result(make: Any) -> None:
     assert t.aborted and t.tools == ["find_slots"]
     assert call.messages[-1]["role"] == "tool"  # what was looked up stays visible
     assert call.client.steps == ["Done."]  # the second model call never happened
+
+
+def _jobs(kind: str) -> list[dict[str, Any]]:
+    with connect(get_settings().database_url) as c:
+        return c.execute(
+            "SELECT payload, key FROM jobs WHERE kind = %s ORDER BY created_at", (kind,)
+        ).fetchall()
+
+
+def test_missed_calls_become_one_callback_job_each(make: Any) -> None:
+    from agents.operator.notify import Notifier
+    from core.jobs import JobQueue
+
+    dsn = get_settings().database_url
+    with connect(dsn) as c:
+        c.execute("DELETE FROM jobs WHERE kind = 'operator.callback'")
+
+    def session(steps: list[Any]) -> CallSession:
+        call = make(steps, OPEN)
+        call.notifier = Notifier(call.cal, JobQueue(dsn))
+        return call
+
+    silent = session([])
+    silent.greet()
+    assert silent.end() == "hung up before saying anything"
+    assert silent.end() == "hung up before saying anything"  # twice: still one job
+
+    person = session([])
+    person.respond("Can I speak to a person please")
+    assert "nobody took the call" in (person.end() or "")
+
+    answered = session(["We close at 8 tonight."])
+    answered.respond("What time do you close?")
+    assert answered.end() is None  # a question answered is not a missed call
+
+    jobs = _jobs("operator.callback")
+    assert len(jobs) == 2
+    assert jobs[1]["payload"]["last_said"] == "Can I speak to a person please"
+    assert jobs[0]["payload"]["phone"] == "+919800000042"
+
+
+def test_hanging_up_mid_booking_is_a_missed_call(make: Any) -> None:
+    call = make(
+        [
+            {"find_slots": {"service_id": "haircut_men", "day": "Saturday", "time": "4pm"}},
+            "Four o'clock is free with Farhan. Shall I hold it?",
+            {
+                "hold_slot": {
+                    "stylist_id": "farhan",
+                    "service_id": "haircut_men",
+                    "start": "2027-01-09T16:00:00+05:30",
+                }
+            },
+            "Held. What name should I put it under?",
+        ],
+        OPEN,
+    )
+    call.respond("Men's haircut Saturday at four")
+    call.respond("Yes please")
+    assert call.state.holds and not call.state.booked
+    assert call.end() == "hung up in the middle of a booking"

@@ -57,8 +57,11 @@ class CallSession:
     run_kind: RunKind = "live"
     messages: list[Message] = field(default_factory=list)
     failed_streak: int = 0
-    _pending: str = ""
-    last_input: str = ""  # an utterance cut short by early turn detection, joined to the next
+    _pending: str = ""  # an utterance cut short by early turn detection, joined to the next
+    last_input: str = ""  # what the latest turn actually answered (harness reporting)
+    transfer_connected: bool = False  # set by telephony once staff pick up (Twilio step)
+    missed: str | None = None  # why staff must call back, decided at end() (VOICE-002)
+    _ended: bool = False
     turns: list[dict[str, str]] = field(default_factory=list)
     on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
 
@@ -109,7 +112,7 @@ class CallSession:
         self._record("caller", text)
         if self._pending:
             text, self._pending = f"{self._pending} {text}", ""
-        self.last_input = text  # what this turn actually answers (harness reporting)
+        self.last_input = text
         if self.state.transferred:
             return self._say(Turn("I'm connecting you to the salon team now.", transferred=True))
         if self._wants_person(text):
@@ -204,6 +207,30 @@ class CallSession:
             if "connect" not in turn.text.lower() and "put you through" not in turn.text.lower():
                 turn.text += " Let me put you through to someone at the salon."
         return self._say(turn)
+
+    def end(self) -> str | None:
+        """The call is over (hang-up, transfer or disconnect). Code decides whether it was a
+        missed call that staff must return (VOICE-002); if so a callback job emails the front
+        desk. Safe to call twice."""
+        if self._ended:
+            return self.missed
+        self._ended = True
+        st = self.state
+        said = [t["text"] for t in self.turns if t["role"] == "caller"]
+        if not said:
+            reason = "hung up before saying anything"
+        elif st.transferred and not self.transfer_connected:
+            reason = f"wanted a person ({st.transferred}) and nobody took the call"
+        elif st.holds and not st.booked:  # a slot was held, never confirmed
+            reason = "hung up in the middle of a booking"
+        elif self.failed_streak:
+            reason = "hung up after a booking step failed"
+        else:
+            return None
+        self.missed = reason
+        if self.notifier is not None:
+            self.notifier.missed(self.call_id, self.caller_phone, reason, said[-1] if said else "")
+        return reason
 
     def unsay(self) -> None:
         """The voice layer dropped the last reply because the caller kept talking (they paused

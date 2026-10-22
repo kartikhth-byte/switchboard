@@ -1,4 +1,8 @@
-"""Booking confirmations and reminders (VOICE-005).
+"""Booking confirmations and reminders (VOICE-005), and missed-call callbacks (VOICE-002).
+
+Missed call: CallSession.end() decides in code (hung up silent, wanted a person nobody took,
+dropped mid-booking) and enqueues `operator.callback`; the worker emails the front desk with
+the number and the caller's last words (already redacted), gated like every other send.
 
 Calendar mirror: every confirm/cancel/reschedule enqueues `operator.gcal_sync`, which copies the
 row's current state to Google Calendar (demo) or the mock (CI).
@@ -57,6 +61,13 @@ class Notifier:
         self._sync(str(booking_id))  # removes the mirrored event
         return n
 
+    def missed(self, call_id: str, phone: str | None, reason: str, last_said: str) -> None:
+        self.jobs.enqueue(
+            "operator.callback",
+            {"call_id": call_id, "phone": phone, "reason": reason, "last_said": last_said},
+            key=f"call:{call_id}:callback",
+        )
+
     def _sync(self, bid: str) -> None:
         """Mirror the booking's current state to Google Calendar (VOICE-003): the job reads
         the row when it runs, so it copies whatever Postgres says then."""
@@ -81,12 +92,40 @@ class Sender:
             ).fetchone()
         return row is not None
 
-    def _log(self, booking_id: str, action: str, data: dict[str, Any]) -> None:
+    def _log(
+        self, booking_id: str | None, action: str, data: dict[str, Any], call_id: str | None = None
+    ) -> None:
         with connect(self.cal.dsn) as c:
             c.execute(
-                "INSERT INTO booking_audit (appointment_id, action, data) VALUES (%s, %s, %s)",
-                (booking_id, action, json.dumps(data)),
+                "INSERT INTO booking_audit (appointment_id, action, data, call_id)"
+                " VALUES (%s, %s, %s, %s)",
+                (booking_id, action, json.dumps(data), call_id),
             )
+
+    def callback(self, p: dict[str, Any]) -> str:
+        """Email the front desk about a missed call. Idempotent per call (a retried job)."""
+        call_id = p["call_id"]
+        with connect(self.cal.dsn) as c:
+            done = c.execute(
+                "SELECT 1 FROM booking_audit WHERE call_id = %s AND action = 'callback_sent'",
+                (call_id,),
+            ).fetchone()
+        if done:
+            return "already sent"
+        to = self.cal.salon.notifications.front_desk_email
+        number = p.get("phone") or "number withheld"
+        body = (
+            f"Missed call to Studio Nine: please call back {number}.\n"
+            f"Why: the caller {p['reason']}.\n"
+            f'Last thing they said: "{p.get("last_said") or "(nothing)"}"\n'
+            f"Call id: {call_id}"
+        )
+        if (why := self._gate(to)) is not None:
+            self._log(None, "callback_blocked", {"why": why, "reason": p["reason"]}, call_id)
+            return "blocked"
+        pid = self.email.send(to, f"Call back {number} (missed call)", body)
+        self._log(None, "callback_sent", {"email": pid, "reason": p["reason"]}, call_id)
+        return "sent"
 
     def _gate(self, recipient: str) -> str | None:
         mode = self.settings.outbound_mode
@@ -161,3 +200,4 @@ class Sender:
         worker.register(
             "operator.reminder", lambda j: self.send(j.payload["booking_id"], "reminder")
         )
+        worker.register("operator.callback", lambda j: self.callback(j.payload))

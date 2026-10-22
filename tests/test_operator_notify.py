@@ -202,3 +202,24 @@ def test_google_adapter_inserts_then_updates_on_conflict_and_tolerates_gone(
     body = json.loads(seen[0].content)
     assert body["start"]["dateTime"] == "2027-01-08T15:00:00+05:30"
     assert seen[0].headers["authorization"] == "Bearer ya29.test"
+
+
+def test_missed_call_callback_emails_the_front_desk_once(cal: Calendar) -> None:
+    """VOICE-002: the callback job emails staff the number to ring and why, once per call."""
+    job = {
+        "call_id": "call-missed01",
+        "phone": "+919800000042",
+        "reason": "hung up in the middle of a booking",
+        "last_said": "Yes please",
+    }
+    off, _, em0 = sender(cal, "off", "")
+    assert off.callback(job) == "blocked" and not em0.sent
+    s, wa, em = sender(cal, "allowlist", "@studionine.test")
+    assert s.callback(job) == "sent"
+    assert em.sent[0]["to"] == SALON.notifications.front_desk_email
+    assert "+919800000042" in em.sent[0]["subject"]
+    assert "middle of a booking" in em.sent[0]["body"] and "Yes please" in em.sent[0]["body"]
+    assert s.callback(job) == "already sent" and len(em.sent) == 1 and not wa.sent
+    withheld, _, em2 = sender(cal, "allowlist", "@studionine.test")
+    assert withheld.callback({**job, "call_id": "call-missed02", "phone": None}) == "sent"
+    assert "number withheld" in em2.sent[0]["body"]
