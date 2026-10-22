@@ -23,6 +23,8 @@ from typing import Any
 from uuid import uuid4
 
 from loguru import logger
+from pipecat.audio.turn.smart_turn.base_smart_turn import SmartTurnParams
+from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnalyzerV3
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import (
@@ -48,6 +50,10 @@ from pipecat.runner.utils import create_transport
 from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.transports.base_transport import TransportParams
+from pipecat.turns.user_stop.turn_analyzer_user_turn_stop_strategy import (
+    TurnAnalyzerUserTurnStopStrategy,
+)
+from pipecat.turns.user_turn_strategies import UserTurnStrategies
 
 from agents.operator.calendar import Calendar
 from agents.operator.notify import Notifier
@@ -63,15 +69,27 @@ from core.runs import PgRunStore
 from core.tracing import make_langfuse
 
 
-def _last_user_text(context: LLMContext) -> str:
-    for m in reversed(context.get_messages()):
-        if isinstance(m, dict) and m.get("role") == "user":
-            c = m.get("content")
-            if isinstance(c, str):
-                return c.strip()
-            if isinstance(c, list):  # content parts
-                return " ".join(p.get("text", "") for p in c if isinstance(p, dict)).strip()
+def _text(m: Any) -> str:
+    c = m.get("content")
+    if isinstance(c, str):
+        return c.strip()
+    if isinstance(c, list):  # content parts
+        return " ".join(p.get("text", "") for p in c if isinstance(p, dict)).strip()
     return ""
+
+
+def new_user_text(context: LLMContext, seen: int) -> tuple[str, int]:
+    """Everything the caller said since the brain last looked (messages[seen:]). One turn can
+    hold several user messages (a transcript finalised before the turn started, say); reading
+    only the last one dropped the start of what they said."""
+    msgs = context.get_messages()
+    if seen > len(msgs):  # the context was trimmed: fall back to its last user message
+        seen = max(
+            (i for i, m in enumerate(msgs) if isinstance(m, dict) and m.get("role") == "user"),
+            default=len(msgs),
+        )
+    said = [_text(m) for m in msgs[seen:] if isinstance(m, dict) and m.get("role") == "user"]
+    return " ".join(t for t in said if t), len(msgs)
 
 
 class OperatorBrain(FrameProcessor):
@@ -85,6 +103,14 @@ class OperatorBrain(FrameProcessor):
         self.dropped = 0  # replies thrown away because the caller kept talking
         self._turn = 0  # bumped on barge-in: a reply prepared for an older turn is dropped
         self._lock = asyncio.Lock()
+        self._seen = 0  # context messages already handed to the session
+        self._ctx: LLMContext | None = None
+        self._tasks: set[asyncio.Task[None]] = set()
+
+    async def cleanup(self) -> None:
+        for t in self._tasks:
+            await self.cancel_task(t)
+        await super().cleanup()
 
     async def _say(self, text: str) -> None:
         await self.push_frame(LLMFullResponseStartFrame())
@@ -101,9 +127,17 @@ class OperatorBrain(FrameProcessor):
         if isinstance(frame, LLMContextFrame):
             if frame.speculation:  # never act (or run booking tools) on a provisional turn
                 return
-            text = _last_user_text(frame.context)
+            if frame.context is not self._ctx:  # a new context starts from its beginning
+                self._ctx, self._seen = frame.context, 0
+            text, self._seen = new_user_text(frame.context, self._seen)
             if text:
-                await self._answer(text)
+                # Not awaited here: Pipecat cancels a processor's in-flight frame when the
+                # caller speaks, but the model call runs in a thread and can't be cancelled.
+                # Awaiting it let a second turn start while the first was still running.
+                # A task outlives the interruption; the lock keeps turns in order and
+                # CallSession.respond's should_stop ends the stale one early.
+                self._tasks.add(self.create_task(self._answer(text)))
+                self._tasks = {t for t in self._tasks if not t.done()}
             return
         await self.push_frame(frame, direction)
 
@@ -139,16 +173,26 @@ class OperatorBrain(FrameProcessor):
 
 
 # Barge-in (VOICE-016, ≤300 ms): the caller must speak this long before the agent stops.
-# Pipecat's default is 0.2 s; the audio harness measured ~0.36 s end to end with it.
-VAD_START_SECS = 0.12
+# Pipecat's default 0.2 s measured 0.36 s end to end; 0.12 s measured 0.27-0.31 s.
+VAD_START_SECS = 0.10
+# When Smart Turn thinks the caller isn't finished, the turn still ends after this much
+# silence. Pipecat's default is 3 s; short closers ("Thank you!", "See you then!") were
+# judged unfinished and waited the full 3 s (5 of 34 turns). The stop-early restart in
+# CallSession.respond recovers if a caller really was mid-thought.
+SMART_TURN_MAX_SILENCE_SECS = 1.0
 
 
 def user_turns() -> LLMContextAggregatorPair:
     """Turn-taking shared by the live bot and the audio harness: Silero VAD for barge-in,
-    Pipecat's default Smart Turn model to decide when the caller has finished."""
+    Pipecat's Smart Turn v3 model to decide when the caller has finished."""
     vad = SileroVADAnalyzer(params=VADParams(start_secs=VAD_START_SECS))
+    smart_turn = LocalSmartTurnAnalyzerV3(
+        params=SmartTurnParams(stop_secs=SMART_TURN_MAX_SILENCE_SECS)
+    )
+    turns = UserTurnStrategies(stop=[TurnAnalyzerUserTurnStopStrategy(turn_analyzer=smart_turn)])
     return LLMContextAggregatorPair(
-        LLMContext(), user_params=LLMUserAggregatorParams(vad_analyzer=vad)
+        LLMContext(),
+        user_params=LLMUserAggregatorParams(vad_analyzer=vad, user_turn_strategies=turns),
     )
 
 
