@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
@@ -73,9 +74,13 @@ def _last_user_text(context: LLMContext) -> str:
 
 
 class OperatorBrain(FrameProcessor):
-    def __init__(self, call: CallSession) -> None:
+    def __init__(
+        self, call: CallSession, on_reply: Callable[[str, Any], None] | None = None
+    ) -> None:
         super().__init__()
         self.call = call
+        self.on_reply = on_reply  # (what STT heard, the turn) — the audio harness listens here
+        self.interruptions = 0
         self._turn = 0  # bumped on barge-in: a reply prepared for an older turn is dropped
         self._lock = asyncio.Lock()
 
@@ -88,6 +93,7 @@ class OperatorBrain(FrameProcessor):
         await super().process_frame(frame, direction)
         if isinstance(frame, InterruptionFrame):
             self._turn += 1
+            self.interruptions += 1
             await self.push_frame(frame, direction)
             return
         if isinstance(frame, LLMContextFrame):
@@ -119,6 +125,8 @@ class OperatorBrain(FrameProcessor):
             )
             if turn != self._turn:
                 return  # caller spoke over us; their new turn gets the answer
+            if self.on_reply is not None:
+                self.on_reply(text, reply)
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")

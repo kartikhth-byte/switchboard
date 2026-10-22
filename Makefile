@@ -1,4 +1,4 @@
-.PHONY: dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead data-operator ingest search chat ci
+.PHONY: voice-eval dev setup lint typecheck test test-integration up down health langfuse-check keys-check trace-smoke eval calib-export calibrate canary-check lead-burst integrations-check data data-lead data-operator ingest search chat ci
 
 setup:            ## install Python + web deps, create .env
 	uv sync
@@ -68,6 +68,9 @@ call:             ## M4: talk to the Operator (salon receptionist) by typing
 
 voice:            ## M4: talk to the Operator in the browser (http://localhost:7860/client)
 	PYTHONPATH=. uv run python -m agents.operator.voice -t webrtc
+
+voice-eval:       ## M4: 10 audio-mode calls: latency, barge-in, STT, canaries (real Deepgram/Cartesia)
+	PYTHONPATH=. uv run python -m agents.operator.evals.audio $(ARGS)
 
 integrations-check: ## M3.3: one live call each to Slack, WhatsApp, GoHighLevel, Mailpit
 	PYTHONPATH=. uv run python scripts/integrations_check.py

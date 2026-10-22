@@ -50,7 +50,17 @@ def _reset_week(env: EvalEnv, week: date) -> None:
         )
 
 
-def run_target(env: EvalEnv, case: EvalCase) -> AgentOutput:
+@dataclass
+class Prepared:
+    call: CallSession
+    store: ConversationStore
+    phone: str
+    seeds: list[str]
+
+
+def prepare(env: EvalEnv, case: EvalCase, kind: str = "eval") -> Prepared:
+    """Freeze the clock at the case's week, clear the week, seed bookings, open a CallSession.
+    Shared by the text suite and the audio harness (agents/operator/evals/audio.py)."""
     now = _clock(case).replace(tzinfo=env.salon.tz)
     cal = Calendar(env.dsn, env.salon, now=lambda: now)
     week = date.fromisoformat(case.expected.get("week") or (case.input or {})["week"])
@@ -69,14 +79,58 @@ def run_target(env: EvalEnv, case: EvalCase) -> AgentOutput:
         cal,
         env.client,
         env.runs,
-        call_id=f"eval-{case.id}-{uuid4().hex[:6]}",
+        call_id=f"{kind}-{case.id}-{uuid4().hex[:6]}",
         caller_phone=phone,
         transcripts=store,
         langfuse=env.langfuse,
         run_kind="eval",
     )
+    return Prepared(call, store, phone, seeds)
+
+
+def collect(
+    env: EvalEnv,
+    p: Prepared,
+    greeting: str,
+    turns: list[Any],
+    transcript: list[dict[str, str]],
+    outcome: str,
+    extra_cost: float = 0.0,
+    extra: dict[str, Any] | None = None,
+) -> AgentOutput:
+    """Read the calendar back and package everything the assertions need."""
+    with connect(env.dsn) as c:
+        rows = c.execute(
+            "SELECT id::text, stylist_id, service_id, status, lower(period) AS start"
+            " FROM appointments WHERE (caller_phone = %s OR id::text = ANY(%s))"
+            " AND status IN ('confirmed','cancelled') ORDER BY created_at",
+            (p.phone, p.seeds),
+        ).fetchall()
+    bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
+    return AgentOutput(
+        answer=turns[-1].text if turns else "",
+        transcript=transcript,
+        cost_usd=sum(t.cost_usd for t in turns) + extra_cost,
+        data={
+            "greeting": greeting,
+            "agent_turns": [t.text for t in turns],
+            "tools": [x for t in turns for x in t.tools],
+            "tool_log": [x for t in turns for x in t.tool_log],
+            "transferred": p.call.state.transferred,
+            "seeds": p.seeds,
+            "bookings": bookings,
+            "stored_transcript": p.store.load(p.call.call_id),
+            "outcome": outcome,
+            **(extra or {}),
+        },
+    )
+
+
+def run_target(env: EvalEnv, case: EvalCase) -> AgentOutput:
+    p = prepare(env, case)
+    call = p.call
     greeting = call.greet()
-    turns = []
+    turns: list[Any] = []
     sim_cost = 0.0
 
     def agent_turn(msg: str) -> str:
@@ -92,28 +146,4 @@ def run_target(env: EvalEnv, case: EvalCase) -> AgentOutput:
         assert case.input is not None
         agent_turn(case.input["message"])
         transcript, outcome = [], "scripted"
-
-    with connect(env.dsn) as c:
-        rows = c.execute(
-            "SELECT id::text, stylist_id, service_id, status, lower(period) AS start"
-            " FROM appointments WHERE (caller_phone = %s OR id::text = ANY(%s))"
-            " AND status IN ('confirmed','cancelled') ORDER BY created_at",
-            (phone, seeds),
-        ).fetchall()
-    bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
-    return AgentOutput(
-        answer=turns[-1].text if turns else "",
-        transcript=transcript,
-        cost_usd=sum(t.cost_usd for t in turns) + sim_cost,
-        data={
-            "greeting": greeting,
-            "agent_turns": [t.text for t in turns],
-            "tools": [x for t in turns for x in t.tools],
-            "tool_log": [x for t in turns for x in t.tool_log],
-            "transferred": call.state.transferred,
-            "seeds": seeds,
-            "bookings": bookings,
-            "stored_transcript": store.load(call.call_id),
-            "outcome": outcome,
-        },
-    )
+    return collect(env, p, greeting, turns, transcript, outcome, sim_cost)

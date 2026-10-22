@@ -53,6 +53,8 @@ class Settings(BaseSettings):
     deepgram_api_key: SecretStr | None = None
     cartesia_api_key: SecretStr | None = None
     cartesia_voice_id: str = "71a7ad14-091c-4e8e-a314-022ece01c121"  # a Cartesia stock voice
+    # The audio harness's simulated caller speaks with a different stock voice (VOICE-016 accent).
+    operator_caller_voice_id: str = "a0e99841-438c-4a64-b679-ae501e7d6091"
     operator_demo_caller: str = "+919800000042"  # browser calls have no caller ID
     smtp_host: str = "localhost"  # Mailpit (compose service `mailpit` inside the network)
     smtp_port: int = 1025

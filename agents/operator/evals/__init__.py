@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[3]
 CALLER = ModelSpec(provider="openai", name="gpt-4o-mini", temperature=0.5, max_tokens=200)
 
 
-def suite() -> EvalSuite:
+def make_env() -> EvalEnv:
     s = get_settings()
     migrate(s.database_url)
     cfg = load_agent_config(ROOT / "agents/operator")
@@ -43,6 +43,11 @@ def suite() -> EvalSuite:
         runs=PgRunStore(s.database_url),
         langfuse=lf,
     )
+    return env
+
+
+def suite() -> EvalSuite:
+    env = make_env()
 
     def target(case: EvalCase):  # type: ignore[no-untyped-def]
         return run_target(env, case)
@@ -51,6 +56,6 @@ def suite() -> EvalSuite:
         agent="operator",
         cases_dir=ROOT / "data/fixtures/operator/evals",
         target=target,
-        agent_provider=cfg.model.provider,
-        helpers=[sim],
+        agent_provider=env.cfg.model.provider,
+        helpers=[env.sim_client],
     )
