@@ -40,23 +40,20 @@ from typing import Any
 
 import httpx
 from loguru import logger
-from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.frames.frames import (
     CancelFrame,
     EndFrame,
+    Frame,
     InputAudioRawFrame,
     OutputAudioRawFrame,
     StartFrame,
+    TranscriptionFrame,
     TTSSpeakFrame,
 )
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
-from pipecat.processors.aggregators.llm_context import LLMContext
-from pipecat.processors.aggregators.llm_response_universal import (
-    LLMContextAggregatorPair,
-    LLMUserAggregatorParams,
-)
+from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.transports.base_input import BaseInputTransport
@@ -164,6 +161,23 @@ class LoopbackOutput(BaseOutputTransport):
         return True
 
 
+class SttTap(FrameProcessor):
+    """Records every final transcript with its arrival time (STT accuracy, apart from turns)."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.finals: list[tuple[float, str]] = []
+
+    async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
+        await super().process_frame(frame, direction)
+        if isinstance(frame, TranscriptionFrame) and frame.text.strip():
+            self.finals.append((time.monotonic(), frame.text.strip()))
+        await self.push_frame(frame, direction)
+
+    def between(self, lo: float, hi: float) -> str:
+        return " ".join(t for at, t in self.finals if lo <= at <= hi)
+
+
 # ---------------------------------------------------------------- pure measurement helpers
 
 
@@ -229,10 +243,13 @@ def pct(xs: list[float], q: float) -> float | None:
 @dataclass
 class Turn:
     said: str
-    heard: str = ""
+    stt: str = ""  # everything Deepgram transcribed while (and just after) this line played
+    got: str = ""  # what the brain answered (the part after any early turn end)
     kind: str = ""  # "plain" | "tool"
     latency: float | None = None  # caller's last voiced frame → agent's first audio
-    reply_ready: float | None = None  # … → brain had the reply text (VAD + STT + LLM)
+    reply_ready: float | None = None  # … → brain had the reply text (turn end + STT + LLM)
+    llm: float | None = None  # model + tools time inside the brain
+    split: int = 0  # replies dropped because the turn ended early and the caller went on
     overlap: bool = False
     tools: list[str] = field(default_factory=list)
 
@@ -281,23 +298,22 @@ def real_speech(http: httpx.AsyncClient) -> Speech:
 
 async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
     """One audio call. `speech` supplies STT, TTS and the caller's voice (fakes in tests)."""
-    from agents.operator.voice import OperatorBrain  # heavy import (Silero) only when used
+    from agents.operator.voice import OperatorBrain, user_turns  # heavy (Silero): import late
 
     stt, tts, caller_voice = speech
     res = CallResult(case.id)
     p = prepare(env, case, kind="audio")
     user = SimulatedUser(Persona.model_validate(case.persona), env.sim_client)
-    replies: list[tuple[float, str, Any]] = []  # (when, heard, turn)
+    replies: list[tuple[float, str, Any, float]] = []  # (when, text, turn, llm secs)
     brain = OperatorBrain(
-        p.call, on_reply=lambda heard, t: replies.append((time.monotonic(), heard, t))
+        p.call,
+        on_reply=lambda text, t, secs: replies.append((time.monotonic(), text, t, secs)),
     )
     io = TransportParams(audio_in_enabled=True, audio_out_enabled=True)
-    inp, out = LoopbackInput(io), LoopbackOutput(io)
-    agg = LLMContextAggregatorPair(
-        LLMContext(), user_params=LLMUserAggregatorParams(vad_analyzer=SileroVADAnalyzer())
-    )
+    inp, out, tap = LoopbackInput(io), LoopbackOutput(io), SttTap()
+    agg = user_turns()
     task = PipelineTask(
-        Pipeline([inp, stt, agg.user(), brain, tts, out, agg.assistant()]),
+        Pipeline([inp, stt, tap, agg.user(), brain, tts, out, agg.assistant()]),
         params=PipelineParams(audio_in_sample_rate=RATE),
     )
 
@@ -326,7 +342,7 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
             res.outcome = "max_turns"
             for _ in range(user.persona.max_turns):
                 pcm = await caller_voice(message)
-                n, before = len(replies), brain.interruptions
+                n, before, drops = len(replies), brain.interruptions, brain.dropped
                 t_first, t_last = await inp.speak(pcm)
                 turn = Turn(said=message)
                 res.turns.append(turn)
@@ -344,13 +360,16 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 # quiet after the reply's own audio (a tool turn has a gap after the filler)
                 await wait(lambda t=t_last: quiet_since(max(t, replies[-1][0])), TURN_TIMEOUT)
                 mine = replies[n:]
-                turn.heard = " ".join(h for _, h, _ in mine)
-                turn.tools = [x for _, _, t in mine for x in t.tools]
+                turn.got = " ".join(x[1] for x in mine)
+                turn.stt = tap.between(t_first, t_last + 2.0)
+                turn.split = brain.dropped - drops
+                turn.tools = [x for r in mine for x in r[2].tools]
                 turn.kind = "tool" if turn.tools else "plain"
                 turn.reply_ready = mine[0][0] - t_last
+                turn.llm = mine[0][3]
                 first = first_audio_after(out.writes, t_last)
                 turn.latency = None if first is None else first - t_last
-                agent_text = " ".join(t.text for _, _, t in mine)
+                agent_text = " ".join(r[2].text for r in mine)
                 transcript += [
                     {"role": "user", "content": message},
                     {"role": "assistant", "content": agent_text},
@@ -362,14 +381,14 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 if GIVE_UP in message:
                     res.outcome = "gave_up"
                     break
-            turns_ = [t for _, _, t in replies]
+            turns_ = [r[2] for r in replies]
             ao = collect(env, p, greeting, turns_, transcript, res.outcome, user.cost_usd)
             res.cost_usd = ao.cost_usd
             for a in case.assertions:
                 res.metrics[a] = float(get_assertion(a)(case, ao))
             res.passed = all(v == 1.0 for v in res.metrics.values())
             said = " ".join(t.said for t in res.turns)
-            heard = " ".join(t.heard for t in res.turns)
+            heard = " ".join(t.stt for t in res.turns)
             res.wer = round(wer(said, heard), 3) if heard else None
         except Exception as exc:  # noqa: BLE001 — a broken call is reported, the run goes on
             res.error = f"{type(exc).__name__}: {exc}"
@@ -394,6 +413,9 @@ def summarise(results: list[CallResult]) -> dict[str, Any]:
     plain = [t.latency for t in turns if t.kind == "plain" and t.latency is not None]
     tool = [t.latency for t in turns if t.kind == "tool" and t.latency is not None]
     ready = [t.reply_ready for t in turns if t.kind == "plain" and t.reply_ready is not None]
+    llm_plain = [t.llm for t in turns if t.kind == "plain" and t.llm is not None]
+    llm_tool = [t.llm for t in turns if t.kind == "tool" and t.llm is not None]
+    all_turns = [t for r in results for t in r.turns]
     barge = [r.barge_in for r in results if r.barge_counted and r.barge_in is not None]
     wers = [r.wer for r in results if r.wer is not None]
     canary = [r for r in results if "no_canary_in_transcript" in r.metrics]
@@ -407,6 +429,9 @@ def summarise(results: list[CallResult]) -> dict[str, Any]:
         "plain": {"n": len(plain), "median": r3(pct(plain, 0.5)), "p95": r3(pct(plain, 0.95))},
         "tool": {"n": len(tool), "median": r3(pct(tool, 0.5)), "p95": r3(pct(tool, 0.95))},
         "plain_reply_ready_median": r3(pct(ready, 0.5)),
+        "llm_median": {"plain": r3(pct(llm_plain, 0.5)), "tool": r3(pct(llm_tool, 0.5))},
+        "split_turns": sum(1 for t in all_turns if t.split),
+        "turns": len(all_turns),
         "barge_in": {
             "n": len(barge),
             "of": len(results),
@@ -455,8 +480,12 @@ def to_markdown(s: dict[str, Any], voice: str, results: list[CallResult]) -> str
         f"| Calls passing the text suite's assertions | {s['calls_passed']}/{s['calls']}"
         " | reported | |",
         "",
-        f"Non-tool reply text ready (VAD + STT + LLM), median {s['plain_reply_ready_median']}s;"
-        " the rest of the latency is TTS first byte.",
+        f"Where the time goes, medians: non-tool reply text ready {s['plain_reply_ready_median']}s"
+        f" after the caller stops, of which the model {s['llm_median']['plain']}s (the rest is"
+        " turn detection and STT); then TTS to first audio. Model + tools on tool turns:"
+        f" {s['llm_median']['tool']}s.",
+        f"Turns ended early (caller paused, the agent's reply was dropped when they went on):"
+        f" {s['split_turns']} of {s['turns']}.",
         f"Turns where the agent spoke over the caller (excluded from latency):"
         f" {s['overlap_turns']}.",
         f"Pipecat vs Vapi (switch if non-tool p95 > 2.5s): "

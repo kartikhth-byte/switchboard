@@ -239,3 +239,22 @@ def test_sunday_said_on_a_sunday(make: Any) -> None:
     assert ask(sun_morning, "Sunday").startswith("Sunday 10 January")
     assert ask(sun_evening, "Sunday").startswith("Sunday 17 January")
     assert ask(sun_evening, "this Sunday").startswith("Sunday 10 January")
+
+
+def test_unsay_forgets_an_unheard_reply_but_keeps_tool_results() -> None:
+    from agents.operator.session import CallSession
+
+    s = CallSession.__new__(CallSession)  # unsay needs only the message lists
+    s.messages = [
+        {"role": "system", "content": "x"},
+        {"role": "user", "content": "Yes, that works."},
+        {"role": "assistant", "content": "", "tool_calls": [{"id": "1"}]},
+        {"role": "tool", "tool_call_id": "1", "content": "{}"},
+        {"role": "assistant", "content": "Held 9:00. Your name?"},
+    ]
+    s.turns = [{"role": "agent", "text": "Held 9:00. Your name?"}]
+    s.unsay()
+    assert s.messages[-1]["role"] == "tool"  # the hold is still visible to the model
+    assert s.turns[-1]["role"] == "agent_unheard"
+    s.unsay()  # nothing spoken to forget: a no-op
+    assert s.messages[-1]["role"] == "tool"

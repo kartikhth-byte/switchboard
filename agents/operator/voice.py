@@ -24,6 +24,7 @@ from uuid import uuid4
 
 from loguru import logger
 from pipecat.audio.vad.silero import SileroVADAnalyzer
+from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import (
     Frame,
     InterruptionFrame,
@@ -75,12 +76,13 @@ def _last_user_text(context: LLMContext) -> str:
 
 class OperatorBrain(FrameProcessor):
     def __init__(
-        self, call: CallSession, on_reply: Callable[[str, Any], None] | None = None
+        self, call: CallSession, on_reply: Callable[[str, Any, float], None] | None = None
     ) -> None:
         super().__init__()
         self.call = call
-        self.on_reply = on_reply  # (what STT heard, the turn) — the audio harness listens here
+        self.on_reply = on_reply  # (text, turn, LLM+tools secs): the audio harness listens here
         self.interruptions = 0
+        self.dropped = 0  # replies thrown away because the caller kept talking
         self._turn = 0  # bumped on barge-in: a reply prepared for an older turn is dropped
         self._lock = asyncio.Lock()
 
@@ -120,16 +122,33 @@ class OperatorBrain(FrameProcessor):
             self.call.on_tools = on_tools
             t0 = datetime.now(UTC)
             reply = await asyncio.to_thread(self.call.respond, text)
-            logger.info(
-                f"turn {turn}: {(datetime.now(UTC) - t0).total_seconds():.2f}s tools={reply.tools}"
-            )
+            secs = (datetime.now(UTC) - t0).total_seconds()
+            logger.info(f"turn {turn}: {secs:.2f}s tools={reply.tools}")
             if turn != self._turn:
-                return  # caller spoke over us; their new turn gets the answer
+                # The caller kept talking: they never heard this, so the session forgets it and
+                # their next words are read as a continuation.
+                self.call.unsay()
+                self.dropped += 1
+                return
             if self.on_reply is not None:
-                self.on_reply(text, reply)
+                self.on_reply(text, reply, secs)
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")
+
+
+# Barge-in (VOICE-016, ≤300 ms): the caller must speak this long before the agent stops.
+# Pipecat's default is 0.2 s; the audio harness measured ~0.36 s end to end with it.
+VAD_START_SECS = 0.12
+
+
+def user_turns() -> LLMContextAggregatorPair:
+    """Turn-taking shared by the live bot and the audio harness: Silero VAD for barge-in,
+    Pipecat's default Smart Turn model to decide when the caller has finished."""
+    vad = SileroVADAnalyzer(params=VADParams(start_secs=VAD_START_SECS))
+    return LLMContextAggregatorPair(
+        LLMContext(), user_params=LLMUserAggregatorParams(vad_analyzer=vad)
+    )
 
 
 def _call_session(caller_phone: str | None) -> CallSession:
@@ -164,10 +183,7 @@ async def bot(runner_args: RunnerArguments) -> None:
     tts = CartesiaTTSService(
         api_key=s.cartesia_api_key.get_secret_value(), voice_id=s.cartesia_voice_id
     )
-    context = LLMContext()
-    agg = LLMContextAggregatorPair(
-        context, user_params=LLMUserAggregatorParams(vad_analyzer=SileroVADAnalyzer())
-    )
+    agg = user_turns()
     brain = OperatorBrain(call)
     pipeline = Pipeline(
         [transport.input(), stt, agg.user(), brain, tts, transport.output(), agg.assistant()]

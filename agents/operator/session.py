@@ -176,6 +176,17 @@ class CallSession:
                 turn.text += " Let me put you through to someone at the salon."
         return self._say(turn)
 
+    def unsay(self) -> None:
+        """The voice layer dropped the last reply because the caller kept talking (they paused
+        mid-thought and the turn detector ended the turn early). Forget the unheard text so the
+        next turn reads as the caller's continuation. Tool calls and their results stay: what
+        was done (a hold, say) is real and the model must still see it."""
+        m = self.messages[-1] if self.messages else None
+        if m and m["role"] == "assistant" and not m.get("tool_calls"):
+            self.messages.pop()
+            if self.turns and self.turns[-1]["role"] == "agent":
+                self.turns[-1]["role"] = "agent_unheard"
+
     # ---- transcript (redacted before it's stored)
 
     def _say(self, turn: Turn) -> Turn:
