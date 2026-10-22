@@ -258,3 +258,29 @@ def test_unsay_forgets_an_unheard_reply_but_keeps_tool_results() -> None:
     assert s.turns[-1]["role"] == "agent_unheard"
     s.unsay()  # nothing spoken to forget: a no-op
     assert s.messages[-1]["role"] == "tool"
+
+
+def test_caller_resuming_before_any_tool_restarts_from_the_whole_utterance(make: Any) -> None:
+    call = make(["(never said)", "Nine o'clock is free. Shall I book it?"], OPEN)
+    call.greet()
+    stops = iter([False, True])  # the caller resumes while the model is answering
+    first = call.respond("Yes, that works.", should_stop=lambda: next(stops))
+    assert first.aborted and not first.tools
+    second = call.respond("Please book me for nine on Saturday.")
+    assert second.text.startswith("Nine o'clock")
+    users = [m["content"] for m in call.client.seen[-1] if m["role"] == "user"]
+    assert users[-1] == "Yes, that works. Please book me for nine on Saturday."
+    assert "(never said)" not in json.dumps(call.messages)
+
+
+def test_caller_resuming_after_a_tool_keeps_its_result(make: Any) -> None:
+    stops = iter([False, False, True])  # top of step 0, after step 0's model call, top of step 1
+    call = make(
+        [{"find_slots": {"service": "haircut_men", "day": "Saturday", "time": "4pm"}}, "Done."],
+        OPEN,
+    )
+    call.greet()
+    t = call.respond("Men's haircut Saturday at four", should_stop=lambda: next(stops))
+    assert t.aborted and t.tools == ["find_slots"]
+    assert call.messages[-1]["role"] == "tool"  # what was looked up stays visible
+    assert call.client.steps == ["Done."]  # the second model call never happened

@@ -121,13 +121,14 @@ class OperatorBrain(FrameProcessor):
 
             self.call.on_tools = on_tools
             t0 = datetime.now(UTC)
-            reply = await asyncio.to_thread(self.call.respond, text)
+            reply = await asyncio.to_thread(self.call.respond, text, lambda: turn != self._turn)
             secs = (datetime.now(UTC) - t0).total_seconds()
             logger.info(f"turn {turn}: {secs:.2f}s tools={reply.tools}")
-            if turn != self._turn:
-                # The caller kept talking: they never heard this, so the session forgets it and
-                # their next words are read as a continuation.
-                self.call.unsay()
+            if reply.aborted or turn != self._turn:
+                # The caller kept talking: the session stopped early (aborted) or finished a
+                # reply they never heard (forget it). Either way their next words continue this.
+                if not reply.aborted:  # an aborted turn left nothing unheard in the history
+                    self.call.unsay()
                 self.dropped += 1
                 return
             if self.on_reply is not None:

@@ -260,6 +260,7 @@ class CallResult:
     turns: list[Turn] = field(default_factory=list)
     barge_in: float | None = None
     barge_counted: bool = False
+    barge_note: str = ""  # why a barge-in wasn't counted
     wer: float | None = None
     outcome: str = ""
     passed: bool = False
@@ -350,7 +351,10 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 if barge:
                     stop = audio_stop_after(out.writes, t_first)
                     playing = any(a <= t_first < b + 0.06 for a, b in out.writes)
-                    res.barge_counted = playing and brain.interruptions > before
+                    interrupted = brain.interruptions > before
+                    res.barge_counted = playing and interrupted
+                    if not res.barge_counted:
+                        res.barge_note = f"playing={playing} interrupted={interrupted}"
                     res.barge_in = stop - t_first
                     lo, barge = stop + 0.05, False
                 turn.overlap = talked_over(out.writes, lo, t_last)
@@ -498,7 +502,7 @@ def to_markdown(s: dict[str, Any], voice: str, results: list[CallResult]) -> str
         b = f"{r.barge_in:.3f}" if r.barge_in is not None and r.barge_counted else "—"
         lines.append(
             f"| {r.case_id} | {'yes' if r.passed else 'no'} | {len(r.turns)} | {b} |"
-            f" {r.wer} | {r.outcome} | {r.error or ''} |"
+            f" {r.wer} | {r.outcome} | {r.error or r.barge_note} |"
         )
     return "\n".join(lines) + "\n"
 

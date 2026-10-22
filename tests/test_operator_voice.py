@@ -37,7 +37,10 @@ class FakeCall:
 
         self.state = S()
 
-    def respond(self, text: str) -> Turn:
+    def unsay(self) -> None:
+        self.unsaid = getattr(self, "unsaid", 0) + 1
+
+    def respond(self, text: str, should_stop: Any = None) -> Turn:
         self.heard.append(text)
         if self.tools and self.on_tools:
             self.on_tools()

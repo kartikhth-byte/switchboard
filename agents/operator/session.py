@@ -13,6 +13,7 @@ Decided in code, not by the model:
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any
@@ -39,6 +40,7 @@ class Turn:
     transferred: bool = False
     used_filler: bool = False
     cost_usd: float = 0.0
+    aborted: bool = False  # the caller resumed speaking; nothing here should be said
 
 
 @dataclass
@@ -55,6 +57,7 @@ class CallSession:
     run_kind: RunKind = "live"
     messages: list[Message] = field(default_factory=list)
     failed_streak: int = 0
+    _pending: str = ""  # an utterance cut short by early turn detection, joined to the next
     turns: list[dict[str, str]] = field(default_factory=list)
     on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
 
@@ -96,8 +99,15 @@ class CallSession:
             caller_phone="known" if self.caller_phone else "not available",
         )
 
-    def respond(self, text: str) -> Turn:
+    def respond(self, text: str, should_stop: Callable[[], bool] | None = None) -> Turn:
+        """One caller turn. `should_stop` (voice) says the caller has started speaking again:
+        the turn detector ended their turn too early. Like LiveKit's preemptive generation and
+        Smart Turn's guidance, we then stop at the next step instead of finishing a reply nobody
+        will hear. If no tool ran yet, the words are kept and the next turn restarts from the
+        whole utterance; if one did, its results stay and the next words follow them."""
         self._record("caller", text)
+        if self._pending:
+            text, self._pending = f"{self._pending} {text}", ""
         if self.state.transferred:
             return self._say(Turn("I'm connecting you to the salon team now.", transferred=True))
         if self._wants_person(text):
@@ -110,8 +120,19 @@ class CallSession:
         if not self.messages:
             self.messages = [{"role": "system", "content": self._system()}]
         self.messages.append({"role": "user", "content": text})
+        mark = len(self.messages) - 1
         turn = Turn("")
         failed = False
+
+        def stop() -> bool:
+            if should_stop is None or not should_stop():
+                return False
+            turn.aborted = True
+            if not turn.tools:  # nothing done yet: restart from the whole utterance next time
+                del self.messages[mark:]
+                self._pending = text
+            return True
+
         with start_run(
             AGENT,
             self.runs,
@@ -123,7 +144,11 @@ class CallSession:
         ) as run:
             schemas = self.registry.schemas_for(AGENT)
             for step in range(self.cfg.limits.max_steps):
+                if stop():
+                    break
                 resp = run.model(self.client, self.messages, schemas, name=f"step-{step}")
+                if stop():  # the model call can't be cancelled, but its result can be dropped
+                    break
                 if not resp.tool_calls:
                     turn.text = (resp.content or "").strip()
                     self.messages.append({"role": "assistant", "content": turn.text})
@@ -162,6 +187,8 @@ class CallSession:
                     body = res.model_dump_json(include={"ok", "payload", "error"})
                     self.messages.append({"role": "tool", "tool_call_id": call.id, "content": body})
             turn.cost_usd = run.cost_usd
+        if turn.aborted:
+            return turn
         if run.status == "budget_exceeded":
             self.state.transferred = "call token budget exceeded"
         if not turn.text:
