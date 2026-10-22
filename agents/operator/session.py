@@ -59,7 +59,7 @@ class CallSession:
     failed_streak: int = 0
     _pending: str = ""  # an utterance cut short by early turn detection, joined to the next
     last_input: str = ""  # what the latest turn actually answered (harness reporting)
-    transfer_connected: bool = False  # set by telephony once staff pick up (Twilio step)
+    transfer_dialed: bool = False  # phone: the call was handed to the staff number
     missed: str | None = None  # why staff must call back, decided at end() (VOICE-002)
     _ended: bool = False
     turns: list[dict[str, str]] = field(default_factory=list)
@@ -219,8 +219,10 @@ class CallSession:
         said = [t["text"] for t in self.turns if t["role"] == "caller"]
         if not said:
             reason = "hung up before saying anything"
-        elif st.transferred and not self.transfer_connected:
+        elif st.transferred and not self.transfer_dialed:
             reason = f"wanted a person ({st.transferred}) and nobody took the call"
+        elif st.transferred:  # rung through; we can't see if staff answered, so ask them to check
+            reason = f"was put through to staff ({st.transferred}); call back if nobody answered"
         elif st.holds and not st.booked:  # a slot was held, never confirmed
             reason = "hung up in the middle of a booking"
         elif self.failed_streak:

@@ -1,5 +1,5 @@
-"""Operator voice pipeline (Pipecat 1.13): browser WebRTC for development, telephony (Twilio,
-Telnyx, Plivo, Exotel) through the same bot via Pipecat's runner.
+"""Operator voice pipeline (Pipecat 1.13): browser WebRTC for development, a Twilio phone number
+for real calls (`make phone`), through the same bot via Pipecat's runner.
 
     transport.in → Deepgram STT → user turn aggregator (Silero VAD, barge-in)
       → OperatorBrain (our CallSession: the same code the text evals test)
@@ -10,14 +10,15 @@ The brain stands where an LLM service normally sits: it receives the aggregated 
 run inference before the turn is final), says a short filler when the turn needs tools, and
 drops a reply if the caller barged in while it was being prepared.
 
-    make voice        # then open http://localhost:7860/client
+    make voice                    # browser: http://localhost:7860/client
+    make phone HOST=<tunnel host> # Twilio: point the number's voice webhook at https://HOST/
 """
 
 from __future__ import annotations
 
 import asyncio
 import os
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
@@ -28,6 +29,7 @@ from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnal
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import (
+    BotStoppedSpeakingFrame,
     Frame,
     InterruptionFrame,
     LLMContextFrame,
@@ -50,6 +52,7 @@ from pipecat.runner.utils import create_transport
 from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.transports.base_transport import TransportParams
+from pipecat.transports.websocket.fastapi import FastAPIWebsocketParams
 from pipecat.turns.user_stop.turn_analyzer_user_turn_stop_strategy import (
     TurnAnalyzerUserTurnStopStrategy,
 )
@@ -67,6 +70,7 @@ from core.memory import ConversationStore
 from core.models import ModelClient
 from core.runs import PgRunStore
 from core.tracing import make_langfuse
+from integrations.telephony import TwilioCalls
 
 
 def _text(m: Any) -> str:
@@ -94,7 +98,10 @@ def new_user_text(context: LLMContext, seen: int) -> tuple[str, int]:
 
 class OperatorBrain(FrameProcessor):
     def __init__(
-        self, call: CallSession, on_reply: Callable[[str, Any, float], None] | None = None
+        self,
+        call: CallSession,
+        on_reply: Callable[[str, Any, float], None] | None = None,
+        on_transfer: Callable[[], Awaitable[None]] | None = None,
     ) -> None:
         super().__init__()
         self.call = call
@@ -106,6 +113,8 @@ class OperatorBrain(FrameProcessor):
         self._seen = 0  # context messages already handed to the session
         self._ctx: LLMContext | None = None
         self._tasks: set[asyncio.Task[None]] = set()
+        self.on_transfer = on_transfer  # phone: hand the call to staff once the line is said
+        self._transfer_due = False
 
     async def cleanup(self) -> None:
         for t in self._tasks:
@@ -124,6 +133,10 @@ class OperatorBrain(FrameProcessor):
             self.interruptions += 1
             await self.push_frame(frame, direction)
             return
+        if isinstance(frame, BotStoppedSpeakingFrame) and self._transfer_due:
+            self._transfer_due = False  # "putting you through" has been heard: now dial
+            if self.on_transfer is not None:
+                self._tasks.add(self.create_task(self.on_transfer()))
         if isinstance(frame, LLMContextFrame):
             if frame.speculation:  # never act (or run booking tools) on a provisional turn
                 return
@@ -167,6 +180,8 @@ class OperatorBrain(FrameProcessor):
                 return
             if self.on_reply is not None:
                 self.on_reply(self.call.last_input or text, reply, secs)
+            if reply.transferred:
+                self._transfer_due = True
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")
@@ -216,20 +231,48 @@ def _call_session(caller_phone: str | None) -> CallSession:
 
 async def bot(runner_args: RunnerArguments) -> None:
     s = get_settings()
-    params = lambda: TransportParams(audio_in_enabled=True, audio_out_enabled=True)  # noqa: E731
+    browser = lambda: TransportParams(audio_in_enabled=True, audio_out_enabled=True)  # noqa: E731
+    phone = lambda: FastAPIWebsocketParams(audio_in_enabled=True, audio_out_enabled=True)  # noqa: E731
     transport = await create_transport(
         runner_args,
-        {"webrtc": params, "twilio": params, "telnyx": params, "plivo": params, "exotel": params},
+        {"webrtc": browser, "twilio": phone, "telnyx": phone, "plivo": phone, "exotel": phone},
     )
     if not (s.deepgram_api_key and s.cartesia_api_key):
         raise RuntimeError("voice needs DEEPGRAM_API_KEY and CARTESIA_API_KEY in .env")
-    call = _call_session(s.operator_demo_caller)  # telephony: replaced by caller ID (M4 Twilio)
+
+    line, call_sid, caller, our_number = None, None, s.operator_demo_caller, None
+    if getattr(runner_args, "transport_type", None) == "twilio":
+        if not (s.twilio_account_sid and s.twilio_auth_token):
+            raise RuntimeError("phone calls need TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN in .env")
+        line = TwilioCalls(s.twilio_account_sid, s.twilio_auth_token.get_secret_value())
+        call_sid = runner_args.call_data.call_id  # type: ignore[attr-defined]
+        try:  # the caller ID is who the agent can find bookings for (VOICE-003)
+            info = await asyncio.to_thread(line.details, str(call_sid))
+            caller, our_number = info.get("from") or None, info.get("to")
+        except Exception as exc:  # noqa: BLE001 — no caller ID: the agent asks for a number
+            logger.warning(f"caller lookup failed: {exc}")
+            caller = None
+    call = _call_session(caller)
+
+    async def transfer() -> None:
+        """VOICE-002: ring the staff number with the live call (Twilio <Dial>)."""
+        to = s.operator_transfer_number
+        if line is None or not call_sid or not to:
+            logger.warning("transfer asked but no phone line or OPERATOR_TRANSFER_NUMBER set")
+            return
+        try:
+            await asyncio.to_thread(line.transfer, str(call_sid), to, our_number)
+            call.transfer_dialed = True
+            logger.info(f"call {call.call_id} transferred to staff")
+        except Exception as exc:  # noqa: BLE001 — the call stays with the agent
+            logger.error(f"transfer failed: {exc}")
+
     stt = DeepgramSTTService(api_key=s.deepgram_api_key.get_secret_value())
     tts = CartesiaTTSService(
         api_key=s.cartesia_api_key.get_secret_value(), voice_id=s.cartesia_voice_id
     )
     agg = user_turns()
-    brain = OperatorBrain(call)
+    brain = OperatorBrain(call, on_transfer=transfer)
     pipeline = Pipeline(
         [transport.input(), stt, agg.user(), brain, tts, transport.output(), agg.assistant()]
     )
