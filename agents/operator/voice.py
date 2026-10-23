@@ -29,6 +29,7 @@ from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnal
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import (
+    BotStartedSpeakingFrame,
     BotStoppedSpeakingFrame,
     Frame,
     InterruptionFrame,
@@ -82,18 +83,16 @@ def _text(m: Any) -> str:
     return ""
 
 
-def new_user_text(context: LLMContext, seen: int) -> tuple[str, int]:
-    """Everything the caller said since the brain last looked (messages[seen:]). One turn can
+def new_user_text(context: LLMContext, seen: set[int]) -> str:
+    """Everything the caller said that the brain hasn't handed to the session yet. One turn can
     hold several user messages (a transcript finalised before the turn started, say); reading
-    only the last one dropped the start of what they said."""
-    msgs = context.get_messages()
-    if seen > len(msgs):  # the context was trimmed: fall back to its last user message
-        seen = max(
-            (i for i, m in enumerate(msgs) if isinstance(m, dict) and m.get("role") == "user"),
-            default=len(msgs),
-        )
-    said = [_text(m) for m in msgs[seen:] if isinstance(m, dict) and m.get("role") == "user"]
-    return " ".join(t for t in said if t), len(msgs)
+    only the last one dropped the start of what they said. Messages are tracked by identity,
+    not by position, so a trimmed or replaced context can't skip or replay a turn. `seen`
+    holds ids of messages already read; the context keeps them alive, so ids aren't reused."""
+    new = [m for m in context.get_messages() if isinstance(m, dict) and id(m) not in seen]
+    seen.update(id(m) for m in new)
+    said = [_text(m) for m in new if m.get("role") == "user"]
+    return " ".join(t for t in said if t)
 
 
 class OperatorBrain(FrameProcessor):
@@ -106,18 +105,24 @@ class OperatorBrain(FrameProcessor):
         super().__init__()
         self.call = call
         self.on_reply = on_reply  # (text, turn, LLM+tools secs): the audio harness listens here
+        self.on_transfer = on_transfer  # phone: hand the call to staff once the line is heard
         self.interruptions = 0
-        self.dropped = 0  # replies thrown away because the caller kept talking
-        self._turn = 0  # bumped on barge-in: a reply prepared for an older turn is dropped
+        self.dropped: dict[str, int] = {"aborted": 0, "unheard": 0}  # why replies were dropped
+        self._turn = 0  # bumped on every caller interruption
         self._lock = asyncio.Lock()
-        self._seen = 0  # context messages already handed to the session
-        self._ctx: LLMContext | None = None
+        self._seen: set[int] = set()  # ids of context messages already handed to the session
         self._tasks: set[asyncio.Task[None]] = set()
-        self.on_transfer = on_transfer  # phone: hand the call to staff once the line is said
-        self._transfer_due = False
+        self._closing = False
+        # Playback of the latest reply: "" (none) -> queued -> playing -> done. Used to dial a
+        # transfer only after its own line was heard, and to mark a cut-off reply.
+        self._reply = ""
+        self._reply_transfer = False
+        self._bot_speaking = False
+        self._settle: asyncio.Task[None] | None = None
 
     async def cleanup(self) -> None:
-        for t in self._tasks:
+        self._closing = True  # queued answers that get the lock now return at once
+        for t in list(self._tasks):
             await self.cancel_task(t)
         await super().cleanup()
 
@@ -126,45 +131,84 @@ class OperatorBrain(FrameProcessor):
         await self.push_frame(LLMTextFrame(text))
         await self.push_frame(LLMFullResponseEndFrame())
 
+    def _spawn(self, coro: Any) -> None:
+        self._tasks = {t for t in self._tasks if not t.done()}
+        self._tasks.add(self.create_task(coro))
+
     async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
         await super().process_frame(frame, direction)
         if isinstance(frame, InterruptionFrame):
             self._turn += 1
             self.interruptions += 1
+            self._reply_cut_off()
             await self.push_frame(frame, direction)
             return
-        if isinstance(frame, BotStoppedSpeakingFrame) and self._transfer_due:
-            self._transfer_due = False  # "putting you through" has been heard: now dial
-            if self.on_transfer is not None:
-                self._tasks.add(self.create_task(self.on_transfer()))
+        if isinstance(frame, BotStartedSpeakingFrame):
+            self._bot_speaking = True
+            if self._settle is not None:  # more audio came: the reply isn't over yet
+                await self.cancel_task(self._settle)
+                self._settle = None
+            if self._reply == "queued":
+                self._reply = "playing"
+        elif isinstance(frame, BotStoppedSpeakingFrame):
+            self._bot_speaking = False
+            if self._reply == "playing":
+                # A gap can come between the filler and the reply, so wait briefly before
+                # deciding the reply's own audio has finished.
+                self._settle = self.create_task(self._reply_finished_after(REPLY_SETTLE_SECS))
         if isinstance(frame, LLMContextFrame):
             if frame.speculation:  # never act (or run booking tools) on a provisional turn
                 return
-            if frame.context is not self._ctx:  # a new context starts from its beginning
-                self._ctx, self._seen = frame.context, 0
-            text, self._seen = new_user_text(frame.context, self._seen)
+            text = new_user_text(frame.context, self._seen)
             if text:
                 # Not awaited here: Pipecat cancels a processor's in-flight frame when the
                 # caller speaks, but the model call runs in a thread and can't be cancelled.
                 # Awaiting it let a second turn start while the first was still running.
-                # A task outlives the interruption; the lock keeps turns in order and
-                # CallSession.respond's should_stop ends the stale one early.
-                self._tasks.add(self.create_task(self._answer(text)))
-                self._tasks = {t for t in self._tasks if not t.done()}
+                # The turn number is taken now, so an answer that waited for the lock while
+                # the caller started speaking again is recognised as stale.
+                self._spawn(self._answer(text, self._turn))
             return
         await self.push_frame(frame, direction)
 
-    async def _answer(self, text: str) -> None:
+    def _reply_cut_off(self) -> None:
+        if self._reply == "queued":  # never started playing: the caller heard none of it
+            self.call.unsay()
+            self.dropped["unheard"] += 1
+        elif self._reply == "playing":
+            self.call.mark_interrupted()
+        if self._reply in ("queued", "playing"):
+            self._reply = "done"
+            self._maybe_transfer()  # a decided transfer still goes ahead
+
+    async def _reply_finished_after(self, secs: float) -> None:
+        await asyncio.sleep(secs)
+        self._settle = None
+        if self._reply == "playing" and not self._bot_speaking:
+            self._reply = "done"
+            self._maybe_transfer()
+
+    def _maybe_transfer(self) -> None:
+        if self._reply_transfer:
+            self._reply_transfer = False
+            if self.on_transfer is not None:
+                self._spawn(self.on_transfer())
+
+    async def _answer(self, text: str, turn: int) -> None:
         async with self._lock:  # one caller turn at a time: the session isn't re-entrant
-            turn = self._turn
+            if self._closing:
+                return
             loop = asyncio.get_running_loop()
             said_filler = False
+
+            async def filler() -> None:
+                if turn == self._turn and not self._closing:  # not for a turn already stale
+                    await self.push_frame(TTSSpeakFrame(FILLER))
 
             def on_tools() -> None:
                 nonlocal said_filler
                 if not said_filler:
                     said_filler = True
-                    asyncio.run_coroutine_threadsafe(self.push_frame(TTSSpeakFrame(FILLER)), loop)
+                    asyncio.run_coroutine_threadsafe(filler(), loop)
 
             self.call.on_tools = on_tools
             t0 = datetime.now(UTC)
@@ -176,15 +220,20 @@ class OperatorBrain(FrameProcessor):
                 # reply they never heard (forget it). Either way their next words continue this.
                 if not reply.aborted:  # an aborted turn left nothing unheard in the history
                     self.call.unsay()
-                self.dropped += 1
+                self.dropped["aborted" if reply.aborted else "unheard"] += 1
                 return
             if self.on_reply is not None:
                 self.on_reply(self.call.last_input or text, reply, secs)
-            if reply.transferred:
-                self._transfer_due = True
+            self._reply = "playing" if self._bot_speaking else "queued"
+            self._reply_transfer = bool(reply.transferred)
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")
+
+
+# After the bot stops speaking, how long to wait for more of the same reply before treating it
+# as finished (the filler and the reply can have a short gap between them).
+REPLY_SETTLE_SECS = 0.6
 
 
 # Barge-in (VOICE-016, ≤300 ms): the caller must speak this long before the agent stops.

@@ -49,6 +49,7 @@ def test_measurement_helpers() -> None:
     assert first_audio_after(writes, 2.0) is None
     assert audio_stop_after(writes, 0.05) == 0.12  # the run playing at onset, not the later one
     assert talked_over(writes, 0.9, 1.1) and not talked_over(writes, 0.2, 0.9)
+    assert talked_over([(0.0, 0.5)], 0.1, 0.3)  # a chunk already playing counts (review #9)
     assert wer("book a haircut on Saturday", "book a haircut Saturday") == 0.2
     assert pct([3.0, 1.0, 2.0], 0.5) == 2.0 and pct([], 0.5) is None
 

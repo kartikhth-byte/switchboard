@@ -213,7 +213,8 @@ def audio_stop_after(writes: list[tuple[float, float]], onset: float, gap: float
 
 
 def talked_over(writes: list[tuple[float, float]], lo: float, hi: float) -> bool:
-    return any(lo < s < hi for s, _ in writes)
+    """Any agent audio overlapping [lo, hi], including a chunk that started before lo."""
+    return any(s < hi and e > lo for s, e in writes)
 
 
 def wer(said: str, heard: str) -> float:
@@ -249,7 +250,8 @@ class Turn:
     latency: float | None = None  # caller's last voiced frame → agent's first audio
     reply_ready: float | None = None  # … → brain had the reply text (turn end + STT + LLM)
     llm: float | None = None  # model + tools time inside the brain
-    split: int = 0  # replies dropped because the turn ended early and the caller went on
+    split: int = 0  # replies stopped early because the caller went on (restarted whole)
+    unheard: int = 0  # replies finished but dropped before they played (caller kept talking)
     overlap: bool = False
     tools: list[str] = field(default_factory=list)
 
@@ -343,14 +345,17 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
             res.outcome = "max_turns"
             for _ in range(user.persona.max_turns):
                 pcm = await caller_voice(message)
-                n, before, drops = len(replies), brain.interruptions, brain.dropped
+                n, before, drops = len(replies), brain.interruptions, dict(brain.dropped)
                 t_first, t_last = await inp.speak(pcm)
                 turn = Turn(said=message)
                 res.turns.append(turn)
                 lo = t_first
                 if barge:
                     stop = audio_stop_after(out.writes, t_first)
-                    playing = any(a <= t_first < b + 0.06 for a, b in out.writes)
+                    # Was the greeting playing when the caller started? Allow a short gap: VAD
+                    # and Smart Turn inference can stall the event loop (and the speaker log)
+                    # for a moment just as the caller's speech arrives.
+                    playing = any(a <= t_first < b + 0.25 for a, b in out.writes)
                     interrupted = brain.interruptions > before
                     res.barge_counted = playing and interrupted
                     if not res.barge_counted:
@@ -366,7 +371,8 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 mine = replies[n:]
                 turn.got = " ".join(x[1] for x in mine)
                 turn.stt = tap.between(t_first, t_last + 2.0)
-                turn.split = brain.dropped - drops
+                turn.split = brain.dropped["aborted"] - drops["aborted"]
+                turn.unheard = brain.dropped["unheard"] - drops["unheard"]
                 turn.tools = [x for r in mine for x in r[2].tools]
                 turn.kind = "tool" if turn.tools else "plain"
                 turn.reply_ready = mine[0][0] - t_last
@@ -435,6 +441,7 @@ def summarise(results: list[CallResult]) -> dict[str, Any]:
         "plain_reply_ready_median": r3(pct(ready, 0.5)),
         "llm_median": {"plain": r3(pct(llm_plain, 0.5)), "tool": r3(pct(llm_tool, 0.5))},
         "split_turns": sum(1 for t in all_turns if t.split),
+        "unheard_turns": sum(1 for t in all_turns if t.unheard),
         "turns": len(all_turns),
         "barge_in": {
             "n": len(barge),
@@ -488,8 +495,10 @@ def to_markdown(s: dict[str, Any], voice: str, results: list[CallResult]) -> str
         f" after the caller stops, of which the model {s['llm_median']['plain']}s (the rest is"
         " turn detection and STT); then TTS to first audio. Model + tools on tool turns:"
         f" {s['llm_median']['tool']}s.",
-        f"Turns ended early (caller paused, the agent's reply was dropped when they went on):"
-        f" {s['split_turns']} of {s['turns']}.",
+        f"Turns where the caller kept talking after their turn was judged over: the agent"
+        f" stopped and restarted from the whole utterance on {s['split_turns']} of"
+        f" {s['turns']}, and dropped a finished reply before it played on"
+        f" {s['unheard_turns']}.",
         f"Turns where the agent spoke over the caller (excluded from latency):"
         f" {s['overlap_turns']}.",
         f"Pipecat vs Vapi (switch if non-tool p95 > 2.5s): "

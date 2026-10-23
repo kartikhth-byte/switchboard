@@ -386,3 +386,51 @@ def test_slot_summary_can_be_switched_off_for_the_ablation(make: Any, monkeypatc
         .payload
     )
     assert len(out["slots"]) == 4 and "showing" not in out and "free_by_day" not in out
+
+
+HOLD_SAT_4 = {
+    "hold_slot": {
+        "stylist_id": "farhan",
+        "service_id": "haircut_men",
+        "start": "2027-01-09T16:00:00+05:30",
+    }
+}
+
+
+def test_no_booking_tool_runs_after_the_caller_hangs_up(make: Any) -> None:
+    """Review 2026-10-23 #1: a model call returning during hang-up still ran its tools."""
+    call = make([HOLD_SAT_4, "Held."], OPEN)
+
+    def model_returns_after_hangup(messages: Any, tools: Any = None, **_: Any) -> ModelResponse:
+        call.end()  # the caller hangs up while the model is answering
+        return Script.complete(call.client, messages, tools)
+
+    call.client.complete = model_returns_after_hangup  # type: ignore[method-assign]
+    t = call.respond("Men's haircut Saturday at four")
+    assert t.aborted and not t.tools and not call.state.holds
+
+
+def test_caller_resuming_mid_batch_skips_the_rest_of_the_tools(make: Any) -> None:
+    """Review #4: should_stop was checked around the model call only, so a confirm queued after
+    a hold in the same batch still ran."""
+    confirm = {"confirm_booking": {"hold_id": "will-not-run", "name": "Ravi"}}
+    call = make([{**HOLD_SAT_4, **confirm}, "Done."], OPEN)
+    checks = iter([False, False, True])  # top of step, after model, before the 2nd tool
+    t = call.respond("Book Saturday at four, I'm Ravi", should_stop=lambda: next(checks, True))
+    assert t.aborted and t.tools == ["hold_slot"] and not call.state.booked
+    tool_ids = {m["tool_call_id"] for m in call.messages if m["role"] == "tool"}
+    asked = {c["id"] for m in call.messages for c in m.get("tool_calls", [])}
+    assert tool_ids == asked  # every tool call has a result: the history stays valid
+    assert "not run" in call.messages[-1]["content"]
+
+
+def test_unheard_and_cut_off_replies_are_saved_as_such(make: Any) -> None:
+    """Review #5: unsay() changed the transcript in memory only."""
+    call = make(["We close at 8.", "Saturdays we open at 9."], OPEN)
+    call.respond("When do you close?")
+    call.unsay()
+    call.respond("And Saturday?")
+    call.mark_interrupted()
+    stored = ConversationStore(get_settings().database_url, "operator").load(call.call_id)
+    roles = [t["role"] for t in stored["turns"]]
+    assert roles == ["caller", "agent_unheard", "caller", "agent_interrupted"]

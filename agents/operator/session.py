@@ -13,6 +13,7 @@ Decided in code, not by the model:
 from __future__ import annotations
 
 import re
+import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -62,6 +63,7 @@ class CallSession:
     transfer_dialed: bool = False  # phone: the call was handed to the staff number
     missed: str | None = None  # why staff must call back, decided at end() (VOICE-002)
     _ended: bool = False
+    _respond_lock: threading.Lock = field(default_factory=threading.Lock)
     turns: list[dict[str, str]] = field(default_factory=list)
     on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
 
@@ -104,6 +106,13 @@ class CallSession:
         )
 
     def respond(self, text: str, should_stop: Callable[[], bool] | None = None) -> Turn:
+        # The session isn't re-entrant. The voice layer serialises turns with an asyncio lock,
+        # but a cancelled task releases that lock while its thread is still here (review
+        # 2026-10-23), so the session guards itself too.
+        with self._respond_lock:
+            return self._respond(text, should_stop)
+
+    def _respond(self, text: str, should_stop: Callable[[], bool] | None) -> Turn:
         """One caller turn. `should_stop` (voice) says the caller has started speaking again:
         the turn detector ended their turn too early. Like LiveKit's preemptive generation and
         Smart Turn's guidance, we then stop at the next step instead of finishing a reply nobody
@@ -130,7 +139,8 @@ class CallSession:
         failed = False
 
         def stop() -> bool:
-            if should_stop is None or not should_stop():
+            # The call ended (hang-up): never run a booking tool for a caller who's gone.
+            if not self._ended and (should_stop is None or not should_stop()):
                 return False
             turn.aborted = True
             if not turn.tools:  # nothing done yet: restart from the whole utterance next time
@@ -175,7 +185,17 @@ class CallSession:
                         ],
                     }
                 )
-                for call in resp.tool_calls:
+                for i, call in enumerate(resp.tool_calls):
+                    if turn.tools and stop():
+                        # Caller resumed (or hung up) mid-batch: don't run the rest, e.g. a
+                        # confirm_booking queued after hold_slot. Every tool call still needs
+                        # a result, or the history is invalid for the next model call.
+                        for skipped in resp.tool_calls[i:]:
+                            body = '{"ok": false, "error": "not run: the caller started speaking"}'
+                            self.messages.append(
+                                {"role": "tool", "tool_call_id": skipped.id, "content": body}
+                            )
+                        break
                     turn.tools.append(call.name)
                     res = run.tool(self.registry, call.name, call.arguments)
                     turn.tool_log.append(
@@ -191,6 +211,8 @@ class CallSession:
                         failed = True
                     body = res.model_dump_json(include={"ok", "payload", "error"})
                     self.messages.append({"role": "tool", "tool_call_id": call.id, "content": body})
+                if turn.aborted:
+                    break
             turn.cost_usd = run.cost_usd
         if turn.aborted:
             return turn
@@ -244,6 +266,14 @@ class CallSession:
             self.messages.pop()
             if self.turns and self.turns[-1]["role"] == "agent":
                 self.turns[-1]["role"] = "agent_unheard"
+                self._save()
+
+    def mark_interrupted(self) -> None:
+        """The caller cut in while the last reply was playing: it was only partly heard. The
+        model keeps it (it was said), the stored transcript says so."""
+        if self.turns and self.turns[-1]["role"] == "agent":
+            self.turns[-1]["role"] = "agent_interrupted"
+            self._save()
 
     # ---- transcript (redacted before it's stored)
 
@@ -253,6 +283,9 @@ class CallSession:
 
     def _record(self, who: str, text: str) -> None:
         self.turns.append({"role": who, "text": redact(text), "at": datetime.now().isoformat()})
+        self._save()
+
+    def _save(self) -> None:
         if self.transcripts is not None:
             self.transcripts.save(
                 self.call_id,
