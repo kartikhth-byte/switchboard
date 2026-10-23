@@ -3,6 +3,7 @@ skills, durations, hours and overlaps are checked by the calendar, not the model
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from typing import Any
@@ -160,6 +161,8 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
         }
         if slots:
             out["slots"] = [x.as_dict(salon) for x in slots]
+            if os.getenv("OPERATOR_SLOT_SUMMARY", "on") == "off":  # eval ablation only
+                return out
             # A reader's point on the dates write-up: with only a sample, the model took the
             # last slot it saw for the last slot there was. Give it the count and each day's
             # real first and last free start, so "latest" / "anything earlier?" is answerable.

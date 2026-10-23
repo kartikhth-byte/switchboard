@@ -510,9 +510,116 @@ def build_faq() -> list[dict]:
     return out
 
 
+# Slot-range questions (reader feedback on the dates write-up, 2026-10-23): the caller asks
+# something only the whole day's availability answers, in words the time resolver doesn't map
+# ("how late", "after work", "is 3:15 free?" after a list). Men's haircuts: Farhan is the only
+# stylist, so seeded bookings make the right answer exact. Used to compare find_slots with and
+# without its count and per-day first/last (OPERATOR_SLOT_SUMMARY=off).
+# (weekday, opening, goal, busy times seeded for Farhan, the one right start time)
+SLOT_RANGE = [
+    (
+        "saturday",
+        "What have you got on Saturday for a men's haircut?",
+        "find out how late in the day you can come on Saturday, then book the very last time "
+        "they have",
+        ["18:30", "19:00", "19:30"],
+        "18:00",
+    ),
+    (
+        "thursday",
+        "What times are free on Thursday for a men's haircut?",
+        "after hearing the options, ask whether 3:15 in the afternoon is free; book 3:15 if it is",
+        [],
+        "15:15",
+    ),
+    (
+        "friday",
+        "Can I get a men's haircut on Friday afternoon?",
+        "when offered afternoon times, ask what their first opening of the day on Friday is, "
+        "and book that",
+        ["10:00", "10:30"],
+        "11:00",
+    ),
+    (
+        "sunday",
+        "Are you open on Sunday for a men's haircut?",
+        "ask until what time they can fit you in on Sunday, then book the latest time they have",
+        ["16:00", "16:30"],
+        "15:30",
+    ),
+    (
+        "wednesday",
+        "What's free on Wednesday for a men's haircut?",
+        "ask whether 1:45 in the afternoon works; book 1:45 if it does",
+        [],
+        "13:45",
+    ),
+    (
+        "friday",
+        "What do you have on Friday for a men's haircut?",
+        "you can only come after work; ask what the last time they can do on Friday is, and "
+        "book it",
+        ["19:30"],
+        "19:00",
+    ),
+]
+
+
+def build_slots() -> list[dict]:
+    out = []
+    for i, (dow, opening, goal, busy, want) in enumerate(SLOT_RANGE):
+        k = 100 + i  # weeks clear of calls (0-49) and faq (60-89)
+        d = on(k, dow)
+        name = NAMES[i % 10]
+        out.append(
+            {
+                "id": f"slot-{i:03d}",
+                "agent": "operator",
+                "tags": ["create", "slot_range"],
+                "persona": {
+                    "name": name,
+                    "role": "caller",
+                    "goal": goal,
+                    "traits": ["brief, like a phone call"],
+                    "facts": {"name": name},
+                    "opening": opening,
+                    "max_turns": 8,
+                },
+                "expected": {
+                    "action": "create",
+                    "service_id": "haircut_men",
+                    "stylist_id": "farhan",
+                    "date": str(d),
+                    "window": [want, want],
+                    "seed": [
+                        {
+                            "stylist_id": "farhan",
+                            "service_id": "haircut_men",
+                            "date": str(d),
+                            "time": t,
+                            "phone": "+919899999999",
+                            "name": "Other",
+                        }
+                        for t in busy
+                    ],
+                    "week": str(week(k)),
+                    "phone": phone(k),
+                    "canary": None,
+                },
+                "assertions": [
+                    "disclosure",
+                    "calendar_state",
+                    "no_false_success",
+                    "transfer_expected",
+                ],
+            }
+        )
+    return out
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    for name, rows in [("calls", build_calls()), ("faq", build_faq())]:
+    for name, rows in [("calls", build_calls()), ("faq", build_faq()), ("slots", build_slots())]:
         (OUT / f"{name}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
         print(f"{name}: {len(rows)}")
 

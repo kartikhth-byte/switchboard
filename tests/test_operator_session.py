@@ -366,3 +366,23 @@ def test_find_slots_says_how_many_and_each_days_first_and_last(make: Any) -> Non
     assert len(out["slots"]) == 4 and out["showing"].startswith(f"4 of {sat['count']}")
     assert sat["count"] > 4 and sat["first"] == "09:00"  # Saturdays open at 9
     assert sat["last"] > out["slots"][-1]["start"][11:16]  # the sample's end isn't the day's
+
+
+def test_slot_summary_can_be_switched_off_for_the_ablation(make: Any, monkeypatch: Any) -> None:
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    monkeypatch.setenv("OPERATOR_SLOT_SUMMARY", "off")
+    s = make([], OPEN)
+    out = (
+        build_registry(s.cal, CallState("x", "+919800000042"))
+        .execute(
+            "find_slots",
+            {"service_id": "haircut_men", "day": "Saturday"},
+            ToolContext(run_id=uuid4(), agent="operator"),
+        )
+        .payload
+    )
+    assert len(out["slots"]) == 4 and "showing" not in out and "free_by_day" not in out
