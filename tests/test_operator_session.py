@@ -434,3 +434,25 @@ def test_unheard_and_cut_off_replies_are_saved_as_such(make: Any) -> None:
     stored = ConversationStore(get_settings().database_url, "operator").load(call.call_id)
     roles = [t["role"] for t in stored["turns"]]
     assert roles == ["caller", "agent_unheard", "caller", "agent_interrupted"]
+
+
+def test_free_by_day_covers_the_whole_day_even_for_a_window(make: Any) -> None:
+    """Eval slot-007: after an afternoon search, 'first opening of the day' was answered with
+    the afternoon's first. The per-day summary is now the whole day."""
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    s = make([], OPEN)
+    out = (
+        build_registry(s.cal, CallState("x", "+919800000042"))
+        .execute(
+            "find_slots",
+            {"service_id": "blowdry", "day": "Saturday", "time": "afternoon"},
+            ToolContext(run_id=uuid4(), agent="operator"),
+        )
+        .payload
+    )
+    assert out["slots"][0]["start"][11:16] >= "12:00"  # the offers stay in the window
+    assert out["free_by_day"]["2027-01-09"]["first"] == "09:00"  # the day's real first

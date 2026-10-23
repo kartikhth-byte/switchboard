@@ -170,7 +170,10 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
                 f"{len(slots)} of {len(every)} free times in that window; for any other time,"
                 " search again with that time"
             )
-            out["free_by_day"] = free_by_day(every, salon)
+            # The whole day, not just the window searched: "first opening of the day" after
+            # an afternoon search was answered with the afternoon's first (eval slot-007).
+            whole = cal.find_slots(inp.service_id, day_from, day_to, inp.stylist_id, limit=10_000)
+            out["free_by_day"] = free_by_day(whole, salon)
             return out
         out["slots"] = []
         if win.earliest or win.latest:

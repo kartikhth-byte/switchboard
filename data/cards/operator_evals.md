@@ -28,5 +28,9 @@
 - **Isolation:** each call runs in its own calendar week from 2027-01-05; that week is reset
   before the call, so re-runs are reproducible.
 - **Splits:** calls and faq ≥30 → dev ~70% / test ~30% by the runner. Tune only on dev.
-  slots (6) is a pass/fail set with no split: report it with its n, don't tune on it.
+  slots (8) is a pass/fail set with no split: report it with its n, don't tune on it.
+  Note (2026-10-23): one tool bug found on slot-007 (per-day first/last was window-scoped) was
+  fixed in code, and one eval lookup bug found on test case call-000 (a booking under another
+  number the caller gave wasn't found) was fixed in the target. Neither was a prompt change,
+  but those two cases are no longer blind; read later results on them with that in mind.
 - **Licence:** project code licence (MIT).

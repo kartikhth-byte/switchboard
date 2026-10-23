@@ -16,6 +16,7 @@ from core.config.settings import get_settings
 from core.db import migrate
 from core.evals import EvalCase
 from core.models import ModelClient, ModelResponse, ModelSpec
+from core.models.client import ToolCall
 from core.runs import PgRunStore
 from tests.test_operator_session import Script
 
@@ -162,3 +163,36 @@ def test_a_wrong_latest_claim_fails_times_grounded_even_without_a_booking() -> N
     s = score(c, out)
     assert s["times_grounded"] == 0.0 and s["calendar_state"] == 0.0
     assert out.data["ungrounded"][0]["truth"] == ["19:00"]
+
+
+def test_a_booking_under_another_number_the_caller_gave_still_counts() -> None:
+    """Eval call-000: the caller offered 'my contact number', the agent booked under it (the
+    prompt allows that), and the eval, looking up by caller ID only, missed the booking."""
+    c = cases("calls")["call-000"]  # men's haircut with Farhan, Saturday ~16:00
+    hold = {
+        "hold_slot": {
+            "service_id": "haircut_men",
+            "stylist_id": "farhan",
+            "start": "2027-01-09T16:00:00+05:30",
+        }
+    }
+    agent = Script([hold, "Held. Your name?", "CONFIRM", "You're booked for 4 on Saturday."])
+    real = agent.complete
+
+    def patched(messages, tools=None, **kw):  # type: ignore[no-untyped-def]
+        step = real(messages, tools, **kw)
+        if step.content == "CONFIRM":  # confirm the hold under the other number
+            hid = json.loads([m for m in messages if m.get("role") == "tool"][-1]["content"])
+            args = {"hold_id": hid["payload"]["hold_id"], "name": "Ravi", "phone": "+919845012345"}
+            return ModelResponse(
+                content="",
+                model="claude-haiku-4-5",
+                tool_calls=[ToolCall(id="c", name="confirm_booking", arguments=args,
+                                     raw_arguments=json.dumps(args))],
+            )  # fmt: skip
+        return step
+
+    agent.complete = patched  # type: ignore[method-assign]
+    caller = Caller(["Ravi, and my other number is +91 98450 12345.", "[DONE]", "[DONE]"])
+    out = run_target(env(agent, caller), c)
+    assert score(c, out)["calendar_state"] == 1.0

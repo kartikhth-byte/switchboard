@@ -140,9 +140,11 @@ def collect(
     with connect(env.dsn) as c:
         rows = c.execute(
             "SELECT id::text, stylist_id, service_id, status, lower(period) AS start"
-            " FROM appointments WHERE (caller_phone = %s OR id::text = ANY(%s))"
+            " FROM appointments WHERE (caller_phone = %s OR id::text = ANY(%s) OR call_id = %s)"
             " AND status IN ('confirmed','cancelled') ORDER BY created_at",
-            (p.phone, p.seeds),
+            # call_id: a booking made in this call under another number the caller gave
+            # (the prompt allows it) still counts; looking up by caller ID alone missed it.
+            (p.phone, p.seeds, p.call.call_id),
         ).fetchall()
     bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
     truth = None
