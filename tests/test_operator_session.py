@@ -345,3 +345,24 @@ def test_hanging_up_mid_booking_is_a_missed_call(make: Any) -> None:
     call.respond("Yes please")
     assert call.state.holds and not call.state.booked
     assert call.end() == "hung up in the middle of a booking"
+
+
+def test_find_slots_says_how_many_and_each_days_first_and_last(make: Any) -> None:
+    """Reader feedback on the dates post: a sample of slots let the model treat the last one it
+    saw as the last one there was. The tool now returns the count and per-day first/last."""
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    s = make([], OPEN)
+    reg = build_registry(s.cal, CallState("x", "+919800000042"))
+    out = reg.execute(
+        "find_slots",
+        {"service_id": "haircut_men", "day": "Saturday"},
+        ToolContext(run_id=uuid4(), agent="operator"),
+    ).payload
+    sat = out["free_by_day"]["2027-01-09"]
+    assert len(out["slots"]) == 4 and out["showing"].startswith(f"4 of {sat['count']}")
+    assert sat["count"] > 4 and sat["first"] == "09:00"  # Saturdays open at 9
+    assert sat["last"] > out["slots"][-1]["start"][11:16]  # the sample's end isn't the day's

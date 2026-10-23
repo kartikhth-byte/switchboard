@@ -80,6 +80,20 @@ def _is_bare_weekday(phrase: str) -> bool:
     return not any(w in p for w in ("today", "this", "tonight"))
 
 
+SHOWN_SLOTS = 4  # read aloud as options; the rest are summarised in free_by_day
+
+
+def free_by_day(slots: list[Any], salon: Any) -> dict[str, dict[str, Any]]:
+    days: dict[str, dict[str, Any]] = {}
+    for x in sorted(slots, key=lambda x: x.start):
+        local = x.start.astimezone(salon.tz)
+        d = days.setdefault(local.date().isoformat(), {"count": 0, "first": None, "last": None})
+        d["count"] += 1
+        d["first"] = d["first"] or f"{local:%H:%M}"
+        d["last"] = f"{local:%H:%M}"
+    return days
+
+
 def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = None) -> ToolRegistry:
     salon = cal.salon
     reg = ToolRegistry()
@@ -121,18 +135,19 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
                 "error": f"didn't understand {str(exc)!r}: ask the caller to say it another way"
             }
         try:
-            slots = cal.find_slots(
+            every = cal.find_slots(
                 inp.service_id,
                 day_from,
                 day_to,
                 inp.stylist_id,
-                limit=4,
+                limit=10_000,  # the whole window: the model is told how many, not a sample
                 earliest=win.earliest,
                 latest=win.latest,
                 latest_first=win.latest_first,
             )
         except (BookingError, KeyError) as exc:
             return {"error": str(exc).strip("'")}
+        slots = every[:SHOWN_SLOTS]
         hours = {}
         d = day_from
         while d <= day_to:
@@ -145,6 +160,11 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
         }
         if slots:
             out["slots"] = [x.as_dict(salon) for x in slots]
+            # A reader's point on the dates write-up: with only a sample, the model took the
+            # last slot it saw for the last slot there was. Give it the count and each day's
+            # real first and last free start, so "latest" / "anything earlier?" is answerable.
+            out["showing"] = f"{len(slots)} of {len(every)} free times in that window"
+            out["free_by_day"] = free_by_day(every, salon)
             return out
         out["slots"] = []
         if win.earliest or win.latest:
