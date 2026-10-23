@@ -163,7 +163,10 @@ def build_registry(cal: Calendar, st: CallState, notifier: Notifier | None = Non
             # A reader's point on the dates write-up: with only a sample, the model took the
             # last slot it saw for the last slot there was. Give it the count and each day's
             # real first and last free start, so "latest" / "anything earlier?" is answerable.
-            out["showing"] = f"{len(slots)} of {len(every)} free times in that window"
+            out["showing"] = (
+                f"{len(slots)} of {len(every)} free times in that window; for any other time,"
+                " search again with that time"
+            )
             out["free_by_day"] = free_by_day(every, salon)
             return out
         out["slots"] = []
