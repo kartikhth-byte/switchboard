@@ -233,18 +233,19 @@ def run_suite(
 
 
 def to_markdown(report: dict[str, Any]) -> str:
+    # Only small no-split sets ran (e.g. --sets slots): don't call that the held-out split.
+    split = "all" if report["splits_used"] == ["all"] else report["split"]
     lines = [
-        f"### {report['agent']} — split `{report['split']}`"
-        + (" (smoke)" if report["smoke"] else ""),
+        f"### {report['agent']} — split `{split}`" + (" (smoke)" if report["smoke"] else ""),
         "",
         {
             "test": "Reported on the held-out test split.",
             "dev": "Dev split (used for tuning): not a reportable result.",
             "all": "All cases (no split).",
-        }.get(report["split"], "")
+        }.get(split, "")
         + (
             " Sets under 30 cases are pass/fail tests with no split."
-            if "all" in report["splits_used"] and report["split"] != "all"
+            if "all" in report["splits_used"] and split != "all"
             else ""
         ),
         "",
