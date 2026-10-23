@@ -122,6 +122,7 @@ def run_case(suite: EvalSuite, case: EvalCase, split: str) -> EvalResult:
             "tool_log",
             "transferred",
             "bookings",
+            "ungrounded",
         )
         if k in out.data
     }

@@ -9,11 +9,20 @@
 - **faq.jsonl (30):** 24 answerable from the salon profile/config with the facts a correct answer
   must contain (digits or spoken forms), 3 the salon doesn't offer, 3 the profile doesn't cover
   (expect an offer of a callback or transfer).
-- **slots.jsonl (6, added 2026-10-23):** questions only the whole day's availability answers,
+- **slots.jsonl (8, added 2026-10-23):** questions only the whole day's availability answers,
   phrased so the time resolver doesn't catch them ("how late", "after work", "is 3:15 free?" after
   a list). Men's haircuts with Farhan (the only stylist for it), seeded bookings, so each case has
-  exactly one right start time. Built to compare `find_slots` with and without its count and
+  exactly one right start time. 2 more (women's haircut, blow-dry) share the service across
+  stylists, so the day's first/last is across everyone. Built to compare `find_slots` with and without its count and
   per-day first/last (`OPERATOR_SLOT_SUMMARY=off`). Weeks 100-105, clear of the other sets.
+- **times_grounded (all calls and slots, added 2026-10-23):** every clock time the agent says
+  is checked by code against a snapshot of the calendar taken before the call (Postgres, the
+  case's service): offers must be real free starts or bookings, "latest/earliest" must be the
+  day's real last/first, "taken/isn't free" must not be free. Calibrated on 63 stored calls
+  (201 sentences with times): it flagged 4 claims, all real agent errors; 30 passed claims
+  hand-checked, all correct. Limits: one service per call; the day comes from the sentence
+  (weekday, ordinal, "tomorrow") or the case's date; a time without am/pm passes if either
+  reading is right.
 - **Labels:** expected DB end state per call (service, stylist if specified, date, start-time
   window; seeded booking cancelled); facts per FAQ. Checked by code against Postgres.
 - **Isolation:** each call runs in its own calendar week from 2027-01-05; that week is reset

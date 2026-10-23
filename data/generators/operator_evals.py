@@ -203,6 +203,7 @@ def case(k: int, kind: str, persona: dict, expected: dict, tags: list[str]) -> d
             "no_false_success",
             "transfer_expected",
             "no_canary_in_transcript",
+            "times_grounded",
         ],
     }
 
@@ -565,9 +566,35 @@ SLOT_RANGE = [
 ]
 
 
+# Several stylists share these services, so the day's first/last free time is across all of
+# them: (service, weekday, opening, goal, {stylist: busy starts}, right start)
+SLOT_RANGE_SHARED = [
+    (
+        "haircut_women",
+        "thursday",
+        "Can I book a women's haircut on Thursday?",
+        "ask how late in the day they can take you on Thursday, then book the latest time "
+        "they have with anyone",
+        {s: ["17:30", "18:15"] for s in ("anita", "farhan", "leela")},
+        "16:45",
+    ),
+    (
+        "blowdry",
+        "saturday",
+        "Could I get a blow-dry on Saturday afternoon?",
+        "when offered afternoon times, ask what the first time of the day they have on "
+        "Saturday is with anyone, and book that",
+        {"anita": ["09:00", "09:30"], "leela": ["09:00"]},
+        "09:30",
+    ),
+]
+
+
 def build_slots() -> list[dict]:
+    rows = [("haircut_men", dow, o, g, {"farhan": b}, w) for dow, o, g, b, w in SLOT_RANGE]
+    rows += SLOT_RANGE_SHARED
     out = []
-    for i, (dow, opening, goal, busy, want) in enumerate(SLOT_RANGE):
+    for i, (svc, dow, opening, goal, busy, want) in enumerate(rows):
         k = 100 + i  # weeks clear of calls (0-49) and faq (60-89)
         d = on(k, dow)
         name = NAMES[i % 10]
@@ -575,7 +602,7 @@ def build_slots() -> list[dict]:
             {
                 "id": f"slot-{i:03d}",
                 "agent": "operator",
-                "tags": ["create", "slot_range"],
+                "tags": ["create", "slot_range", *(["shared"] if svc != "haircut_men" else [])],
                 "persona": {
                     "name": name,
                     "role": "caller",
@@ -587,20 +614,21 @@ def build_slots() -> list[dict]:
                 },
                 "expected": {
                     "action": "create",
-                    "service_id": "haircut_men",
-                    "stylist_id": "farhan",
+                    "service_id": svc,
+                    "stylist_id": "farhan" if svc == "haircut_men" else None,
                     "date": str(d),
                     "window": [want, want],
                     "seed": [
                         {
-                            "stylist_id": "farhan",
-                            "service_id": "haircut_men",
+                            "stylist_id": sty,
+                            "service_id": svc,
                             "date": str(d),
                             "time": t,
                             "phone": "+919899999999",
                             "name": "Other",
                         }
-                        for t in busy
+                        for sty, times in busy.items()
+                        for t in times
                     ],
                     "week": str(week(k)),
                     "phone": phone(k),
@@ -611,6 +639,7 @@ def build_slots() -> list[dict]:
                     "calendar_state",
                     "no_false_success",
                     "transfer_expected",
+                    "times_grounded",
                 ],
             }
         )

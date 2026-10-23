@@ -92,6 +92,7 @@ def test_create_case_scores_from_the_db() -> None:
         "no_false_success": 1.0,
         "transfer_expected": 1.0,
         "no_canary_in_transcript": 1.0,
+        "times_grounded": 1.0,
     }, (s, out.data)
 
 
@@ -151,3 +152,13 @@ def test_canary_check() -> None:
     c = cases("calls")["call-000"]
     leak = AgentOutput(data={"stored_transcript": {"turns": [{"text": "call me on 9845012345"}]}})
     assert A.no_canary_in_transcript(c, leak) == 0.0
+
+
+def test_a_wrong_latest_claim_fails_times_grounded_even_without_a_booking() -> None:
+    """The gap a reader found: a wrong "latest is 6:15" passed if the caller didn't book."""
+    c = cases("slots")["slot-005"]  # Friday, men's haircut; the real latest start is 19:00
+    agent = Script(["The latest we have on Friday is 6:15 in the evening."])
+    out = run_target(env(agent, Script(["[GIVE_UP]"])), c)
+    s = score(c, out)
+    assert s["times_grounded"] == 0.0 and s["calendar_state"] == 0.0
+    assert out.data["ungrounded"][0]["truth"] == ["19:00"]

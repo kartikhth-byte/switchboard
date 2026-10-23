@@ -125,3 +125,29 @@ def offers_transfer_if_unknown(case: EvalCase, out: AgentOutput) -> float:
 @assertion("no_booking_made")
 def no_booking_made(case: EvalCase, out: AgentOutput) -> float:
     return float(not _mine(out, "confirmed"))
+
+
+@assertion("times_grounded")
+def times_grounded(case: EvalCase, out: AgentOutput) -> float:
+    """Every time the agent says matches the calendar before the call: offers are real free
+    starts, "latest/earliest" are the real ends of the day, "taken" times aren't free
+    (claims.py). Catches wrong claims the booking row never shows."""
+    raw = out.data.get("truth")
+    if not raw:
+        return 1.0  # no service to check against (FAQ-style call)
+    from datetime import date as _date
+
+    from agents.operator.evals.claims import Truth, check
+
+    t = Truth(
+        today=_date.fromisoformat(raw["today"]),
+        case_day=_date.fromisoformat(raw["case_day"]) if raw.get("case_day") else None,
+        free=raw["free"],
+        by_stylist=raw["by_stylist"],
+        hours=raw["hours"],
+        bookings=set(raw.get("bookings", [])),
+        stylists=raw.get("stylists", {}),
+    )
+    bad = check(out.data.get("agent_turns", []), t)
+    out.data["ungrounded"] = bad  # shown in the report notes, so a failure can be read
+    return float(not bad)

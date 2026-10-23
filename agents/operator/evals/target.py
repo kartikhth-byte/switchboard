@@ -56,6 +56,7 @@ class Prepared:
     store: ConversationStore
     phone: str
     seeds: list[str]
+    truth: dict[str, Any] | None = None  # the calendar before the call (claims.py)
 
 
 def prepare(env: EvalEnv, case: EvalCase, kind: str = "eval") -> Prepared:
@@ -85,7 +86,44 @@ def prepare(env: EvalEnv, case: EvalCase, kind: str = "eval") -> Prepared:
         langfuse=env.langfuse,
         run_kind="eval",
     )
-    return Prepared(call, store, phone, seeds)
+    return Prepared(call, store, phone, seeds, _truth(env, cal, case, week, now))
+
+
+def _truth(
+    env: EvalEnv, cal: Calendar, case: EvalCase, week: date, now: datetime
+) -> dict[str, Any] | None:
+    """Snapshot what was really free before the caller spoke, for the case's service: the
+    ground truth `times_grounded` checks every time the agent says against."""
+    svc = case.expected.get("service_id")
+    if not svc:
+        return None
+    lo, hi = week - timedelta(days=2), week + timedelta(days=9)
+
+    def by_day(slots: list[Any]) -> dict[str, list[str]]:
+        out: dict[str, list[str]] = {}
+        for x in sorted(slots, key=lambda x: x.start):
+            local = x.start.astimezone(env.salon.tz)
+            out.setdefault(str(local.date()), []).append(f"{local:%H:%M}")
+        return out
+
+    hours: dict[str, list[str]] = {}
+    d = lo
+    while d <= hi:
+        sp = env.salon.opening(d)
+        if sp:
+            hours[str(d)] = [f"{sp[0]:%H:%M}", f"{sp[1]:%H:%M}"]
+        d += timedelta(days=1)
+    skilled = [st for st in env.salon.stylists if svc in st.skills]
+    return {
+        "today": str(now.date()),
+        "case_day": case.expected.get("date"),
+        "free": by_day(cal.find_slots(svc, lo, hi, None, limit=10_000)),
+        "by_stylist": {
+            st.id: by_day(cal.find_slots(svc, lo, hi, st.id, limit=10_000)) for st in skilled
+        },
+        "hours": hours,
+        "stylists": {st.name.lower(): st.id for st in env.salon.stylists},
+    }
 
 
 def collect(
@@ -107,6 +145,9 @@ def collect(
             (p.phone, p.seeds),
         ).fetchall()
     bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
+    truth = None
+    if p.truth is not None:  # every booking this call touched is a time the agent may name
+        truth = {**p.truth, "bookings": sorted({b["start"][11:16] for b in bookings})}
     return AgentOutput(
         answer=turns[-1].text if turns else "",
         transcript=transcript,
@@ -121,6 +162,7 @@ def collect(
             "bookings": bookings,
             "stored_transcript": p.store.load(p.call.call_id),
             "outcome": outcome,
+            "truth": truth,
             **(extra or {}),
         },
     )
