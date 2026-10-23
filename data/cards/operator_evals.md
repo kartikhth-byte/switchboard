@@ -17,12 +17,13 @@
   per-day first/last (`OPERATOR_SLOT_SUMMARY=off`). Weeks 100-105, clear of the other sets.
 - **times_grounded (all calls and slots, added 2026-10-23):** every clock time the agent says
   is checked by code against a snapshot of the calendar taken before the call (Postgres, the
-  case's service): offers must be real free starts or bookings, "latest/earliest" must be the
-  day's real last/first, "taken/isn't free" must not be free. Calibrated on 63 stored calls
-  (201 sentences with times): it flagged 4 claims, all real agent errors; 30 passed claims
-  hand-checked, all correct. Limits: one service per call; the day comes from the sentence
-  (weekday, ordinal, "tomorrow") or the case's date; a time without am/pm passes if either
-  reading is right.
+  case's service): offers must be real free starts or bookings on that day, "latest/earliest"
+  must be the day's (or the stated window's) real last/first, "taken/isn't free" must not be
+  free. Each time is matched to its own day and stylist. Calibrated twice (second time after
+  an independent review): 111 stored calls, 358 sentences with times; 6 flagged, all real agent
+  errors; every passed range or negative claim (22) and a random 30 passed claims hand-checked,
+  all correct. Limits: one service per call (claims about another service can be misjudged);
+  a time without am/pm passes if either reading is right.
 - **Labels:** expected DB end state per call (service, stylist if specified, date, start-time
   window; seeded booking cancelled); facts per FAQ. Checked by code against Postgres.
 - **Isolation:** each call runs in its own calendar week from 2027-01-05; that week is reset

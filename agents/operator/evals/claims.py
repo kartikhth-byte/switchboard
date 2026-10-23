@@ -3,17 +3,21 @@
 The booking-row check only sees how a call ended. A wrong "the latest is 6:15", an offered slot
 that doesn't exist, or "2:30 is taken" when it's free all pass it unless they change the
 booking. So each agent sentence with a clock time is checked against a snapshot of the
-calendar taken before the call (`truth`, built in target.prepare from Postgres):
+calendar taken before the call (`truth`, built in target.prepare from Postgres).
 
-- range claim ("latest", "last", "earliest", "first", "until"): the time must be that day's
-  real last/first free start, for the stylist named in the sentence if exactly one is;
-- negative claim ("isn't free", "taken", "not available", "sorry"): the time must NOT be free;
-- anything else: the time must be a real free start, an existing or new booking, or (in a
-  sentence about opening hours) an opening/closing time.
+Each time is checked on its own, in its own clause, against its own day and stylist (the
+nearest day / stylist mentioned; else the sentence's single one; else the case's day / all
+stylists):
+- range claim ("latest", "last", "earliest", "first free/available/..."): the day's real
+  last/first free start; with a window in the clause ("after 6", "in the afternoon") the
+  window's real last/first;
+- negative claim ("isn't free", "taken", "not available", "gone"): must NOT be free;
+- anything else: a real free start, or a booking on that day, or (in a clause about opening
+  hours) that day's opening/closing time.
 
-Times with no am/pm are read both ways (4 -> 04:00 or 16:00); the claim passes if either
-reading does. Known limits: one service per case (the case's), and a day is taken from a
-weekday/ordinal/"tomorrow" in the sentence, else the case's own date.
+Times with no am/pm are read both ways (4 -> 04:00 or 16:00); a claim passes if either reading
+does. Known limit: free times are for the case's service only, so a claim about another
+service can be misjudged either way.
 """
 
 from __future__ import annotations
@@ -27,81 +31,109 @@ WORDS = {
     "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
     "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,
 }  # fmt: skip
-NUM = r"(\d{1,2}|" + "|".join(WORDS) + r")"
-PERIOD = r"(?:\s*(am|pm|a\.m\.|p\.m\.)|\s+(?:o'?clock\s+)?in the (morning|afternoon|evening))?"
-TIME = re.compile(
-    rf"\b(?:(\d{{1,2}}):(\d{{2}}){PERIOD}"  # 6:15, 6:15 pm, 6:15 in the evening
-    rf"|{NUM}\s*(am|pm|a\.m\.|p\.m\.)"  # 6pm, six pm
-    rf"|{NUM}\s+o'?clock(?:\s+(?:in the (morning|afternoon|evening)|noon))?"  # 6 o'clock …
-    rf"|{NUM}\s+in the (morning|afternoon|evening)"  # 6 in the evening
-    # "at 6", ", 10" in a list; not a duration, price, date or address ("at 12 Fontainhas")
-    rf"|(?:at|or|,|around|about|by)\s+(\d{{1,2}})(?![:\d]"
-    rf"|\s*(?:minutes?|mins?|hours?|hrs?|rupees|st|nd|rd|th|people|days?|o'?clock|in the"
-    rf"|am|pm|a\.m|p\.m|noon)|(?-i:\s+[A-Z][a-z]))"
-    rf"|(?:12\s+)?(noon|midday))",
+NUM = r"(?P<h>\d{1,2}|" + "|".join(WORDS) + r")"
+AMPM = r"(?P<p>am|pm|a\.m\.|p\.m\.)"
+PART = r"in the (?P<part>morning|afternoon|evening)"
+NOT_A_TIME = (  # what follows a bare number that makes it a duration, price, date or address
+    r"(?![:\d]|\s*(?:minutes?|mins?|hours?|hrs?|rupees|rs\b|st\b|nd\b|rd\b|th\b|people|days?"
+    r"|weeks?|o'?clock|in the|am\b|pm\b|a\.m|p\.m|noon|percent|%)|(?-i:\s+[A-Z][a-z]))"
+)
+PATTERNS = [
+    # 6:15, 6:15 pm, 6:15 in the evening; not a duration ("takes 1:30")
+    re.compile(
+        rf"(?<!takes )(?<!lasts )\b(?P<h>\d{{1,2}}):(?P<m>\d{{2}})"
+        rf"(?:\s*{AMPM}|\s+(?:o'?clock\s+)?{PART})?",
+        re.I,
+    ),
+    re.compile(rf"\b{NUM}\s*{AMPM}", re.I),  # 6pm, six pm
+    re.compile(rf"\b{NUM}\s+o'?clock(?:\s+(?:{PART}|(?P<noon>noon)))?", re.I),
+    re.compile(rf"\b{NUM}\s+{PART}", re.I),  # 6 in the evening
+    re.compile(r"\b(?:12\s+)?(?P<noon>noon|midday)\b", re.I),
+    # "at 6", "or ten", ", 10" in a list
+    re.compile(rf"(?:\bat|\bor|,|\baround|\babout|\bby|\bfrom)\s+{NUM}\b{NOT_A_TIME}", re.I),
+    # the head of a list: "10, 10:15 or 10:30"
+    re.compile(r"(?<!the )\b(?P<h>\d{1,2})(?=,\s*\d{1,2}(?::\d{2})?\b)", re.I),
+]
+RANGE_LATE = re.compile(r"\b(latest|last|as late)\b", re.I)
+RANGE_EARLY = re.compile(
+    r"\b(earliest|first (?:free|available|opening|slot|time|thing|appointment)|as early)\b",
     re.I,
 )
-RANGE_LATE = re.compile(r"\b(latest|last|until|as late)\b", re.I)
-RANGE_EARLY = re.compile(
-    r"\b(earliest|first (?:free|available|opening|slot|time|thing)|as early)\b", re.I
-)
 NEGATIVE = re.compile(
-    r"\b(isn'?t|is not|not (?:free|available|open)|no longer|taken|booked up|fully booked"
-    r"|unavailable|don'?t have|do not have|nothing|sorry|unfortunately)\b",
+    r"\b(isn'?t|is not|not (?:free|available|open)|no longer|taken|gone|booked up|fully booked"
+    r"|unavailable|don'?t have|do not have|nothing)\b",
+    re.I,
+)
+WINDOW = re.compile(
+    r"\b(?:(?P<dir>after|before|from)\s+(?P<h>\d{1,2})(?::(?P<m>\d{2}))?"
+    r"(?:\s*(?P<p>am|pm)|\s+in the (?P<part2>morning|afternoon|evening))?"
+    r"|in the (?P<part>morning|afternoon|evening)|(?P<work>after work)|(?P<lunch>lunchtime))",
     re.I,
 )
 HOURS = re.compile(r"\b(open|opens|close|closes|closing|hours|closed)\b", re.I)
+CLAUSE = re.compile(r",?\s+\b(?:but|so|although|though|however|whereas|and)\b|;")
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-ORDINAL = re.compile(r"\bthe (\d{1,2})(?:st|nd|rd|th)\b", re.I)
+DAY_REF = re.compile(
+    r"\b(?P<wd>monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b"
+    r"|\bthe (?P<ord>\d{1,2})(?:st|nd|rd|th)\b|\b(?P<rel>tomorrow|today|tonight)\b",
+    re.I,
+)
 
 
 def _n(s: str) -> int:
     return WORDS.get(s.lower(), 0) or int(s)
 
 
-def times_in(sentence: str) -> list[set[str]]:
-    """Each clock time in the sentence, as the set of HH:MM readings it could mean."""
-    return [reads for _, reads in spans(sentence)]
+def _reads(h: int, mm: int, period: str) -> set[str]:
+    p = period.lower().replace(".", "")
+    if h > 12 or p == "noon":
+        hs = {h}
+    elif p in ("am", "morning"):
+        hs = {h % 12}
+    elif p in ("pm", "afternoon", "evening"):
+        hs = {h % 12 + 12}
+    else:
+        hs = {h % 12, h % 12 + 12} if h != 12 else {12}
+    return {f"{x:02d}:{mm:02d}" for x in hs}
 
 
-def spans(sentence: str) -> list[tuple[int, set[str]]]:
-    out: list[tuple[int, set[str]]] = []
-    for m in TIME.finditer(sentence):
-        g = m.groups()
-        if g[0]:  # H:MM
-            h, mm, period = int(g[0]), int(g[1]), (g[2] or g[3] or "")
-        elif g[4]:
-            h, mm, period = _n(g[4]), 0, g[5]
-        elif g[6]:
-            h, mm, period = _n(g[6]), 0, g[7] or ("noon" if "noon" in m.group(0).lower() else "")
-        elif g[8]:
-            h, mm, period = _n(g[8]), 0, g[9]
-        elif g[10]:
-            h, mm, period = int(g[10]), 0, ""
-        else:  # noon / midday
-            h, mm, period = 12, 0, "noon"
-        if not (1 <= h <= 12 or (h <= 23 and g[0])) or mm > 59:
-            continue
-        p = period.lower().replace(".", "")
-        if h > 12 or p == "noon":
-            reads = {h}
-        elif p in ("am", "morning"):
-            reads = {h % 12}
-        elif p in ("pm", "afternoon", "evening"):
-            reads = {h % 12 + 12}
-        else:
-            reads = {h % 12, h % 12 + 12} if h != 12 else {12}
-        r = {f"{x:02d}:{mm:02d}" for x in reads}
-        if out and out[-1][1] == r and m.start() - out[-1][0] < 12:
-            continue  # "12 noon" read twice
-        out.append((m.start(), r))
+def spans(text: str) -> list[tuple[int, set[str]]]:
+    """Each clock time in the text: (position, the HH:MM readings it could mean)."""
+    return [(a, reads) for a, _, reads in _spans(text)]
+
+
+def _spans(text: str) -> list[tuple[int, int, set[str]]]:
+    found: list[tuple[int, int, set[str]]] = []
+    for pat in PATTERNS:
+        for m in pat.finditer(text):
+            g = m.groupdict()
+            if g.get("noon"):
+                h, mm, period = 12, 0, "noon"
+            else:
+                h, mm = _n(g["h"]), int(g.get("m") or 0)
+                period = g.get("p") or g.get("part") or ""
+            if not (1 <= h <= 23) or mm > 59 or (h > 12 and not g.get("m")):
+                continue
+            start = m.start("h") if g.get("h") else m.start()
+            found.append((start, m.end(), _reads(h, mm, period)))
+    out: list[tuple[int, int, set[str]]] = []
+    end = -1
+    for start, stop, reads in sorted(found, key=lambda x: (x[0], -x[1])):
+        if start < end:
+            continue  # inside a longer match already taken ("6:15 in the evening", "12 noon")
+        out.append((start, stop, reads))
+        end = stop
     return out
+
+
+def times_in(text: str) -> list[set[str]]:
+    return [reads for _, reads in spans(text)]
 
 
 @dataclass
 class Truth:
     """The calendar before the call: free starts for the case's service, per day, overall and
-    per stylist; opening hours; booking start times (seeded and made in the call)."""
+    per stylist; opening hours; bookings ("YYYY-MM-DD HH:MM", seeded and made in the call)."""
 
     today: date
     case_day: date | None
@@ -111,44 +143,48 @@ class Truth:
     bookings: set[str] = field(default_factory=set)
     stylists: dict[str, str] = field(default_factory=dict)  # spoken name (lower) -> id
 
-    def day_of(self, sentence: str) -> str | None:
-        s = sentence.lower()
-        if "tomorrow" in s:
-            return str(self.today + timedelta(days=1))
-        if "today" in s or "tonight" in s:
-            return str(self.today)
-        if m := ORDINAL.search(s):
-            hits = [d for d in self.free if int(d[8:10]) == int(m.group(1))]
-            if hits:
-                return hits[0]
-        for i, name in enumerate(DAYS):
-            if name in s:
-                cands = sorted(d for d in self.hours if date.fromisoformat(d).weekday() == i)
-                after = [d for d in cands if d >= str(self.today)]
-                return (after or cands or [None])[0]
-        return str(self.case_day) if self.case_day else None
+    def resolve_day(self, m: re.Match[str]) -> str | None:
+        g = m.groupdict()
+        if g["rel"]:
+            rel = g["rel"].lower()
+            return str(self.today + timedelta(days=1 if rel == "tomorrow" else 0))
+        if g["ord"]:
+            hits = sorted(d for d in self.hours if int(d[8:10]) == int(g["ord"]))
+            after = [d for d in hits if d >= str(self.today)]
+            return (after or hits or [None])[0]
+        i = DAYS.index(g["wd"].lower())
+        cands = sorted(d for d in self.hours if date.fromisoformat(d).weekday() == i)
+        after = [d for d in cands if d >= str(self.today)]
+        return (after or cands or [None])[0]
 
-    def explicit_day(self, sentence: str) -> bool:
-        s = sentence.lower()
-        return bool(
-            ORDINAL.search(s) or any(d in s for d in DAYS) or re.search(r"tomorrow|today", s)
-        )
-
-    def free_on(self, day: str | None, sentence: str) -> list[str]:
-        named = [sid for n, sid in self.stylists.items() if re.search(rf"\b{n}\b", sentence, re.I)]
-        src = self.by_stylist.get(named[0], {}) if len(named) == 1 else self.free
+    def free_for(self, day: str | None, stylist: str | None) -> list[str]:
+        src = self.by_stylist.get(stylist, {}) if stylist else self.free
         if day is None:
             return sorted({t for ts in src.values() for t in ts})
         return src.get(day, [])
 
 
-def _kinds(sentence: str, found: list[tuple[int, set[str]]], skip: set[int]) -> list[str]:
+def _pick(pos: int, marks: list[tuple[int, Any]], lo: int, hi: int) -> Any:
+    """The day or stylist a time belongs to: a mention in its own clause (the one before it if
+    there is one: "Anita has 4pm and Leela has 10am"), else the last one before it in the
+    sentence, else the nearest."""
+    if not marks:
+        return None
+    own = [m for m in marks if lo <= m[0] < hi]
+    pool = own or marks
+    before = [m for m in pool if m[0] <= pos]
+    if before:
+        return max(before, key=lambda m: m[0])[1]
+    return min(pool, key=lambda m: abs(m[0] - pos))[1]
+
+
+def _kinds(clause: str, found: list[tuple[int, set[str]]], skip: set[int]) -> list[str]:
     """Which claim each time makes. A range or negative word applies to the time nearest it,
     so "the earliest is 9, or 9:15 or 9:30" checks 9 as the earliest and the rest as offers."""
     kinds = ["offer"] * len(found)
-    marks = [(m.start(), "late") for m in RANGE_LATE.finditer(sentence)]
-    marks += [(m.start(), "early") for m in RANGE_EARLY.finditer(sentence)]
-    marks += [(m.start(), "negative") for m in NEGATIVE.finditer(sentence)]
+    marks = [(m.start(), "late") for m in RANGE_LATE.finditer(clause)]
+    marks += [(m.start(), "early") for m in RANGE_EARLY.finditer(clause)]
+    marks += [(m.start(), "negative") for m in NEGATIVE.finditer(clause)]
     order = {"late": 0, "early": 0, "negative": 1}
     for pos, kind in sorted(marks, key=lambda k: order[k[1]]):
         free_idx = [i for i in range(len(found)) if i not in skip and kinds[i] == "offer"]
@@ -159,52 +195,100 @@ def _kinds(sentence: str, found: list[tuple[int, set[str]]], skip: set[int]) -> 
     return kinds
 
 
+def _in_window(clause: str, free: list[str]) -> list[str]:
+    """A range claim with a window ("the first after 6", "the latest in the morning") is about
+    that window, not the whole day. The times themselves are blanked first, so the "in the
+    afternoon" of "6:15 in the afternoon" isn't read as a window."""
+    for a, b, _ in _spans(clause):
+        clause = clause[:a] + " " * (b - a) + clause[b:]
+    m = WINDOW.search(clause)
+    if not m:
+        return free
+    g = m.groupdict()
+    if g["work"]:
+        return [t for t in free if t >= "17:30"]
+    if g["lunch"]:
+        return [t for t in free if "12:00" <= t <= "14:00"]
+    if g["part"] and not g["dir"]:
+        lo, hi = {"morning": ("00:00", "11:59"), "afternoon": ("12:00", "16:59")}.get(
+            g["part"].lower(), ("17:00", "23:59")
+        )
+        return [t for t in free if lo <= t <= hi]
+    reads = _reads(int(g["h"]), int(g["m"] or 0), g["p"] or g["part2"] or "")
+    edge = max(reads)  # an ambiguous "after 6" in a salon means the evening
+    if g["dir"].lower() == "before":
+        return [t for t in free if t < edge]
+    return [t for t in free if t >= edge]  # "after 6" / "from 6": 6 itself included
+
+
 def check(agent_turns: list[str], truth: Truth) -> list[dict[str, Any]]:
     """Every ungrounded time claim, with the sentence and why. Empty list = all grounded."""
     bad: list[dict[str, Any]] = []
     for turn in agent_turns:
         for sentence in re.split(r"(?<=[.?!])\s+", turn):
-            if not spans(sentence):
-                continue
-            day = truth.day_of(sentence)  # day and stylist come from the whole sentence
-            free = truth.free_on(day, sentence)
-            for clause in CLAUSE.split(sentence):  # "5 isn't free, but 6 is": two claims
-                bad += _check_clause(clause, sentence, day, free, truth)
+            if spans(sentence):
+                bad += _check_sentence(sentence, truth)
     return bad
 
 
-CLAUSE = re.compile(r",?\s+\b(?:but|so|although|though|however|whereas)\b|;")
-
-
-def _check_clause(
-    clause: str, sentence: str, day: str | None, free: list[str], truth: Truth
-) -> list[dict[str, Any]]:
-    found = spans(clause)
-    hours = set(truth.hours.get(day or "", [])) if HOURS.search(clause) else set()
-    skip = {i for i, (_, reads) in enumerate(found) if reads & hours}  # "we open at 10"
+def _check_sentence(sentence: str, truth: Truth) -> list[dict[str, Any]]:
+    days = [(m.start(), truth.resolve_day(m)) for m in DAY_REF.finditer(sentence)]
+    names = [
+        (m.start(), sid)
+        for name, sid in truth.stylists.items()
+        for m in re.finditer(rf"\b{name}\b", sentence, re.I)
+    ]
+    default_day = str(truth.case_day) if truth.case_day else None
     bad: list[dict[str, Any]] = []
-    for i, ((_, reads), kind) in enumerate(zip(found, _kinds(clause, found, skip), strict=True)):
-        if i in skip:
+    offset = 0
+    for clause in CLAUSE.split(sentence):
+        at = sentence.find(clause, offset)
+        offset = at + len(clause) if at >= 0 else offset
+        found = spans(clause)
+        if not found:
             continue
-        if kind in ("late", "early"):
-            want = (free[-1] if kind == "late" else free[0]) if free else None
-            ok = want in reads
-        elif kind == "negative":
-            ok = not (reads & set(free))
-        else:
-            ok = bool(reads & (set(free) | truth.bookings))
-            if not ok and not truth.explicit_day(sentence):
-                # no day named: it may be about another day discussed earlier
-                ok = bool(reads & set(truth.free_on(None, sentence)))
-        if not ok:
-            end = free[-1:] if kind == "late" else free[:1]
-            bad.append(
-                {
-                    "kind": kind,
-                    "time": sorted(reads),
-                    "day": day,
-                    "sentence": sentence[:200],
-                    "truth": end if kind in ("late", "early") else [],
-                }
-            )
+        hours_word = bool(HOURS.search(clause))
+
+        lo, hi = max(at, 0), max(at, 0) + len(clause)
+
+        def where(pos: int, lo: int = lo, hi: int = hi) -> tuple[str | None, str | None]:
+            p = lo + pos
+            return (_pick(p, days, lo, hi) if days else default_day), _pick(p, names, lo, hi)
+
+        skip = {  # "we open at 10", "Sunday closes at 5": the day's hours, not a slot
+            i
+            for i, (pos, reads) in enumerate(found)
+            if hours_word and reads & set(truth.hours.get(where(pos)[0] or "", []))
+        }
+        for i, ((pos, reads), kind) in enumerate(
+            zip(found, _kinds(clause, found, skip), strict=True)
+        ):
+            if i in skip:
+                continue
+            day, stylist = where(pos)
+            free = truth.free_for(day, stylist)
+            if kind in ("late", "early"):
+                scope = _in_window(clause, free)
+                want = (scope[-1] if kind == "late" else scope[0]) if scope else None
+                ok = want in reads
+                expected = [want] if want else []
+            elif kind == "negative":
+                ok = not (reads & set(free))
+                expected = []
+            else:
+                ok = bool(reads & set(free)) or any(f"{day} {r}" in truth.bookings for r in reads)
+                if not ok and not days:  # no day named: may be about another day discussed
+                    ok = bool(reads & set(truth.free_for(None, stylist)))
+                expected = []
+            if not ok:
+                bad.append(
+                    {
+                        "kind": kind,
+                        "time": sorted(reads),
+                        "day": day,
+                        "stylist": stylist,
+                        "sentence": sentence[:200],
+                        "truth": expected,
+                    }
+                )
     return bad

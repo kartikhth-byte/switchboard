@@ -149,7 +149,10 @@ def collect(
     bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
     truth = None
     if p.truth is not None:  # every booking this call touched is a time the agent may name
-        truth = {**p.truth, "bookings": sorted({b["start"][11:16] for b in bookings})}
+        truth = {
+            **p.truth,
+            "bookings": sorted({f"{b['start'][:10]} {b['start'][11:16]}" for b in bookings}),
+        }
     return AgentOutput(
         answer=turns[-1].text if turns else "",
         transcript=transcript,

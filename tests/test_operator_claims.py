@@ -17,7 +17,7 @@ def truth(free: list[str], by: dict[str, list[str]] | None = None, booked: set[s
         free={FRI: free},
         by_stylist={k: {FRI: v} for k, v in (by or {}).items()},
         hours={FRI: ["10:00", "20:00"]},
-        bookings=booked or set(),
+        bookings={f"{FRI} {t}" for t in (booked or set())},
         stylists={"anita": "anita", "farhan": "farhan", "leela": "leela"},
     )
 
@@ -79,3 +79,47 @@ def test_a_named_stylist_is_checked_on_their_own_diary() -> None:
     t = truth(["17:00", "18:00"], by={"anita": ["17:00"], "leela": ["18:00"]})
     assert kinds("Anita has 6 in the evening on Friday.", t) == [("offer", ["18:00"])]
     assert kinds("Leela has 6 in the evening on Friday.", t) == []
+
+
+def test_cases_from_the_second_review() -> None:
+    """Each line is a misjudgement the second review found; all now judged correctly."""
+    sat = "2027-01-09"
+    t = Truth(
+        today=date(2027, 1, 5),
+        case_day=date(2027, 1, 8),
+        free={FRI: ["10:00", "16:00", "18:15"], sat: ["16:00"]},
+        by_stylist={
+            "anita": {FRI: ["10:00"]},
+            "leela": {FRI: ["16:00"]},
+        },
+        hours={FRI: ["10:00", "20:00"], sat: ["09:00", "20:00"]},
+        bookings={"2027-01-05 17:00"},
+        stylists={"anita": "anita", "farhan": "farhan", "leela": "leela"},
+    )
+    # a bare or word-number first item in a list is parsed (was silently skipped)
+    assert kinds("We can do ten on Friday.", t) == []
+    assert kinds("On Friday I have 11, 10:15 or 10:30.", t)[0] == ("offer", ["11:00", "23:00"])
+    # two stylists: each time is checked against the nearest one (was the union)
+    assert kinds("Anita has 4pm and Leela has 10am on Friday.", t) == [
+        ("offer", ["16:00"]),
+        ("offer", ["10:00"]),
+    ]
+    # two days: each time against its own day
+    assert kinds("Friday at 10am or Saturday at 4pm.", t) == []
+    assert kinds("Friday at 4pm or Saturday at 10am.", t) == [("offer", ["10:00"])]
+    # a booking on another day doesn't make a time free today
+    assert kinds("I can do Friday at 5pm.", t) == [("offer", ["17:00"])]
+    # "sorry" alone isn't a negative claim
+    assert kinds("Sorry for the wait, 10am is free on Friday.", t) == []
+    # hours skip is per clause: a booking offer at closing time isn't excused
+    assert kinds("We close at 8pm and I can book you at 8pm on Friday.", t) == [
+        ("offer", ["20:00"])
+    ]
+    # a range inside a window is about the window
+    assert kinds("The first slot after 6 on Friday is 6:15.", t) == []
+    # a time's own "in the afternoon" isn't a window; "already booked you" isn't a negative
+    t2 = truth(["17:00", "18:15"])
+    assert kinds("The latest slot is 6:15 in the afternoon on Friday.", t2) == []
+    assert kinds("I've already booked you at 6:15 in the evening on Friday.", t2) == []
+    # durations aren't clock times
+    assert times_in("Highlights takes 1:30 or so.") == []
