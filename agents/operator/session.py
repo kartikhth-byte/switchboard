@@ -63,6 +63,7 @@ class CallSession:
     transfer_dialed: bool = False  # phone: the call was handed to the staff number
     missed: str | None = None  # why staff must call back, decided at end() (VOICE-002)
     _ended: bool = False
+    _end_done: bool = False
     _respond_lock: threading.Lock = field(default_factory=threading.Lock)
     turns: list[dict[str, str]] = field(default_factory=list)
     on_tools: Any = None  # voice: called once when a turn starts using tools (say the filler)
@@ -186,7 +187,10 @@ class CallSession:
                     }
                 )
                 for i, call in enumerate(resp.tool_calls):
-                    if turn.tools and stop():
+                    if stop():  # before every tool, the first included (review 2, #2)
+                        if not turn.tools:
+                            break  # nothing ran: stop() rolled the whole batch back
+
                         # Caller resumed (or hung up) mid-batch: don't run the rest, e.g. a
                         # confirm_booking queued after hold_slot. Every tool call still needs
                         # a result, or the history is invalid for the next model call.
@@ -233,10 +237,18 @@ class CallSession:
     def end(self) -> str | None:
         """The call is over (hang-up, transfer or disconnect). Code decides whether it was a
         missed call that staff must return (VOICE-002); if so a callback job emails the front
-        desk. Safe to call twice."""
-        if self._ended:
+        desk. Safe to call twice. Blocks until an in-flight respond() has stopped, so call it
+        off the event loop (the voice layer uses asyncio.to_thread)."""
+        if self._ended and self._end_done:
             return self.missed
-        self._ended = True
+        self._ended = True  # a respond() in flight stops at its next step
+        with self._respond_lock:  # ...and the reason is read only after it has (review 2, #4)
+            if self._end_done:
+                return self.missed
+            self._end_done = True
+            return self._end_reason()
+
+    def _end_reason(self) -> str | None:
         st = self.state
         said = [t["text"] for t in self.turns if t["role"] == "caller"]
         if not said:

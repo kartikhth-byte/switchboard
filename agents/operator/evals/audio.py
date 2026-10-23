@@ -156,8 +156,8 @@ class LoopbackOutput(BaseOutputTransport):
     async def write_audio_frame(self, frame: OutputAudioRawFrame) -> bool:
         t = time.monotonic()
         dur = len(frame.audio) / (2 * frame.sample_rate * frame.num_channels)
+        self.writes.append((t, t + dur))  # logged as it starts, so "playing now" is knowable
         await asyncio.sleep(dur)
-        self.writes.append((t, t + dur))
         return True
 
 
@@ -301,7 +301,11 @@ def real_speech(http: httpx.AsyncClient) -> Speech:
 
 async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
     """One audio call. `speech` supplies STT, TTS and the caller's voice (fakes in tests)."""
-    from agents.operator.voice import OperatorBrain, user_turns  # heavy (Silero): import late
+    from agents.operator.voice import (  # heavy (Silero): import late
+        OperatorBrain,
+        SpokenWatcher,
+        user_turns,
+    )
 
     stt, tts, caller_voice = speech
     res = CallResult(case.id)
@@ -316,7 +320,9 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
     inp, out, tap = LoopbackInput(io), LoopbackOutput(io), SttTap()
     agg = user_turns()
     task = PipelineTask(
-        Pipeline([inp, stt, tap, agg.user(), brain, tts, out, agg.assistant()]),
+        Pipeline(
+            [inp, stt, tap, agg.user(), brain, tts, out, SpokenWatcher(brain), agg.assistant()]
+        ),
         params=PipelineParams(audio_in_sample_rate=RATE),
     )
 
@@ -352,10 +358,10 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 lo = t_first
                 if barge:
                     stop = audio_stop_after(out.writes, t_first)
-                    # Was the greeting playing when the caller started? Allow a short gap: VAD
-                    # and Smart Turn inference can stall the event loop (and the speaker log)
-                    # for a moment just as the caller's speech arrives.
-                    playing = any(a <= t_first < b + 0.25 for a, b in out.writes)
+                    # Was the greeting actually playing when the caller started? Chunks are
+                    # logged as they start, so this is a real overlap test (review 2, #7);
+                    # 60 ms covers the gap between back-to-back chunks.
+                    playing = any(a <= t_first < b + 0.06 for a, b in out.writes)
                     interrupted = brain.interruptions > before
                     res.barge_counted = playing and interrupted
                     if not res.barge_counted:
@@ -495,10 +501,10 @@ def to_markdown(s: dict[str, Any], voice: str, results: list[CallResult]) -> str
         f" after the caller stops, of which the model {s['llm_median']['plain']}s (the rest is"
         " turn detection and STT); then TTS to first audio. Model + tools on tool turns:"
         f" {s['llm_median']['tool']}s.",
-        f"Turns where the caller kept talking after their turn was judged over: the agent"
-        f" stopped and restarted from the whole utterance on {s['split_turns']} of"
-        f" {s['turns']}, and dropped a finished reply before it played on"
-        f" {s['unheard_turns']}.",
+        f"Replies abandoned because the caller spoke again before hearing them (an early turn"
+        f" end or a real barge-in; the harness can't tell which): stopped and restarted from"
+        f" the whole utterance on {s['split_turns']} of {s['turns']} turns, finished but"
+        f" dropped unheard on {s['unheard_turns']}.",
         f"Turns where the agent spoke over the caller (excluded from latency):"
         f" {s['overlap_turns']}.",
         f"Pipecat vs Vapi (switch if non-tool p95 > 2.5s): "

@@ -4,6 +4,7 @@ flow ending in the right DB state, and a redacted transcript (VOICE-001/002/003/
 from __future__ import annotations
 
 import json
+import time
 from datetime import date, datetime
 from typing import Any
 from uuid import uuid4
@@ -274,7 +275,7 @@ def test_caller_resuming_before_any_tool_restarts_from_the_whole_utterance(make:
 
 
 def test_caller_resuming_after_a_tool_keeps_its_result(make: Any) -> None:
-    stops = iter([False, False, True])  # top of step 0, after step 0's model call, top of step 1
+    stops = iter([False, False, False, True])  # top, after model, before tool 0, top of step 1
     call = make(
         [{"find_slots": {"service_id": "haircut_men", "day": "Saturday", "time": "4pm"}}, "Done."],
         OPEN,
@@ -402,7 +403,12 @@ def test_no_booking_tool_runs_after_the_caller_hangs_up(make: Any) -> None:
     call = make([HOLD_SAT_4, "Held."], OPEN)
 
     def model_returns_after_hangup(messages: Any, tools: Any = None, **_: Any) -> ModelResponse:
-        call.end()  # the caller hangs up while the model is answering
+        # The caller hangs up while the model is answering. end() runs on another thread in
+        # the real bot (and waits for this turn), so do the same here.
+        import threading
+
+        threading.Thread(target=call.end, daemon=True).start()
+        time.sleep(0.05)
         return Script.complete(call.client, messages, tools)
 
     call.client.complete = model_returns_after_hangup  # type: ignore[method-assign]
@@ -415,7 +421,7 @@ def test_caller_resuming_mid_batch_skips_the_rest_of_the_tools(make: Any) -> Non
     a hold in the same batch still ran."""
     confirm = {"confirm_booking": {"hold_id": "will-not-run", "name": "Ravi"}}
     call = make([{**HOLD_SAT_4, **confirm}, "Done."], OPEN)
-    checks = iter([False, False, True])  # top of step, after model, before the 2nd tool
+    checks = iter([False, False, False, True])  # top, after model, before tool 0, before tool 1
     t = call.respond("Book Saturday at four, I'm Ravi", should_stop=lambda: next(checks, True))
     assert t.aborted and t.tools == ["hold_slot"] and not call.state.booked
     tool_ids = {m["tool_call_id"] for m in call.messages if m["role"] == "tool"}
@@ -456,3 +462,37 @@ def test_free_by_day_covers_the_whole_day_even_for_a_window(make: Any) -> None:
     )
     assert out["slots"][0]["start"][11:16] >= "12:00"  # the offers stay in the window
     assert out["free_by_day"]["2027-01-09"]["first"] == "09:00"  # the day's real first
+
+
+def test_caller_resuming_before_the_first_tool_runs_nothing(make: Any) -> None:
+    """Review 2 #2: the check before tools skipped the first one, so a hold could still run
+    after the caller hung up or spoke between the model's answer and the tool."""
+    call = make([HOLD_SAT_4, "Held."], OPEN)
+    checks = iter([False, False, True])  # top of step, after model, before the first tool
+    t = call.respond("Saturday at four", should_stop=lambda: next(checks, True))
+    assert t.aborted and not t.tools and not call.state.holds
+    assert call.messages[-1]["role"] != "tool" and call._pending == "Saturday at four"
+
+
+def test_end_waits_for_a_turn_in_flight_before_deciding_it_was_missed(make: Any) -> None:
+    """Review 2 #4: end() read holds/bookings while a tool might still be running, and could
+    report 'hung up mid-booking' for a booking that then went through."""
+    import threading
+
+    call = make([HOLD_SAT_4, "Held."], OPEN)
+    real = call.client.complete
+
+    def slow(messages: Any, tools: Any = None, **kw: Any) -> ModelResponse:
+        time.sleep(0.4)
+        return real(messages, tools, **kw)
+
+    call.client.complete = slow  # type: ignore[method-assign]
+    worker = threading.Thread(target=call.respond, args=("Saturday at four",))
+    worker.start()
+    time.sleep(0.1)
+    t0 = time.monotonic()
+    call.end()  # the caller hangs up mid-turn
+    assert time.monotonic() - t0 >= 0.25  # waited for the turn to stop
+    worker.join(2)
+    assert not call.state.holds  # the turn stopped before its tool
+    assert call.missed is None  # spoke, nothing held or failed: not a missed call

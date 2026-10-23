@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
+import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import Any
@@ -38,6 +40,7 @@ from pipecat.frames.frames import (
     LLMFullResponseStartFrame,
     LLMTextFrame,
     TTSSpeakFrame,
+    TTSTextFrame,
 )
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
@@ -83,16 +86,37 @@ def _text(m: Any) -> str:
     return ""
 
 
-def new_user_text(context: LLMContext, seen: set[int]) -> str:
+def new_user_text(context: LLMContext, seen: dict[int, Any]) -> str:
     """Everything the caller said that the brain hasn't handed to the session yet. One turn can
     hold several user messages (a transcript finalised before the turn started, say); reading
     only the last one dropped the start of what they said. Messages are tracked by identity,
-    not by position, so a trimmed or replaced context can't skip or replay a turn. `seen`
-    holds ids of messages already read; the context keeps them alive, so ids aren't reused."""
+    not position, so a trimmed or replaced context can't skip or replay a turn. `seen` maps
+    id -> the message itself: holding the reference keeps the id from being reused after the
+    context lets the message go (review 2: a bare set of ids missed a real turn)."""
     new = [m for m in context.get_messages() if isinstance(m, dict) and id(m) not in seen]
-    seen.update(id(m) for m in new)
+    seen.update((id(m), m) for m in new)
     said = [_text(m) for m in new if m.get("role") == "user"]
     return " ".join(t for t in said if t)
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+", text.lower())
+
+
+class SpokenWatcher(FrameProcessor):
+    """Sits after the output transport. Pipecat releases each TTS word (TTSTextFrame) there at
+    the moment it is spoken, so this is the one place that knows what the caller has actually
+    heard; it tells the brain."""
+
+    def __init__(self, brain: OperatorBrain) -> None:
+        super().__init__()
+        self.brain = brain
+
+    async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
+        await super().process_frame(frame, direction)
+        if isinstance(frame, TTSTextFrame) and direction == FrameDirection.DOWNSTREAM:
+            self.brain.heard(frame.text)
+        await self.push_frame(frame, direction)
 
 
 class OperatorBrain(FrameProcessor):
@@ -110,15 +134,17 @@ class OperatorBrain(FrameProcessor):
         self.dropped: dict[str, int] = {"aborted": 0, "unheard": 0}  # why replies were dropped
         self._turn = 0  # bumped on every caller interruption
         self._lock = asyncio.Lock()
-        self._seen: set[int] = set()  # ids of context messages already handed to the session
+        self._seen: dict[int, Any] = {}  # context messages already handed to the session
         self._tasks: set[asyncio.Task[None]] = set()
         self._closing = False
-        # Playback of the latest reply: "" (none) -> queued -> playing -> done. Used to dial a
-        # transfer only after its own line was heard, and to mark a cut-off reply.
-        self._reply = ""
-        self._reply_transfer = False
+        # The latest reply until it has been heard: used to dial a transfer only after its own
+        # line played, and to mark a reply the caller cut off (see _track_reply).
+        self._reply_task: asyncio.Task[None] | None = None
         self._bot_speaking = False
-        self._settle: asyncio.Task[None] | None = None
+        self._said_at = 0.0
+        self._spoken: list[str] = []  # words actually spoken since the latest reply was queued
+        self._reply_text = ""
+        self._started_since_say = False
 
     async def cleanup(self) -> None:
         self._closing = True  # queued answers that get the lock now return at once
@@ -145,17 +171,9 @@ class OperatorBrain(FrameProcessor):
             return
         if isinstance(frame, BotStartedSpeakingFrame):
             self._bot_speaking = True
-            if self._settle is not None:  # more audio came: the reply isn't over yet
-                await self.cancel_task(self._settle)
-                self._settle = None
-            if self._reply == "queued":
-                self._reply = "playing"
+            self._started_since_say = True
         elif isinstance(frame, BotStoppedSpeakingFrame):
             self._bot_speaking = False
-            if self._reply == "playing":
-                # A gap can come between the filler and the reply, so wait briefly before
-                # deciding the reply's own audio has finished.
-                self._settle = self.create_task(self._reply_finished_after(REPLY_SETTLE_SECS))
         if isinstance(frame, LLMContextFrame):
             if frame.speculation:  # never act (or run booking tools) on a provisional turn
                 return
@@ -170,28 +188,58 @@ class OperatorBrain(FrameProcessor):
             return
         await self.push_frame(frame, direction)
 
+    def heard(self, text: str) -> None:
+        """A word or phrase the caller has just heard (from SpokenWatcher)."""
+        self._spoken += _words(text)
+
+    def _reply_progress(self, text: str) -> tuple[bool, bool]:
+        """(any of this reply spoken yet, its last words spoken). Matched on the reply's own
+        words, so the filler's audio can't pass for it (review 2, #1)."""
+        want = _words(text)
+        if not want:
+            return False, True
+        got = self._spoken
+
+        def has(seq: list[str]) -> bool:
+            return any(got[i : i + len(seq)] == seq for i in range(len(got) - len(seq) + 1))
+
+        # word runs, not single words: "I" or "to" in the filler mustn't count as the reply
+        return has(want[:2]), has(want[-3:])
+
     def _reply_cut_off(self) -> None:
-        if self._reply == "queued":  # never started playing: the caller heard none of it
-            self.call.unsay()
+        """The caller spoke while the latest reply was still pending or playing."""
+        task, self._reply_task = self._reply_task, None
+        if task is None or task.done():
+            return
+        task.cancel()  # and with it any transfer it would have dialled (review 2, #1)
+        if self._spoken:  # word reports are the evidence (they arrive as words are spoken)
+            begun, ended = self._reply_progress(self._reply_text)
+        else:  # no words reported (TTS without timestamps): judge by audio starting
+            begun, ended = self._started_since_say, False
+        if not begun:
+            self.call.unsay()  # none of it was spoken
             self.dropped["unheard"] += 1
-        elif self._reply == "playing":
-            self.call.mark_interrupted()
-        if self._reply in ("queued", "playing"):
-            self._reply = "done"
-            self._maybe_transfer()  # a decided transfer still goes ahead
+        elif self._bot_speaking and not ended:
+            self.call.mark_interrupted()  # cut off part-way
+        # else: it had finished playing; nothing to correct
 
-    async def _reply_finished_after(self, secs: float) -> None:
-        await asyncio.sleep(secs)
-        self._settle = None
-        if self._reply == "playing" and not self._bot_speaking:
-            self._reply = "done"
-            self._maybe_transfer()
-
-    def _maybe_transfer(self) -> None:
-        if self._reply_transfer:
-            self._reply_transfer = False
-            if self.on_transfer is not None:
-                self._spawn(self.on_transfer())
+    async def _track_reply(self, text: str, transfer: bool) -> None:
+        """Wait until this reply has been heard, then dial if it was a transfer. Heard = its
+        last words were spoken (SpokenWatcher) and the bot has gone quiet. Fallback when no
+        words are reported (TTS without word timestamps, or TTS failure): the time the words
+        take to say plus a grace period, and quiet."""
+        said_at = self._said_at
+        floor = len(text) / SPOKEN_CHARS_PER_SEC
+        while True:
+            await asyncio.sleep(0.05)
+            _, ended = self._reply_progress(text)
+            waited = time.monotonic() - said_at
+            if not self._bot_speaking and (ended or waited >= floor + NO_WORDS_GRACE_SECS):
+                break
+        self._reply_task = None
+        if transfer and self.on_transfer is not None and not self._closing:
+            if not getattr(self.call, "_ended", False):  # never dial for a call that's over
+                await self.on_transfer()
 
     async def _answer(self, text: str, turn: int) -> None:
         async with self._lock:  # one caller turn at a time: the session isn't re-entrant
@@ -224,16 +272,20 @@ class OperatorBrain(FrameProcessor):
                 return
             if self.on_reply is not None:
                 self.on_reply(self.call.last_input or text, reply, secs)
-            self._reply = "playing" if self._bot_speaking else "queued"
-            self._reply_transfer = bool(reply.transferred)
+            self._said_at, self._spoken, self._reply_text = time.monotonic(), [], reply.text
+            self._started_since_say = self._bot_speaking  # audio already playing runs into it
+            self._reply_task = self.create_task(self._track_reply(reply.text, reply.transferred))
+            self._tasks.add(self._reply_task)
             await self._say(reply.text)
             if reply.transferred:
                 logger.info(f"transfer requested: {self.call.state.transferred}")
 
 
-# After the bot stops speaking, how long to wait for more of the same reply before treating it
-# as finished (the filler and the reply can have a short gap between them).
-REPLY_SETTLE_SECS = 0.6
+# Fallback only, when the TTS reports no spoken words: treat a reply as heard once the time
+# its words take to say (Cartesia speaks ~15 characters a second; 14 errs long) plus a grace
+# period has passed and the bot is quiet.
+SPOKEN_CHARS_PER_SEC = 14.0
+NO_WORDS_GRACE_SECS = 3.0
 
 
 # Barge-in (VOICE-016, ≤300 ms): the caller must speak this long before the agent stops.
@@ -323,7 +375,16 @@ async def bot(runner_args: RunnerArguments) -> None:
     agg = user_turns()
     brain = OperatorBrain(call, on_transfer=transfer)
     pipeline = Pipeline(
-        [transport.input(), stt, agg.user(), brain, tts, transport.output(), agg.assistant()]
+        [
+            transport.input(),
+            stt,
+            agg.user(),
+            brain,
+            tts,
+            transport.output(),
+            SpokenWatcher(brain),  # what was actually heard: transfers wait for their line
+            agg.assistant(),
+        ]
     )
     task = PipelineTask(pipeline, params=PipelineParams(enable_metrics=True))
 
@@ -333,7 +394,9 @@ async def bot(runner_args: RunnerArguments) -> None:
 
     @transport.event_handler("on_client_disconnected")
     async def on_disconnected(transport: Any, client: Any) -> None:
-        missed = call.end()  # VOICE-002: a missed call becomes a callback job + email
+        # VOICE-002: a missed call becomes a callback job + email. end() waits for an in-flight
+        # turn to stop, so it runs in a thread, never blocking the event loop.
+        missed = await asyncio.to_thread(call.end)
         logger.info(f"call {call.call_id} ended; transferred={call.state.transferred} {missed=}")
         await task.cancel()
 

@@ -145,7 +145,7 @@ def test_a_turn_with_several_user_messages_is_read_whole() -> None:
     c = LLMContext()
     c.add_message({"role": "user", "content": "Do you do nails?"})
     c.add_message({"role": "user", "content": "I want a manicure on Saturday."})
-    seen: set[int] = set()
+    seen: dict[int, Any] = {}
     assert new_user_text(c, seen) == "Do you do nails? I want a manicure on Saturday."
     c.add_message({"role": "assistant", "content": "We don't, sorry."})
     c.add_message({"role": "user", "content": "Okay, thanks."})
@@ -258,8 +258,9 @@ def test_no_filler_for_a_turn_the_caller_already_interrupted() -> None:
     assert FILLER not in texts(down)
 
 
-def test_transfer_waits_for_its_own_line_not_the_fillers_stop() -> None:
-    """Review #6: any BotStoppedSpeaking dialled the transfer, e.g. the filler's."""
+def _transfer_run(steps: list[Any], tail: float) -> tuple[list[float], dict[str, float], Any]:
+    """Drive a transfer reply ("answer to: hi"). Steps: a float sleeps; (name, frame) sends a
+    frame and records when; (name, "words") marks those words as spoken (SpokenWatcher)."""
     dialled: list[float] = []
 
     async def transfer() -> None:
@@ -269,36 +270,120 @@ def test_transfer_waits_for_its_own_line_not_the_fillers_stop() -> None:
     brain = OperatorBrain(call, on_transfer=transfer)  # type: ignore[arg-type]
     marks: dict[str, float] = {}
 
-    async def line_ends() -> None:
-        marks["end"] = time.monotonic()
-        await brain.process_frame(BotStoppedSpeakingFrame(), FrameDirection.UPSTREAM)
+    def at(name: str, what: Any) -> Any:
+        async def go() -> None:
+            marks[name] = time.monotonic()
+            if isinstance(what, str):
+                brain.heard(what)
+            else:
+                await brain.process_frame(what, FrameDirection.UPSTREAM)
 
-    _drive(
-        brain,
+        return go
+
+    _drive(brain, [LLMContextFrame(ctx("hi")), *[at(*x) if isinstance(x, tuple) else x
+                                                  for x in steps]], tail=tail)  # fmt: skip
+    return dialled, marks, call
+
+
+def test_transfer_waits_for_its_own_line_not_the_fillers_stop() -> None:
+    """Review #6 / review 2 #1: a filler's start and stop (or a late stop from earlier audio)
+    must not pass for the transfer line's own playback."""
+    dialled, marks, _ = _transfer_run(
         [
-            LLMContextFrame(ctx("Can I speak to a person?")),
             0.2,
-            BotStoppedSpeakingFrame(),  # a late stop from earlier audio: not the line
+            ("late_stop", BotStoppedSpeakingFrame()),  # from audio before the line
+            ("filler_start", BotStartedSpeakingFrame()),
+            ("filler_words", "One moment while I check that."),
             0.2,
-            BotStartedSpeakingFrame(),  # the transfer line starts
-            0.5,
-            line_ends,
+            ("filler_stop", BotStoppedSpeakingFrame()),  # filler done, a long gap, then the line
+            1.5,
+            ("line_start", BotStartedSpeakingFrame()),
+            ("line_words", "answer to:"),
+            0.4,
+            ("line_last", "hi"),
+            0.2,
+            ("line_end", BotStoppedSpeakingFrame()),
         ],
-        tail=1.0,
+        tail=0.6,
     )
-    assert len(dialled) == 1 and dialled[0] >= marks["end"]
+    assert len(dialled) == 1 and dialled[0] >= marks["line_end"]
+
+
+def test_no_transfer_when_the_caller_cuts_the_line_off_or_it_was_never_heard() -> None:
+    """Review 2 #1: an interruption used to dial anyway, even for a line never played."""
+    dialled, _, call = _transfer_run([0.1, ("cut", InterruptionFrame())], tail=1.5)
+    assert dialled == [] and call.marks == ["unheard"]
+    dialled2, _, call2 = _transfer_run(
+        [0.1, ("start", BotStartedSpeakingFrame()), ("w", "answer to"), 0.3,
+         ("cut", InterruptionFrame())],
+        tail=1.5,
+    )  # fmt: skip
+    assert dialled2 == [] and call2.marks == ["interrupted"]
+
+
+def test_a_transfer_whose_words_are_never_reported_still_dials_after_a_grace_period() -> None:
+    dialled, _, _ = _transfer_run([], tail=4.5)  # TTS failed or gave no word timestamps
+    assert len(dialled) == 1
 
 
 def test_a_reply_cut_off_while_playing_is_marked_and_one_never_played_is_forgotten() -> None:
-    """Review #5: the stored transcript said an unheard or cut-off reply was spoken."""
+    """Review #5: the stored transcript said an unheard or cut-off reply was spoken. Review 2:
+    the filler playing must not count as the reply being heard."""
+    call = FakeCall()
+    brain = OperatorBrain(call)  # type: ignore[arg-type]
+
+    async def reply_words() -> None:
+        brain.heard("answer to")
+
+    _drive(
+        brain,
+        [LLMContextFrame(ctx("hi")), 0.2, BotStartedSpeakingFrame(), reply_words, 0.1,
+         InterruptionFrame()],
+    )  # fmt: skip
+    assert call.marks == ["interrupted"]
+    call2 = FakeCall()
+    brain2 = OperatorBrain(call2)  # type: ignore[arg-type]
+
+    async def filler_words() -> None:
+        brain2.heard("One moment while I check that.")
+
+    _drive(
+        brain2,
+        [LLMContextFrame(ctx("hi")), 0.2, BotStartedSpeakingFrame(), filler_words, 0.1,
+         InterruptionFrame()],
+    )  # fmt: skip
+    assert call2.marks == ["unheard"] and brain2.dropped["unheard"] == 1
+
+
+def test_new_user_text_survives_a_replaced_context_reusing_ids() -> None:
+    """Review 2 #3: with a bare set of ids, a replaced context's message could reuse a freed
+    id and the caller's next words were skipped. Holding references prevents reuse."""
+    import gc
+
+    from agents.operator.voice import new_user_text
+
+    seen: dict[int, Any] = {}
+    for i in range(50):  # many replacements: a reused id would show up as a lost turn
+        c = LLMContext()
+        c.add_message({"role": "user", "content": f"turn {i}"})
+        assert new_user_text(c, seen) == f"turn {i}"
+        del c
+        gc.collect()
+
+
+def test_without_word_reports_a_reply_that_played_is_not_forgotten() -> None:
+    """With a TTS that reports no words, a reply that played in full and was followed by the
+    caller's next turn must not be removed from history (found in a harness smoke run)."""
     call = FakeCall()
     brain = OperatorBrain(call)  # type: ignore[arg-type]
     _drive(
         brain,
-        [LLMContextFrame(ctx("hi")), 0.2, BotStartedSpeakingFrame(), 0.1, InterruptionFrame()],
-    )
-    assert call.marks == ["interrupted"]
+        [LLMContextFrame(ctx("hi")), 0.1, BotStartedSpeakingFrame(), 0.3,
+         BotStoppedSpeakingFrame(), 0.2, InterruptionFrame()],
+    )  # fmt: skip
+    assert call.marks == []  # heard in full: nothing to correct
     call2 = FakeCall()
     brain2 = OperatorBrain(call2)  # type: ignore[arg-type]
-    _drive(brain2, [LLMContextFrame(ctx("hi")), 0.2, InterruptionFrame()])
-    assert call2.marks == ["unheard"] and brain2.dropped["unheard"] == 1
+    _drive(brain2, [LLMContextFrame(ctx("hi")), 0.1, BotStartedSpeakingFrame(), 0.2,
+                    InterruptionFrame()])  # fmt: skip
+    assert call2.marks == ["interrupted"]
