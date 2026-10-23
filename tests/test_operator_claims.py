@@ -17,7 +17,7 @@ def truth(free: list[str], by: dict[str, list[str]] | None = None, booked: set[s
         free={FRI: free},
         by_stylist={k: {FRI: v} for k, v in (by or {}).items()},
         hours={FRI: ["10:00", "20:00"]},
-        bookings={f"{FRI} {t}" for t in (booked or set())},
+        bookings={f"{FRI} {t} farhan" for t in (booked or set())},
         stylists={"anita": "anita", "farhan": "farhan", "leela": "leela"},
     )
 
@@ -93,7 +93,7 @@ def test_cases_from_the_second_review() -> None:
             "leela": {FRI: ["16:00"]},
         },
         hours={FRI: ["10:00", "20:00"], sat: ["09:00", "20:00"]},
-        bookings={"2027-01-05 17:00"},
+        bookings={"2027-01-05 17:00 farhan"},
         stylists={"anita": "anita", "farhan": "farhan", "leela": "leela"},
     )
     # a bare or word-number first item in a list is parsed (was silently skipped)
@@ -123,3 +123,25 @@ def test_cases_from_the_second_review() -> None:
     assert kinds("I've already booked you at 6:15 in the evening on Friday.", t2) == []
     # durations aren't clock times
     assert times_in("Highlights takes 1:30 or so.") == []
+
+
+def test_cases_from_the_third_review() -> None:
+    mon, fri = "2027-01-11", FRI  # Monday is closed (not in hours)
+    t = Truth(
+        today=date(2027, 1, 5),
+        case_day=date(2027, 1, 8),
+        free={fri: ["10:00", "16:00", "18:15"]},
+        by_stylist={"anita": {fri: ["10:00"]}, "leela": {fri: ["16:00"]}},
+        hours={fri: ["10:00", "20:00"]},
+        bookings={f"{fri} 17:00 anita"},
+        stylists={"anita": "anita", "farhan": "farhan", "leela": "leela"},
+        dates=["2027-01-05", fri, mon],
+    )
+    assert kinds("We have 4pm Monday.", t) == [("offer", ["16:00"])]  # closed: nothing free
+    assert kinds("The first slot after 6pm on Friday is 6:15pm.", t) == []  # 6pm is a boundary
+    assert kinds("We close at 8pm Friday, with an 8pm slot.", t) == [("offer", ["20:00"])]
+    assert kinds("I can do at 4 Friday.", t) == []  # "at 4 Friday" parses
+    assert times_in("It takes about 1:30.") == []
+    assert kinds("Leela has 5pm on Friday.", t) == [("offer", ["17:00"])]  # that's Anita's
+    t.today = date(2027, 1, 8)
+    assert kinds("Nothing at 11 this morning.", t) == []  # this morning = today, 11 not free

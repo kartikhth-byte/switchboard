@@ -147,6 +147,7 @@ def times_grounded(case: EvalCase, out: AgentOutput) -> float:
         hours=raw["hours"],
         bookings=set(raw.get("bookings", [])),
         stylists=raw.get("stylists", {}),
+        dates=raw.get("dates", []),
     )
     bad = check(out.data.get("agent_turns", []), t)
     out.data["ungrounded"] = bad  # shown in the report notes, so a failure can be read

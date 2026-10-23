@@ -258,72 +258,49 @@ def test_no_filler_for_a_turn_the_caller_already_interrupted() -> None:
     assert FILLER not in texts(down)
 
 
-def _transfer_run(steps: list[Any], tail: float) -> tuple[list[float], dict[str, float], Any]:
-    """Drive a transfer reply ("answer to: hi"). Steps: a float sleeps; (name, frame) sends a
-    frame and records when; (name, "words") marks those words as spoken (SpokenWatcher)."""
-    dialled: list[float] = []
+def test_on_the_phone_twilio_says_the_hand_over_line_and_dials() -> None:
+    """Review 3 #1/#2/#6: the bot can't prove from its own audio events that a phone caller
+    heard "putting you through". Twilio now says that line and then dials, in that order, so
+    the bot doesn't speak it and doesn't time the dial."""
+    handed: list[str] = []
 
-    async def transfer() -> None:
-        dialled.append(time.monotonic())
+    async def transfer(line: str) -> bool:
+        handed.append(line)
+        return True
 
-    call = FakeCall(transfer=True)
-    brain = OperatorBrain(call, on_transfer=transfer)  # type: ignore[arg-type]
-    marks: dict[str, float] = {}
-
-    def at(name: str, what: Any) -> Any:
-        async def go() -> None:
-            marks[name] = time.monotonic()
-            if isinstance(what, str):
-                brain.heard(what)
-            else:
-                await brain.process_frame(what, FrameDirection.UPSTREAM)
-
-        return go
-
-    _drive(brain, [LLMContextFrame(ctx("hi")), *[at(*x) if isinstance(x, tuple) else x
-                                                  for x in steps]], tail=tail)  # fmt: skip
-    return dialled, marks, call
+    brain = OperatorBrain(FakeCall(transfer=True), on_transfer=transfer)  # type: ignore[arg-type]
+    down = _drive(brain, [LLMContextFrame(ctx("Can I speak to a person?"))])
+    assert handed == ["answer to: Can I speak to a person?"]
+    assert "answer to: Can I speak to a person?" not in texts(down)  # Twilio says it
 
 
-def test_transfer_waits_for_its_own_line_not_the_fillers_stop() -> None:
-    """Review #6 / review 2 #1: a filler's start and stop (or a late stop from earlier audio)
-    must not pass for the transfer line's own playback."""
-    dialled, marks, _ = _transfer_run(
-        [
-            0.2,
-            ("late_stop", BotStoppedSpeakingFrame()),  # from audio before the line
-            ("filler_start", BotStartedSpeakingFrame()),
-            ("filler_words", "One moment while I check that."),
-            0.2,
-            ("filler_stop", BotStoppedSpeakingFrame()),  # filler done, a long gap, then the line
-            1.5,
-            ("line_start", BotStartedSpeakingFrame()),
-            ("line_words", "answer to:"),
-            0.4,
-            ("line_last", "hi"),
-            0.2,
-            ("line_end", BotStoppedSpeakingFrame()),
-        ],
-        tail=0.6,
-    )
-    assert len(dialled) == 1 and dialled[0] >= marks["line_end"]
+def test_without_a_phone_line_the_agent_says_the_line_itself() -> None:
+    async def no_line(line: str) -> bool:
+        return False
+
+    brain = OperatorBrain(FakeCall(transfer=True), on_transfer=no_line)  # type: ignore[arg-type]
+    down = _drive(brain, [LLMContextFrame(ctx("Can I speak to a person?"))])
+    assert "answer to: Can I speak to a person?" in texts(down)
 
 
-def test_no_transfer_when_the_caller_cuts_the_line_off_or_it_was_never_heard() -> None:
-    """Review 2 #1: an interruption used to dial anyway, even for a line never played."""
-    dialled, _, call = _transfer_run([0.1, ("cut", InterruptionFrame())], tail=1.5)
-    assert dialled == [] and call.marks == ["unheard"]
-    dialled2, _, call2 = _transfer_run(
-        [0.1, ("start", BotStartedSpeakingFrame()), ("w", "answer to"), 0.3,
-         ("cut", InterruptionFrame())],
-        tail=1.5,
-    )  # fmt: skip
-    assert dialled2 == [] and call2.marks == ["interrupted"]
+def test_a_hang_up_during_the_transfer_request_doesnt_lose_it() -> None:
+    """Review 3 #2: cancelling the answer while the Twilio request was in flight lost whether
+    it went through. The request is shielded and records its own result."""
+    done: list[bool] = []
 
+    async def slow_transfer(line: str) -> bool:
+        await asyncio.sleep(0.3)
+        done.append(True)
+        return True
 
-def test_a_transfer_whose_words_are_never_reported_still_dials_after_a_grace_period() -> None:
-    dialled, _, _ = _transfer_run([], tail=4.5)  # TTS failed or gave no word timestamps
-    assert len(dialled) == 1
+    brain = OperatorBrain(FakeCall(transfer=True), on_transfer=slow_transfer)  # type: ignore[arg-type]
+
+    async def hang_up() -> None:
+        for t in list(brain._tasks):
+            t.cancel()
+
+    _drive(brain, [LLMContextFrame(ctx("person please")), 0.1, hang_up], tail=0.6)
+    assert done == [True]
 
 
 def test_a_reply_cut_off_while_playing_is_marked_and_one_never_played_is_forgotten() -> None:

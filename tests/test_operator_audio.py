@@ -22,6 +22,7 @@ from agents.operator.evals.audio import (
     audio_stop_after,
     first_audio_after,
     pct,
+    playing_at,
     summarise,
     talked_over,
     voiced,
@@ -50,6 +51,9 @@ def test_measurement_helpers() -> None:
     assert audio_stop_after(writes, 0.05) == 0.12  # the run playing at onset, not the later one
     assert talked_over(writes, 0.9, 1.1) and not talked_over(writes, 0.2, 0.9)
     assert talked_over([(0.0, 0.5)], 0.1, 0.3)  # a chunk already playing counts (review #9)
+    run = [(0.0, 0.04), (0.04, 0.08), (0.2, 0.24)]  # a 120 ms stall at 0.08-0.2
+    assert playing_at(run, 0.1)  # audio on both sides: it was playing
+    assert not playing_at([(0.0, 0.04), (0.04, 0.08)], 0.13)  # it had ended (review 3 #7)
     assert wer("book a haircut on Saturday", "book a haircut Saturday") == 0.2
     assert pct([3.0, 1.0, 2.0], 0.5) == 2.0 and pct([], 0.5) is None
 

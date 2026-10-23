@@ -124,12 +124,14 @@ class OperatorBrain(FrameProcessor):
         self,
         call: CallSession,
         on_reply: Callable[[str, Any, float], None] | None = None,
-        on_transfer: Callable[[], Awaitable[None]] | None = None,
+        on_transfer: Callable[[str], Awaitable[bool]] | None = None,
     ) -> None:
         super().__init__()
         self.call = call
         self.on_reply = on_reply  # (text, turn, LLM+tools secs): the audio harness listens here
-        self.on_transfer = on_transfer  # phone: hand the call to staff once the line is heard
+        # phone: hand the call (and the hand-over line) to Twilio; returns False if there's no
+        # phone line to transfer on, and the agent just says the line
+        self.on_transfer = on_transfer
         self.interruptions = 0
         self.dropped: dict[str, int] = {"aborted": 0, "unheard": 0}  # why replies were dropped
         self._turn = 0  # bumped on every caller interruption
@@ -223,11 +225,12 @@ class OperatorBrain(FrameProcessor):
             self.call.mark_interrupted()  # cut off part-way
         # else: it had finished playing; nothing to correct
 
-    async def _track_reply(self, text: str, transfer: bool) -> None:
-        """Wait until this reply has been heard, then dial if it was a transfer. Heard = its
-        last words were spoken (SpokenWatcher) and the bot has gone quiet. Fallback when no
-        words are reported (TTS without word timestamps, or TTS failure): the time the words
-        take to say plus a grace period, and quiet."""
+    async def _track_reply(self, text: str) -> None:
+        """Keep the latest reply 'pending' until it has been heard, so a caller cutting in can
+        be recorded correctly (partly heard / unheard). Heard = its last words were spoken
+        (SpokenWatcher) and the bot is quiet; with no word reports, the time the words take
+        to say plus a grace period. Only the transcript depends on this: transfers don't
+        (Twilio speaks the hand-over line itself)."""
         said_at = self._said_at
         floor = len(text) / SPOKEN_CHARS_PER_SEC
         while True:
@@ -237,9 +240,6 @@ class OperatorBrain(FrameProcessor):
             if not self._bot_speaking and (ended or waited >= floor + NO_WORDS_GRACE_SECS):
                 break
         self._reply_task = None
-        if transfer and self.on_transfer is not None and not self._closing:
-            if not getattr(self.call, "_ended", False):  # never dial for a call that's over
-                await self.on_transfer()
 
     async def _answer(self, text: str, turn: int) -> None:
         async with self._lock:  # one caller turn at a time: the session isn't re-entrant
@@ -272,9 +272,14 @@ class OperatorBrain(FrameProcessor):
                 return
             if self.on_reply is not None:
                 self.on_reply(self.call.last_input or text, reply, secs)
+            if reply.transferred and self.on_transfer is not None and not self._closing:
+                # Twilio says the hand-over line and dials, in that order. Shielded: once the
+                # request is out, a hang-up or cleanup mustn't lose whether it went through.
+                if await asyncio.shield(self.on_transfer(reply.text)):
+                    return
             self._said_at, self._spoken, self._reply_text = time.monotonic(), [], reply.text
             self._started_since_say = self._bot_speaking  # audio already playing runs into it
-            self._reply_task = self.create_task(self._track_reply(reply.text, reply.transferred))
+            self._reply_task = self.create_task(self._track_reply(reply.text))
             self._tasks.add(self._reply_task)
             await self._say(reply.text)
             if reply.transferred:
@@ -355,18 +360,28 @@ async def bot(runner_args: RunnerArguments) -> None:
             caller = None
     call = _call_session(caller)
 
-    async def transfer() -> None:
-        """VOICE-002: ring the staff number with the live call (Twilio <Dial>)."""
+    async def transfer(line_text: str) -> bool:
+        """VOICE-002: hand the live call to the staff number. Twilio says `line_text` and then
+        dials. Returns False when there's no phone line (browser) or no number set: the agent
+        then says the line itself and staff get the callback email."""
         to = s.operator_transfer_number
         if line is None or not call_sid or not to:
             logger.warning("transfer asked but no phone line or OPERATOR_TRANSFER_NUMBER set")
-            return
+            return False
+        if call.transfer_dialed or getattr(call, "_ended", False):
+            return True  # already handed over, or the caller is gone: never dial twice
+
+        def dial() -> None:  # runs to completion in its thread even if the caller awaits less
+            line.transfer(str(call_sid), to, our_number, say=line_text)
+            call.transfer_dialed = True  # recorded where it happens, not after an await
+
         try:
-            await asyncio.to_thread(line.transfer, str(call_sid), to, our_number)
-            call.transfer_dialed = True
+            await asyncio.to_thread(dial)
             logger.info(f"call {call.call_id} transferred to staff")
+            return True
         except Exception as exc:  # noqa: BLE001 — the call stays with the agent
             logger.error(f"transfer failed: {exc}")
+            return False
 
     stt = DeepgramSTTService(api_key=s.deepgram_api_key.get_secret_value())
     tts = CartesiaTTSService(
@@ -394,11 +409,13 @@ async def bot(runner_args: RunnerArguments) -> None:
 
     @transport.event_handler("on_client_disconnected")
     async def on_disconnected(transport: Any, client: Any) -> None:
-        # VOICE-002: a missed call becomes a callback job + email. end() waits for an in-flight
-        # turn to stop, so it runs in a thread, never blocking the event loop.
+        # Stop the turn and the pipeline first, then decide whether it was a missed call
+        # (VOICE-002: callback job + email). end() waits for an in-flight turn to finish
+        # stopping, so it runs in a thread and after the cancel (review 3, #3).
+        call._ended = True  # an in-flight respond() stops at its next step
+        await task.cancel()
         missed = await asyncio.to_thread(call.end)
         logger.info(f"call {call.call_id} ended; transferred={call.state.transferred} {missed=}")
-        await task.cancel()
 
     await PipelineRunner(handle_sigint=runner_args.handle_sigint).run(task)
 

@@ -19,9 +19,10 @@
   is checked by code against a snapshot of the calendar taken before the call (Postgres, the
   case's service): offers must be real free starts or bookings on that day, "latest/earliest"
   must be the day's (or the stated window's) real last/first, "taken/isn't free" must not be
-  free. Each time is matched to its own day and stylist. Calibrated twice (second time after
-  an independent review): 111 stored calls, 358 sentences with times; 6 flagged, all real agent
-  errors; every passed range or negative claim (22) and a random 30 passed claims hand-checked,
+  free. Each time is matched to its own day and stylist; closed days have nothing free; a
+  booking only covers its own day and stylist. Calibrated three times (after each independent
+  review); latest: 159 stored calls, 516 sentences with times; 7 flagged, all real agent
+  errors; every passed range or negative claim and a random 30 passed claims hand-checked,
   all correct. Limits: one service per call (claims about another service can be misjudged);
   a time without am/pm passes if either reading is right.
 - **Labels:** expected DB end state per call (service, stylist if specified, date, start-time

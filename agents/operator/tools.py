@@ -85,13 +85,17 @@ SHOWN_SLOTS = 4  # read aloud as options; the rest are summarised in free_by_day
 
 
 def free_by_day(slots: list[Any], salon: Any) -> dict[str, dict[str, Any]]:
+    """Per day: how many free starts, and the first and last, each with who is free then
+    (eval slot-007: told 9:30 was first but not with whom, the agent guessed the wrong
+    stylist and the hold failed)."""
     days: dict[str, dict[str, Any]] = {}
     for x in sorted(slots, key=lambda x: x.start):
         local = x.start.astimezone(salon.tz)
         d = days.setdefault(local.date().isoformat(), {"count": 0, "first": None, "last": None})
         d["count"] += 1
-        d["first"] = d["first"] or f"{local:%H:%M}"
-        d["last"] = f"{local:%H:%M}"
+        if d["first"] is None:
+            d["first"], d["first_with"] = f"{local:%H:%M}", x.stylist_id
+        d["last"], d["last_with"] = f"{local:%H:%M}", x.stylist_id
     return days
 
 

@@ -496,3 +496,25 @@ def test_end_waits_for_a_turn_in_flight_before_deciding_it_was_missed(make: Any)
     worker.join(2)
     assert not call.state.holds  # the turn stopped before its tool
     assert call.missed is None  # spoke, nothing held or failed: not a missed call
+
+
+def test_free_by_day_says_who_is_free_first_and_last(make: Any) -> None:
+    from uuid import uuid4
+
+    from agents.operator.tools import CallState, build_registry
+    from core.tools import ToolContext
+
+    s = make([], OPEN)
+    start = datetime(2027, 1, 9, 9, 0, tzinfo=TZ)
+    s.cal.confirm(s.cal.hold("anita", "blowdry", start), "Other", "+919899999999")
+    out = (
+        build_registry(s.cal, CallState("x", "+919800000042"))
+        .execute(
+            "find_slots",
+            {"service_id": "blowdry", "day": "Saturday", "time": "afternoon"},
+            ToolContext(run_id=uuid4(), agent="operator"),
+        )
+        .payload
+    )
+    sat = out["free_by_day"]["2027-01-09"]
+    assert sat["first"] == "09:00" and sat["first_with"] == "leela"  # Anita is booked at 9

@@ -122,6 +122,7 @@ def _truth(
             st.id: by_day(cal.find_slots(svc, lo, hi, st.id, limit=10_000)) for st in skilled
         },
         "hours": hours,
+        "dates": [str(lo + timedelta(days=i)) for i in range((hi - lo).days + 1)],
         "stylists": {st.name.lower(): st.id for st in env.salon.stylists},
     }
 
@@ -149,10 +150,10 @@ def collect(
     bookings = [{**r, "start": r["start"].astimezone(env.salon.tz).isoformat()} for r in rows]
     truth = None
     if p.truth is not None:  # every booking this call touched is a time the agent may name
-        truth = {
-            **p.truth,
-            "bookings": sorted({f"{b['start'][:10]} {b['start'][11:16]}" for b in bookings}),
-        }
+        # each booking with its day and stylist: a booking time isn't a licence to name that
+        # time for another day or stylist (review 3)
+        books = {f"{b['start'][:10]} {b['start'][11:16]} {b['stylist_id']}" for b in bookings}
+        truth = {**p.truth, "bookings": sorted(books)}
     return AgentOutput(
         answer=turns[-1].text if turns else "",
         transcript=transcript,

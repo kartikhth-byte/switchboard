@@ -36,12 +36,15 @@ AMPM = r"(?P<p>am|pm|a\.m\.|p\.m\.)"
 PART = r"in the (?P<part>morning|afternoon|evening)"
 NOT_A_TIME = (  # what follows a bare number that makes it a duration, price, date or address
     r"(?![:\d]|\s*(?:minutes?|mins?|hours?|hrs?|rupees|rs\b|st\b|nd\b|rd\b|th\b|people|days?"
-    r"|weeks?|o'?clock|in the|am\b|pm\b|a\.m|p\.m|noon|percent|%)|(?-i:\s+[A-Z][a-z]))"
+    r"|weeks?|o'?clock|in the|am\b|pm\b|a\.m|p\.m|noon|percent|%)"
+    r"|(?-i:\s+(?!(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Today|Tomorrow)"
+    r"\b)[A-Z][a-z]))"
 )
 PATTERNS = [
     # 6:15, 6:15 pm, 6:15 in the evening; not a duration ("takes 1:30")
     re.compile(
-        rf"(?<!takes )(?<!lasts )\b(?P<h>\d{{1,2}}):(?P<m>\d{{2}})"
+        rf"(?<!takes )(?<!lasts )(?<!takes about )(?<!lasts about )"
+        rf"\b(?P<h>\d{{1,2}}):(?P<m>\d{{2}})"
         rf"(?:\s*{AMPM}|\s+(?:o'?clock\s+)?{PART})?",
         re.I,
     ),
@@ -64,18 +67,25 @@ NEGATIVE = re.compile(
     r"|unavailable|don'?t have|do not have|nothing)\b",
     re.I,
 )
+DIR_WINDOW = re.compile(  # "after 6pm", "before 10", "from 4:30": a boundary, not a claim
+    r"\b(?P<dir>after|before|from)\s+(?P<h>\d{1,2})(?::(?P<m>\d{2}))?"
+    r"(?:\s*(?P<p>am|pm)|\s+in the (?P<part2>morning|afternoon|evening))?",
+    re.I,
+)
 WINDOW = re.compile(
     r"\b(?:(?P<dir>after|before|from)\s+(?P<h>\d{1,2})(?::(?P<m>\d{2}))?"
     r"(?:\s*(?P<p>am|pm)|\s+in the (?P<part2>morning|afternoon|evening))?"
     r"|in the (?P<part>morning|afternoon|evening)|(?P<work>after work)|(?P<lunch>lunchtime))",
     re.I,
 )
+SLOT_WORD = re.compile(r"\b(slot|book|booked|appointment|available|free|opening)\b", re.I)
 HOURS = re.compile(r"\b(open|opens|close|closes|closing|hours|closed)\b", re.I)
 CLAUSE = re.compile(r",?\s+\b(?:but|so|although|though|however|whereas|and)\b|;")
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 DAY_REF = re.compile(
     r"\b(?P<wd>monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b"
-    r"|\bthe (?P<ord>\d{1,2})(?:st|nd|rd|th)\b|\b(?P<rel>tomorrow|today|tonight)\b",
+    r"|\bthe (?P<ord>\d{1,2})(?:st|nd|rd|th)\b"
+    r"|\b(?P<rel>tomorrow|today|tonight|this (?:morning|afternoon|evening))\b",
     re.I,
 )
 
@@ -140,20 +150,25 @@ class Truth:
     free: dict[str, list[str]]
     by_stylist: dict[str, dict[str, list[str]]]
     hours: dict[str, list[str]]
-    bookings: set[str] = field(default_factory=set)
+    bookings: set[str] = field(default_factory=set)  # "YYYY-MM-DD HH:MM stylist_id"
     stylists: dict[str, str] = field(default_factory=dict)  # spoken name (lower) -> id
+    dates: list[str] = field(default_factory=list)  # every date in the snapshot, closed too
+
+    def _all_dates(self) -> list[str]:
+        return sorted(set(self.dates) | set(self.hours))
 
     def resolve_day(self, m: re.Match[str]) -> str | None:
         g = m.groupdict()
         if g["rel"]:
             rel = g["rel"].lower()
-            return str(self.today + timedelta(days=1 if rel == "tomorrow" else 0))
+            return str(self.today + timedelta(days=1 if rel == "tomorrow" else 0))  # "this ..."
         if g["ord"]:
-            hits = sorted(d for d in self.hours if int(d[8:10]) == int(g["ord"]))
+            hits = [d for d in self._all_dates() if int(d[8:10]) == int(g["ord"])]
             after = [d for d in hits if d >= str(self.today)]
             return (after or hits or [None])[0]
         i = DAYS.index(g["wd"].lower())
-        cands = sorted(d for d in self.hours if date.fromisoformat(d).weekday() == i)
+        # every date, closed ones too: "4pm Monday" on a closed Monday has nothing free
+        cands = [d for d in self._all_dates() if date.fromisoformat(d).weekday() == i]
         after = [d for d in cands if d >= str(self.today)]
         return (after or cands or [None])[0]
 
@@ -196,12 +211,20 @@ def _kinds(clause: str, found: list[tuple[int, set[str]]], skip: set[int]) -> li
 
 
 def _in_window(clause: str, free: list[str]) -> list[str]:
-    """A range claim with a window ("the first after 6", "the latest in the morning") is about
-    that window, not the whole day. The times themselves are blanked first, so the "in the
-    afternoon" of "6:15 in the afternoon" isn't read as a window."""
+    """A range claim with a window ("the first after 6pm", "the latest in the morning") is
+    about that window, not the whole day."""
+    d = DIR_WINDOW.search(clause)
+    if d:
+        g = d.groupdict()
+        reads = _reads(int(g["h"]), int(g["m"] or 0), g["p"] or g["part2"] or "")
+        edge = max(reads)  # an ambiguous "after 6" in a salon means the evening
+        if g["dir"].lower() == "before":
+            return [t for t in free if t < edge]
+        return [t for t in free if t >= edge]  # "after 6" / "from 6": 6 itself included
+    masked = clause  # the "in the afternoon" of "6:15 in the afternoon" isn't a window
     for a, b, _ in _spans(clause):
-        clause = clause[:a] + " " * (b - a) + clause[b:]
-    m = WINDOW.search(clause)
+        masked = masked[:a] + " " * (b - a) + masked[b:]
+    m = WINDOW.search(masked)
     if not m:
         return free
     g = m.groupdict()
@@ -209,16 +232,12 @@ def _in_window(clause: str, free: list[str]) -> list[str]:
         return [t for t in free if t >= "17:30"]
     if g["lunch"]:
         return [t for t in free if "12:00" <= t <= "14:00"]
-    if g["part"] and not g["dir"]:
+    if g["part"]:
         lo, hi = {"morning": ("00:00", "11:59"), "afternoon": ("12:00", "16:59")}.get(
             g["part"].lower(), ("17:00", "23:59")
         )
         return [t for t in free if lo <= t <= hi]
-    reads = _reads(int(g["h"]), int(g["m"] or 0), g["p"] or g["part2"] or "")
-    edge = max(reads)  # an ambiguous "after 6" in a salon means the evening
-    if g["dir"].lower() == "before":
-        return [t for t in free if t < edge]
-    return [t for t in free if t >= edge]  # "after 6" / "from 6": 6 itself included
+    return free
 
 
 def check(agent_turns: list[str], truth: Truth) -> list[dict[str, Any]]:
@@ -255,11 +274,16 @@ def _check_sentence(sentence: str, truth: Truth) -> list[dict[str, Any]]:
             p = lo + pos
             return (_pick(p, days, lo, hi) if days else default_day), _pick(p, names, lo, hi)
 
-        skip = {  # "we open at 10", "Sunday closes at 5": the day's hours, not a slot
-            i
-            for i, (pos, reads) in enumerate(found)
-            if hours_word and reads & set(truth.hours.get(where(pos)[0] or "", []))
-        }
+        skip: set[int] = set()
+        if hours_word:  # "we open at 10", "open 10 to 5": the day's hours, not slots
+            for i, (pos, reads) in enumerate(found):
+                near = clause[max(0, pos - 18) : pos + 18]
+                if reads & set(truth.hours.get(where(pos)[0] or "", [])) and not SLOT_WORD.search(
+                    near
+                ):
+                    skip.add(i)  # ...unless it's offered as a slot ("an 8pm slot")
+        for bm in DIR_WINDOW.finditer(clause):  # "after 6pm" is a boundary, not a claim
+            skip |= {i for i, (pos, _) in enumerate(found) if bm.start("h") <= pos < bm.end()}
         for i, ((pos, reads), kind) in enumerate(
             zip(found, _kinds(clause, found, skip), strict=True)
         ):
@@ -276,7 +300,11 @@ def _check_sentence(sentence: str, truth: Truth) -> list[dict[str, Any]]:
                 ok = not (reads & set(free))
                 expected = []
             else:
-                ok = bool(reads & set(free)) or any(f"{day} {r}" in truth.bookings for r in reads)
+                ok = bool(reads & set(free)) or any(
+                    b.startswith(f"{day} {r}") and (stylist is None or b.endswith(f" {stylist}"))
+                    for b in truth.bookings
+                    for r in reads
+                )
                 if not ok and not days:  # no day named: may be about another day discussed
                     ok = bool(reads & set(truth.free_for(None, stylist)))
                 expected = []

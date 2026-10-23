@@ -212,6 +212,18 @@ def audio_stop_after(writes: list[tuple[float, float]], onset: float, gap: float
     return end
 
 
+def playing_at(writes: list[tuple[float, float]], t: float, gap: float = 0.25) -> bool:
+    """Was agent audio playing at t? A chunk contains t, or audio ran up to just before t AND
+    carried on just after it (VAD/Smart Turn inference can stall the speaker for ~0.1 s right
+    as the caller starts). Audio that ended before t with nothing after doesn't count
+    (review 3, #7)."""
+    if any(a <= t < b for a, b in writes):
+        return True
+    before = any(t - gap <= b <= t for _, b in writes)
+    after = any(t <= a <= t + gap for a, _ in writes)
+    return before and after
+
+
 def talked_over(writes: list[tuple[float, float]], lo: float, hi: float) -> bool:
     """Any agent audio overlapping [lo, hi], including a chunk that started before lo."""
     return any(s < hi and e > lo for s, e in writes)
@@ -358,10 +370,7 @@ async def run_call(env: EvalEnv, case: EvalCase, speech: Speech) -> CallResult:
                 lo = t_first
                 if barge:
                     stop = audio_stop_after(out.writes, t_first)
-                    # Was the greeting actually playing when the caller started? Chunks are
-                    # logged as they start, so this is a real overlap test (review 2, #7);
-                    # 60 ms covers the gap between back-to-back chunks.
-                    playing = any(a <= t_first < b + 0.06 for a, b in out.writes)
+                    playing = playing_at(out.writes, t_first)
                     interrupted = brain.interruptions > before
                     res.barge_counted = playing and interrupted
                     if not res.barge_counted:

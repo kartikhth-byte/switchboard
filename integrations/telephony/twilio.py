@@ -1,6 +1,7 @@
 """Twilio REST for a live call: read the caller's number, and transfer the call to staff by
-replacing its TwiML with a <Dial>. That ends the media stream (so the bot hangs up) and Twilio
-rings the staff line, falling back to a short message if nobody answers."""
+replacing its TwiML with <Say> (the hand-over line) then <Dial>. That ends the media stream (so
+the bot hangs up) and Twilio rings the staff line, falling back to a short message if nobody
+answers."""
 
 from __future__ import annotations
 
@@ -14,10 +15,13 @@ from integrations.http import TIMEOUT, check
 API = "https://api.twilio.com/2010-04-01/Accounts/{sid}/Calls/{call}.json"
 
 
-def transfer_twiml(to: str, caller_id: str | None, timeout_s: int = 20) -> str:
+def transfer_twiml(to: str, caller_id: str | None, say: str = "", timeout_s: int = 20) -> str:
+    """Twilio speaks the hand-over line itself, then dials: Twilio guarantees the caller hears
+    the line before the ringing, which the bot can't prove from its own audio events."""
     cid = f' callerId="{escape(caller_id)}"' if caller_id else ""
+    lead = f"<Say>{escape(say)}</Say>" if say else ""
     return (
-        "<Response>"
+        f"<Response>{lead}"
         f'<Dial timeout="{timeout_s}"{cid}>{escape(to)}</Dial>'
         "<Say>Sorry, nobody could take the call. The salon will call you back.</Say>"
         "</Response>"
@@ -33,11 +37,11 @@ class TwilioCalls:
         """The call's numbers: {"from": caller, "to": our Twilio number, ...}."""
         return check(self.http.get(API.format(sid=self.sid, call=call_sid)), "twilio")
 
-    def transfer(self, call_sid: str, to: str, caller_id: str | None = None) -> str:
+    def transfer(self, call_sid: str, to: str, caller_id: str | None = None, say: str = "") -> str:
         data = check(
             self.http.post(
                 API.format(sid=self.sid, call=call_sid),
-                data={"Twiml": transfer_twiml(to, caller_id)},
+                data={"Twiml": transfer_twiml(to, caller_id, say)},
             ),
             "twilio",
         )

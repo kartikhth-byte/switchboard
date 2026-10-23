@@ -9,10 +9,11 @@ import httpx
 from integrations.telephony import TwilioCalls, transfer_twiml
 
 
-def test_transfer_twiml_dials_staff_then_apologises() -> None:
-    x = transfer_twiml("+919800000099", "+17370000000")
+def test_transfer_twiml_says_the_line_then_dials_then_apologises() -> None:
+    x = transfer_twiml("+919800000099", "+17370000000", say="Putting you through now.")
+    assert x.index("<Say>Putting you through now.</Say>") < x.index("<Dial")
     assert '<Dial timeout="20" callerId="+17370000000">+919800000099</Dial>' in x
-    assert x.index("<Dial") < x.index("<Say>")  # the message plays only if nobody answers
+    assert x.index("</Dial>") < x.index("<Say>Sorry")  # the apology plays only if nobody answers
     assert "&lt;" in transfer_twiml("<x>", None)  # escaped
 
 
